@@ -1,0 +1,48 @@
+@py = http://127.0.0.1:8000
+
+### 1. Health (expect 200 {"status":"ok"})
+GET {{py}}/health
+
+### 2. Similar names (expect id 2 at 100, then id 1 at about 91.7, and NOT id 3)
+POST {{py}}/api/fuzzy-check
+Content-Type: application/json
+
+{
+  "name": "Ngozi Okafor",
+  "candidates": [
+    { "id": "1", "name": "ngozy okafor" },
+    { "id": "2", "name": "Okafor Ngozi" },
+    { "id": "3", "name": "Chidi Eze" }
+  ]
+}
+
+### 3. No matches (expect "matches": [])
+POST {{py}}/api/fuzzy-check
+Content-Type: application/json
+
+{ "name": "Ngozi Okafor", "candidates": [ { "id": "3", "name": "Chidi Eze" } ] }
+
+### 4. Stricter threshold (expect only id 2)
+POST {{py}}/api/fuzzy-check
+Content-Type: application/json
+
+{
+  "name": "Ngozi Okafor",
+  "threshold": 95,
+  "candidates": [
+    { "id": "1", "name": "ngozy okafor" },
+    { "id": "2", "name": "Okafor Ngozi" }
+  ]
+}
+
+### 5. Bad input: name too short (expect 422)
+POST {{py}}/api/fuzzy-check
+Content-Type: application/json
+
+{ "name": "A", "candidates": [] }
+
+### 6. Bad input: threshold out of range (expect 422)
+POST {{py}}/api/fuzzy-check
+Content-Type: application/json
+
+{ "name": "Ngozi", "threshold": 10, "candidates": [] }

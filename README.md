@@ -24,7 +24,7 @@ Paper registers at PHCs lose patients, create duplicates (the same woman registe
 - Background sync to Supabase with a status badge (Synced / Offline / N waiting).
 - Day 4: branded home screen, patient profile page, and a layout that adapts to phone, tablet and laptop.
 
-## Build log (everything we did, in order)
+## Build log (everything I did, in order)
 
 ### Day 1: `phc-registry` (Next.js + Prisma)
 
@@ -42,11 +42,11 @@ Product feedback said the system had to reflect real clinical situations. Added:
 - Search by name, phone, NHIS number and card number, with pagination.
 - About 30 requests in VS Code REST Client to test it.
 
-### The pivot: why a new repo called `prima`
+### The pivot: why a new repo called `Prima`
 
 Building the API showed that a server-first app is the wrong foundation for a rural clinic. If the network drops, a form that posts to a server fails, and a nurse with a queue of patients cannot wait. The architecture changed:
 
-|                   | `phc-registry` (Days 1-2)   | `prima` (Day 3 onward)                       |
+|                   | `phc-registry` (Days 1-2)   | `Prima` (Day 3 onward)                       |
 | ----------------- | --------------------------- | -------------------------------------------- |
 | App               | Next.js, server-rendered    | React + Vite single-page app (PWA)           |
 | Data on the phone | None                        | **IndexedDB (Dexie) is the source of truth** |

@@ -155,9 +155,9 @@ export function PatientForm({ onSaved }: { onSaved: (p: Patient) => void }) {
   });
 
   return (
-    <form onSubmit={onSubmit} className="space-y-5" noValidate>
+    <form onSubmit={onSubmit} className="grid gap-5 md:grid-cols-2" noValidate>
       {/* 1. NEW ADMISSION */}
-      <section className="card space-y-3">
+      <section className="card space-y-3 md:col-span-2">
         <label className="flex min-h-12 items-center justify-between gap-3 text-base font-semibold">
           New admission? (first visit for a complaint)
           <input
@@ -304,7 +304,7 @@ export function PatientForm({ onSaved }: { onSaved: (p: Patient) => void }) {
 
       {/* 6. WOMEN OVER 12 ONLY */}
       {showObstetric && (
-        <section className="space-y-4 rounded-2xl border-2 border-prima-500/30 bg-prima-50 p-4">
+        <section className="space-y-4 rounded-2xl border-2 border-prima-500/30 bg-prima-50 p-4 md:col-span-2">
           <h2 className="text-lg font-bold">Obstetric history</h2>
           <div className="grid grid-cols-2 gap-3">
             <Field label="Gravida" error={errors.gravida?.message}>
@@ -349,10 +349,12 @@ export function PatientForm({ onSaved }: { onSaved: (p: Patient) => void }) {
 
       {/* 7. CHILDREN UNDER 5 ONLY */}
       {showVaccines && (
-        <ImmunizationChecklist value={picked} onChange={setPicked} />
+        <div className="md:col-span-2">
+          <ImmunizationChecklist value={picked} onChange={setPicked} />
+        </div>
       )}
       {vaccineError && (
-        <p role="alert" className="font-medium text-danger">
+        <p role="alert" className="font-medium text-danger md:col-span-2">
           {vaccineError}
         </p>
       )}
@@ -361,7 +363,7 @@ export function PatientForm({ onSaved }: { onSaved: (p: Patient) => void }) {
       {hint && (
         <div
           role="alert"
-          className="space-y-2 rounded-2xl border-2 border-accent-500 bg-accent-50 p-4"
+          className="space-y-2 rounded-2xl border-2 border-accent-500 bg-accent-50 p-4 md:col-span-2"
         >
           {hint.kind === "exact" ? (
             <p className="font-semibold">
@@ -397,14 +399,14 @@ export function PatientForm({ onSaved }: { onSaved: (p: Patient) => void }) {
       )}
 
       {saveError && (
-        <p role="alert" className="font-medium text-danger">
+        <p role="alert" className="font-medium text-danger md:col-span-2">
           {saveError}
         </p>
       )}
 
       <button
         type="submit"
-        className="btn btn-primary"
+        className="btn btn-primary md:col-span-2 md:w-72 md:justify-self-end"
         disabled={isSubmitting || (hint !== null && !confirmed)}
       >
         {isSubmitting ? "Saving…" : "Register patient"}

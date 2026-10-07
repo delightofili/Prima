@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { usePatients } from "../hooks/usePatients";
 import { useDebounce } from "../hooks/common";
-import { calculateAge, isUnder5 } from "../lib/age";
+import { PatientCard } from "./PatientCard";
 
 export function PatientList() {
   const [search, setSearch] = useState("");
@@ -36,37 +36,12 @@ export function PatientList() {
           <p className="text-sm text-subtext">
             {results.length} of {total} patients
           </p>
-          <ul className="space-y-3">
-            {shown.map((p) => {
-              const age = calculateAge(p.dob);
-              return (
-                <li key={p.id} className="card">
-                  <div className="flex items-start justify-between gap-2">
-                    <p className="text-lg font-semibold">{p.fullName}</p>
-                    <span className="text-sm font-semibold text-prima-500">
-                      {p.cardNumber}
-                    </span>
-                  </div>
-                  <p className="text-subtext">
-                    {age.label} · {p.gender === "FEMALE" ? "Female" : "Male"} ·{" "}
-                    {p.village}
-                  </p>
-                  {p.phone && <p>{p.phone}</p>}
-                  <div className="mt-2 flex gap-2">
-                    {p.isPregnant && (
-                      <span className="rounded-full bg-pregnant px-3 py-1 text-sm font-semibold text-white">
-                        Pregnant
-                      </span>
-                    )}
-                    {isUnder5(age) && (
-                      <span className="rounded-full bg-accent-500 px-3 py-1 text-sm font-semibold text-black">
-                        Under 5
-                      </span>
-                    )}
-                  </div>
-                </li>
-              );
-            })}
+          <ul className="grid gap-3 md:grid-cols-2">
+            {shown.map((p) => (
+              <li key={p.id}>
+                <PatientCard p={p} />
+              </li>
+            ))}
           </ul>
           {results.length > shown.length && (
             <p className="text-center text-sm text-subtext">

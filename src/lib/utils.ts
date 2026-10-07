@@ -22,3 +22,12 @@ export function generateCardNumber(facilityCode: string): string {
   );
   return `${facilityCode}-${suffix}`;
 }
+
+export const formatDate = (iso: string) => {
+  const [y, m, d] = iso.split("-").map(Number);
+  return new Date(y, m - 1, d).toLocaleDateString("en-NG", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
+};

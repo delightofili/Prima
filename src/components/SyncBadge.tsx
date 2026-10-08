@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { useLiveQuery } from "dexie-react-hooks";
 import {
   Check,
@@ -22,6 +23,13 @@ function SyncPanel({
   onClose: () => void;
 }) {
   const toast = useToast();
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [onClose]);
   return (
     <div
       role="dialog"
@@ -111,9 +119,12 @@ export function SyncBadge() {
         <Icon size={16} className={Icon === RefreshCw ? "animate-spin" : ""} />
         {text}
       </button>
-      {open && items.length > 0 && (
-        <SyncPanel items={items} onClose={() => setOpen(false)} />
-      )}
+      {open &&
+        items.length > 0 &&
+        createPortal(
+          <SyncPanel items={items} onClose={() => setOpen(false)} />,
+          document.body,
+        )}
     </>
   );
 }

@@ -116,10 +116,21 @@ export async function pushPending() {
         await pushItem(item);
         await db.syncQueue.delete(item.id!);
       } catch (e) {
+        const err = e as { code?: string; message?: string };
+        const message = err?.message ?? String(e);
+        const network =
+          !err?.code || /failed to fetch|network|load failed/i.test(message);
+
+        if (network) {
+          // No signal, not a rejection: keep it pending and try again later
+          await db.syncQueue.update(item.id!, { lastError: message });
+          break;
+        }
+
         const attempts = item.attempts + 1;
         await db.syncQueue.update(item.id!, {
           attempts,
-          lastError: (e as { message?: string })?.message ?? String(e),
+          lastError: message,
           status: attempts >= 5 ? "failed" : "pending",
         });
         if (attempts < 5) break;
@@ -128,6 +139,16 @@ export async function pushPending() {
   } finally {
     running = false;
   }
+}
+
+export async function retryFailed() {
+  await db.syncQueue.toCollection().modify((item) => {
+    if (item.status === "failed") {
+      item.status = "pending";
+      item.attempts = 0;
+    }
+  });
+  await pushPending();
 }
 
 export function startSync() {

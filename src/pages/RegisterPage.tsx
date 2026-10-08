@@ -5,6 +5,7 @@ import { PageHeader } from "../components/PageHeader";
 import { PatientForm } from "../components/PatientForm";
 import { calculateAge } from "../lib/age";
 import type { Patient } from "../types";
+import { usePageTitle } from "../hooks/common";
 
 function SavedCard({
   patient,
@@ -45,6 +46,7 @@ function SavedCard({
 }
 
 export function RegisterPage() {
+  usePageTitle("Register patient");
   const [saved, setSaved] = useState<Patient | null>(null);
   return (
     <>

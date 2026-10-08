@@ -23,3 +23,9 @@ export function useOnline() {
   }, []);
   return online;
 }
+
+export function usePageTitle(title: string) {
+  useEffect(() => {
+    document.title = title ? `${title} · Prima` : "Prima";
+  }, [title]);
+}

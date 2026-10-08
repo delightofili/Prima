@@ -48,13 +48,24 @@ export interface ImmunizationRecord {
   createdAt: number;
 }
 
-// Day 4 fills these in
 export interface Visit {
   id: string;
   patientId: string;
-  createdAt: number;
+  facilityId: string;
+  visitDate: string;
+  complaints: string;
+  systolic?: number;
+  diastolic?: number;
+  temperature?: number;
+  weightKg?: number;
+  diagnosisCode?: string;
+  diagnosisLabel?: string;
+  treatment?: string;
   nextDueDate?: string;
+  createdAt: number;
+  updatedAt: number;
 }
+
 export interface User {
   id: string;
   username: string;
@@ -63,7 +74,7 @@ export interface User {
 
 export interface SyncItem {
   id?: number;
-  table: "patients" | "immunizations";
+  table: "patients" | "immunizations" | "visits";
   recordId: string;
   attempts: number;
   status: "pending" | "failed";

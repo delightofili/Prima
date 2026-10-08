@@ -4,6 +4,7 @@ import { HomePage } from "./pages/HomePage";
 import { PatientDetailPage } from "./pages/PatientDetailPage";
 import { PatientsPage } from "./pages/PatientsPage";
 import { RegisterPage } from "./pages/RegisterPage";
+import { NewVisitPage } from "./pages/NewVisitPage";
 
 function NotFound() {
   return (
@@ -24,6 +25,7 @@ export default function App() {
         <Route path="register" element={<RegisterPage />} />
         <Route path="patients" element={<PatientsPage />} />
         <Route path="patients/:id" element={<PatientDetailPage />} />
+        <Route path="patients/:id/visits/new" element={<NewVisitPage />} />
         <Route path="*" element={<NotFound />} />
       </Route>
     </Routes>

@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { MapPin, Phone } from "lucide-react";
 import { calculateAge, isUnder5 } from "../lib/age";
 import { PregnantBadge, Under5Badge } from "./Badges";
 import type { Patient } from "../types";
@@ -16,10 +17,15 @@ export function PatientCard({ p }: { p: Patient }) {
           {p.cardNumber}
         </span>
       </div>
-      <p className="text-subtext">
-        {age.label} · {p.gender === "FEMALE" ? "Female" : "Male"} · {p.village}
+      <p className="flex items-center gap-1.5 text-subtext">
+        <MapPin size={16} /> {age.label} ·{" "}
+        {p.gender === "FEMALE" ? "Female" : "Male"} · {p.village}
       </p>
-      {p.phone && <p>{p.phone}</p>}
+      {p.phone && (
+        <p className="flex items-center gap-1.5">
+          <Phone size={16} className="text-subtext" /> {p.phone}
+        </p>
+      )}
       {(p.isPregnant || isUnder5(age)) && (
         <div className="mt-2 flex gap-2">
           {p.isPregnant && <PregnantBadge />}

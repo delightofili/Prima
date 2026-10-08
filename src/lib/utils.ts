@@ -31,3 +31,13 @@ export const formatDate = (iso: string) => {
     year: "numeric",
   });
 };
+
+export const toNumber = (v: unknown): number | undefined => {
+  if (v === "" || v === null || v === undefined) return undefined;
+  return Number(String(v).replace(",", "."));
+};
+
+export const fromISO = (iso: string) => {
+  const [y, m, d] = iso.split("-").map(Number);
+  return new Date(y, m - 1, d);
+};

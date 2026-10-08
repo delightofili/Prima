@@ -26,6 +26,9 @@ class PrimaDB extends Dexie {
       syncQueue: "++id, table, recordId",
       users: "id, &username",
     });
+    this.version(2).stores({
+      visits: "id, patientId, visitDate, nextDueDate, diagnosisCode, createdAt",
+    });
   }
 }
 
@@ -52,4 +55,7 @@ db.patients.hook("creating", (_key, obj, trans) => {
 });
 db.immunizations.hook("creating", (_key, obj, trans) => {
   enqueue("immunizations", obj.id, trans);
+});
+db.visits.hook("creating", (_key, obj, trans) => {
+  enqueue("visits", obj.id, trans);
 });

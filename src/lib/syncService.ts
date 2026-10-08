@@ -2,7 +2,7 @@ import { db } from "../db";
 import { supabase } from "./supabase";
 import { config } from "./config";
 import { generateCardNumber } from "./utils";
-import type { ImmunizationRecord, Patient, SyncItem } from "../types";
+import type { ImmunizationRecord, Patient, SyncItem, Visit } from "../types";
 
 const iso = (ms: number) => new Date(ms).toISOString();
 
@@ -42,6 +42,24 @@ const immunizationRow = (r: ImmunizationRecord) => ({
   created_at: iso(r.createdAt),
 });
 
+const visitRow = (v: Visit) => ({
+  id: v.id,
+  facility_id: v.facilityId,
+  patient_id: v.patientId,
+  visit_date: v.visitDate,
+  complaints: v.complaints,
+  systolic: v.systolic ?? null,
+  diastolic: v.diastolic ?? null,
+  temperature: v.temperature ?? null,
+  weight_kg: v.weightKg ?? null,
+  diagnosis_code: v.diagnosisCode ?? null,
+  diagnosis_label: v.diagnosisLabel ?? null,
+  treatment: v.treatment ?? null,
+  next_due_date: v.nextDueDate ?? null,
+  created_at: iso(v.createdAt),
+  updated_at: iso(v.updatedAt),
+});
+
 async function pushOne(item: SyncItem) {
   if (item.table === "patients") {
     const p = await db.patients.get(item.recordId);
@@ -50,12 +68,19 @@ async function pushOne(item: SyncItem) {
       .from("patients")
       .upsert(patientRow(p), { onConflict: "id" });
     if (error) throw error;
-  } else {
+  } else if (item.table === "immunizations") {
     const r = await db.immunizations.get(item.recordId);
     if (!r) return;
     const { error } = await supabase
       .from("immunization_records")
       .upsert(immunizationRow(r), { onConflict: "id" });
+    if (error) throw error;
+  } else {
+    const v = await db.visits.get(item.recordId);
+    if (!v) return;
+    const { error } = await supabase
+      .from("visits")
+      .upsert(visitRow(v), { onConflict: "id" });
     if (error) throw error;
   }
 }

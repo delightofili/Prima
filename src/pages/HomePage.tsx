@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Search, UserPlus } from "lucide-react";
+import { Baby, HeartPulse, Search, UserPlus, Users } from "lucide-react";
 import { usePatients } from "../hooks/usePatients";
 import { calculateAge, isUnder5 } from "../lib/age";
 import { config } from "../lib/config";
@@ -7,6 +7,7 @@ import { todayISO } from "../lib/utils";
 import { Logo } from "../components/Logo";
 import { PatientCard } from "../components/PatientCard";
 import { StatTile } from "../components/StatTile";
+import { usePageTitle } from "../hooks/common";
 
 function greeting() {
   const h = new Date().getHours();
@@ -14,6 +15,7 @@ function greeting() {
 }
 
 export function HomePage() {
+  usePageTitle("Home");
   const { results: patients, loading } = usePatients("");
   const today = todayISO();
 
@@ -56,10 +58,19 @@ export function HomePage() {
       </section>
 
       <section className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-        <StatTile label="Total patients" value={patients.length} />
-        <StatTile label="Registered today" value={registeredToday} />
-        <StatTile label="Under 5" value={under5} tone="orange" />
-        <StatTile label="Pregnant" value={pregnant} tone="pink" />
+        <StatTile label="Total patients" value={patients.length} icon={Users} />
+        <StatTile
+          label="Registered today"
+          value={registeredToday}
+          icon={UserPlus}
+        />
+        <StatTile label="Under 5" value={under5} icon={Baby} tone="orange" />
+        <StatTile
+          label="Pregnant"
+          value={pregnant}
+          icon={HeartPulse}
+          tone="pink"
+        />
       </section>
 
       {!loading && patients.length === 0 ? (

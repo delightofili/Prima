@@ -8,6 +8,9 @@ import { Logo } from "../components/Logo";
 import { PatientCard } from "../components/PatientCard";
 import { StatTile } from "../components/StatTile";
 import { usePageTitle } from "../hooks/common";
+import { CalendarClock, ChevronRight } from "lucide-react";
+import { GloveToggle } from "../components/GloveToggle";
+import { useFollowUps } from "../hooks/useFollowUps";
 
 function greeting() {
   const h = new Date().getHours();
@@ -17,6 +20,7 @@ function greeting() {
 export function HomePage() {
   usePageTitle("Home");
   const { results: patients, loading } = usePatients("");
+  const followUps = useFollowUps(7);
   const today = todayISO();
 
   const registeredToday = patients.filter(
@@ -72,6 +76,21 @@ export function HomePage() {
           tone="pink"
         />
       </section>
+      <Link
+        to="/dashboard?tab=followups"
+        className="card flex items-center justify-between gap-3 border-accent-500 hover:bg-accent-50"
+      >
+        <span className="flex items-center gap-3">
+          <CalendarClock size={26} />
+          <span>
+            <span className="block text-lg font-bold">
+              {followUps?.length ?? 0} follow-ups due
+            </span>
+            <span className="text-subtext">Overdue and the next 7 days</span>
+          </span>
+        </span>
+        <ChevronRight size={22} className="text-subtext" />
+      </Link>
 
       {!loading && patients.length === 0 ? (
         <section className="card space-y-3 py-10 text-center">
@@ -79,6 +98,9 @@ export function HomePage() {
             <Logo />
           </div>
           <p className="text-lg font-semibold">Welcome to Prima</p>
+          <div className="md:hidden">
+            <GloveToggle />
+          </div>
           <p className="mx-auto max-w-md text-subtext">
             Your register is empty. Register your first patient. It works even
             without network.

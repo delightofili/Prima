@@ -1,5 +1,6 @@
 import { NavLink, Outlet } from "react-router-dom";
-import { House, UserPlus, Users } from "lucide-react";
+import { ChartColumn, House, UserPlus, Users } from "lucide-react";
+import { GloveToggle } from "./GloveToggle";
 import { Logo } from "./Logo";
 import { SyncBadge } from "./SyncBadge";
 import { config } from "../lib/config";
@@ -8,6 +9,7 @@ const NAV = [
   { to: "/", label: "Home", icon: House, end: true },
   { to: "/register", label: "Register", icon: UserPlus, end: false },
   { to: "/patients", label: "Patients", icon: Users, end: false },
+  { to: "/dashboard", label: "Dashboard", icon: ChartColumn, end: false },
 ];
 
 export function AppShell() {
@@ -35,7 +37,8 @@ export function AppShell() {
             </NavLink>
           ))}
         </nav>
-        <div className="mt-auto">
+        <div className="mt-auto space-y-3">
+          <GloveToggle />
           <SyncBadge />
         </div>
       </aside>
@@ -53,7 +56,7 @@ export function AppShell() {
       </div>
 
       {/* Bottom tabs: phones */}
-      <nav className="fixed inset-x-0 bottom-0 z-10 grid grid-cols-3 border-t-2 border-line bg-white pb-[env(safe-area-inset-bottom)] md:hidden">
+      <nav className="fixed inset-x-0 bottom-0 z-10 grid grid-cols-4 border-t-2 border-line bg-white pb-[env(safe-area-inset-bottom)] md:hidden">
         {NAV.map(({ to, label, icon: Icon, end }) => (
           <NavLink
             key={to}

@@ -56,3 +56,29 @@ export function formatPhone(e164?: string): string | undefined {
   const m = /^\+234(\d{3})(\d{3})(\d{4})$/.exec(e164);
   return m ? `0${m[1]} ${m[2]} ${m[3]}` : e164;
 }
+
+export const daysBetween = (fromIso: string, toIso: string) =>
+  Math.round(
+    (fromISO(toIso).getTime() - fromISO(fromIso).getTime()) / 86_400_000,
+  );
+
+export const monthOf = (iso: string) => iso.slice(0, 7); // "2026-10"
+
+export const daysInMonth = (key: string) => {
+  const [y, m] = key.split("-").map(Number);
+  return new Date(y, m, 0).getDate();
+};
+
+export const shiftMonth = (key: string, delta: number) => {
+  const [y, m] = key.split("-").map(Number);
+  const d = new Date(y, m - 1 + delta, 1);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+};
+
+export const monthLabel = (key: string) => {
+  const [y, m] = key.split("-").map(Number);
+  return new Date(y, m - 1, 1).toLocaleDateString("en-NG", {
+    month: "long",
+    year: "numeric",
+  });
+};

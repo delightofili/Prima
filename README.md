@@ -2,9 +2,9 @@
 
 **An offline-first patient register and visit record for Primary Health Centers (PHCs) in Nigeria.**
 
-A nurse registers patients, records visits and tracks vaccines on an Android phone, tablet or laptop, with or without network. Everything is saved on the device first and syncs both ways with the cloud in the background.
+A nurse registers patients, records visits, tracks vaccines and sees who is due for follow-up, on an Android phone, tablet or laptop, with or without network. Everything is saved on the device first and syncs both ways with the cloud in the background.
 
-> Status: built in public. Days 1-5 complete, Day 6 (edit, delete, two-way sync) in progress. Roadmap runs to Day 15 (go live).
+> Status: built in public. Days 1-6 complete, Day 7 (dashboard and follow-ups) in progress. Roadmap runs to Day 15 (go live), with feedback-driven work after that.
 
 ---
 
@@ -16,54 +16,43 @@ Paper registers at PHCs lose patients, create duplicates (the same woman registe
 
 **Registration**
 - PHC-relevant fields: name, date of birth (age auto-calculated), gender, phone, village, LGA, state, next of kin, optional NHIS number, blood group, allergies.
-- **Women over 12:** Gravida, Para and Pregnant fields appear.
-- **Children under 5:** an immunization checklist appears with dates and next-due dates.
-- **New admission toggle:** records a chief complaint (5-200 characters) as the reason for first registration.
-- Card numbers like `ANK-7K3F9Q`, generated on the device so two offline phones never wait for a server.
-- Phone numbers are stored in international format (E.164, `+2348031234567`) and shown in the familiar local style.
+- Women over 12 get Gravida, Para and Pregnant fields. Children under 5 get an immunization checklist.
+- A "new admission" toggle records a chief complaint as the reason for first registration.
+- Card numbers like `ANK-7K3F9Q` are generated on the device, so offline phones never wait for a server.
+- Phone numbers are stored in international format (E.164) and shown in the familiar local style.
 
-**Safety against duplicates**
-- Live duplicate warning (same name, date of birth, village) from a Dexie compound index. Works offline.
-- Similar-name check (for example "Ngozi" vs "Ngozy", or swapped names) through a Python service. Skipped silently when offline.
+**Duplicate protection**
+- Live duplicate warning (same name, date of birth, village) that works offline.
+- Similar-name check (for example "Ngozi" vs "Ngozy", or swapped names) through a Python service, skipped silently when offline.
 
-**Visits**
-- Date, complaints, blood pressure, temperature, weight, diagnosis, treatment notes and next follow-up date.
-- Diagnoses from a searchable ICD-10 list (plain words like "sugar" find diabetes), or free text.
-- Complaints pre-filled with "Follow-up for: <reason for first registration>", editable.
-- Vitals guidance flags shown live (BP flags only for patients 13 and over), with a "not a diagnosis" note.
+**Visits and vaccines**
+- Visits: date, complaints, blood pressure, temperature, weight, ICD-10 diagnosis (searchable in plain words), treatment notes, next follow-up date. Vitals guidance flags appear live.
+- Complaints are pre-filled with "Follow-up for: <reason for first registration>".
+- Later vaccine doses can be added from the profile, each recording which vaccine is due next and when.
 
-**Vaccines (Day 6)**
-- Add later doses from the profile (OPV, Penta, PCV, Rota, IPV, Measles, Yellow fever and more).
-- Each dose records which vaccine is due next and when, ready for the follow-up due list.
+**Edit, delete, undo, sync**
+- Edit patients and visits. Delete patients, visits and vaccine records with confirmation and a timed Undo (soft delete).
+- Two-way sync: changes made on one device appear on the others, and a cleared browser rebuilds itself from the cloud. Failed syncs are visible and retryable.
 
-**Edit, delete, undo (Day 6)**
-- Edit patients and visits. Delete patients, visits and vaccine records with a confirmation and a timed Undo.
-- Deletes are soft (the record is hidden, not erased), so they sync to every device and can be restored.
+**Dashboard and follow-ups (Day 7)**
+- Dashboard with a month selector: total patients, new this month, visits, under-5, pregnant, gender split, age groups, activity per day, top diagnoses and top villages. All calculated on the device from local data.
+- Follow-up due list: overdue and upcoming follow-up visits and next vaccine doses, with one-tap call to the patient or caregiver. Free and Basic plans see the counts; the full list is a Pro feature.
+- Plans page showing Free, Basic and Pro.
 
-**Two-way sync (Day 6)**
-- Changes made on one device appear on the others. A new phone, or a cleared browser, rebuilds itself from the cloud.
-- Conflicts are resolved by the most recent edit. Failed syncs are visible and retryable from the status badge.
+**Glove mode (Day 7)**
+- A switch that enlarges buttons, inputs, checkboxes and navigation for gloved or one-handed use. Feedback from clinic work: nurses often use one hand with gloves.
 
 **App experience**
-- Branded home screen with live counts, recent patients and a welcome state.
-- Responsive layout: bottom tabs on phones, sidebar on tablets and laptops, two-column forms on wide screens.
-- Patient profile with the reason for first registration, visits, obstetric details, immunizations (overdue flagged) and tap-to-call phone numbers.
-- Icons throughout, toast confirmations, page titles, visible keyboard focus.
+- Branded home screen, responsive layout (bottom tabs on phones, sidebar on tablets and laptops), icons throughout, toast confirmations, visible keyboard focus.
 - Instant search by name, phone (any format), NHIS number or card number, with no spinner.
 
 ## Build log (everything we did, in order)
 
 ### Day 1: `phc-registry` (Next.js + Prisma)
-Project setup and database design. Every field was chosen for a PHC nurse: village for community reporting, next of kin for emergencies, NHIS number as optional, allergies as safety-critical free text. Patient IDs were UUIDs from the start, and age was never stored (date of birth is stored and age is calculated).
+Project setup and database design. Every field was chosen for a PHC nurse. Patient IDs were UUIDs from the start, and age was never stored (date of birth is stored and age is calculated).
 
 ### Day 2: `phc-registry`, made clinically smart
-Product feedback said the system had to reflect real clinical situations. Added:
-- **Para, Gravida, isPregnant** for female patients.
-- An **ImmunizationRecord** model (vaccine, dose number, date given, next due date) for children under 5.
-- Human-readable card numbers with an atomic per-PHC counter.
-- A validated API (`POST` and `GET /api/patients`) with Zod, clear 400/404/409 errors, and clinical rules on the server: a male patient cannot be marked pregnant, a 10-year-old cannot have gravida, para cannot exceed gravida, vaccines cannot predate birth.
-- Duplicate protection, unique NHIS numbers, search by name, phone, NHIS and card number, with pagination.
-- About 30 requests in VS Code REST Client to test it.
+Product feedback said the system had to reflect real clinical situations. Added Para, Gravida and isPregnant for female patients, an immunization record model for children under 5, human-readable card numbers, a validated API with clinical rules on the server (no pregnant men, no gravida for a 10-year-old, para cannot exceed gravida, no vaccine before birth), duplicate protection, unique NHIS numbers, and search by name, phone, NHIS and card number. About 30 REST Client requests tested it.
 
 ### The pivot: why a new repo called `prima`
 Building the API showed that a server-first app is the wrong foundation for a rural clinic. If the network drops, a form that posts to a server fails, and a nurse with a queue of patients cannot wait. The architecture changed:
@@ -76,33 +65,25 @@ Building the API showed that a server-first app is the wrong foundation for a ru
 | Saving a patient | HTTP request, fails offline | Local write, instant, queued for sync |
 | Extra services | None | FastAPI (Python) |
 
-A new repository was the cleaner choice: the two architectures are fundamentally different, `phc-registry` stays as an honest record of the learning (kept as a reference, not deleted), and a clean repo is easier to read and review. Carried over: the schema design, validation rules, age calculation, the duplicate rule, and the card-number idea. Left behind: Next.js API routes and the Prisma client.
+A new repository was the cleaner choice: the architectures are fundamentally different, `phc-registry` stays as an honest record of the learning (kept as a reference), and a clean repo is easier to read and review. Carried over: the schema design, validation rules, age calculation, the duplicate rule and the card-number idea. Left behind: Next.js API routes and the Prisma client.
 
 ### Day 3: the offline engine
-- Vite + React + TypeScript + Tailwind scaffold with a custom colour system (deep teal, warm sand, signal orange) chosen for outdoor readability on a phone at low brightness.
-- Supabase tables with explicit grants and row level security (temporary open policies for fake test data only).
-- **Dexie database** with indexes, including a unique `cardNumber` and a compound `[name+dob+villageKey]` index for duplicate lookup.
-- `usePatients()` with `useLiveQuery()` and `Map` caches, so the UI reads from the device.
-- Registration form with React Hook Form + Zod, conditional fields, numeric keypads, large tap targets.
-- **Sync engine v1:** a Dexie hook adds every new record to a `syncQueue`; a service pushes the queue to Supabase when online and retries on reconnect.
-- **Python from zero:** Python 3.13, a virtual environment, a FastAPI service with rapidfuzz and an `/api/fuzzy-check` endpoint, tested with 6 REST Client requests.
+Vite + React + TypeScript + Tailwind with a colour system chosen for outdoor readability (deep teal, warm sand, signal orange). Supabase tables with explicit grants and RLS. A Dexie database with a unique card number index and a compound `[name+dob+villageKey]` index for duplicate lookup. `usePatients()` with `useLiveQuery()` and `Map` caches. A registration form with React Hook Form + Zod and conditional fields. Sync engine v1 (a Dexie hook queues every change, a service pushes when online). Python from zero: Python 3.13, a virtual environment, FastAPI, rapidfuzz and an `/api/fuzzy-check` endpoint with 6 REST Client tests.
 
 ### Day 4: a real product shell
-Feedback after Day 3: the app opened straight into a form and only worked well on a phone. Added a routed app shell (bottom tabs on phones, sidebar on tablets and laptops), a branded home screen with live counts, a patient profile page, a responsive two-column form, a logo, badges, stat tiles and page headers.
+Feedback after Day 3: the app opened straight into a form and only worked well on a phone. Added a routed app shell, a branded home screen, a patient profile page, a responsive two-column form, a logo, badges, stat tiles and page headers.
 
 ### Day 5: visits
-- A `Visit` record synced through the same offline queue, with a new Supabase `visits` table.
-- A visit form with BP (two integers), temperature, weight, complaints, diagnosis, treatment and a follow-up date with quick buttons.
-- A searchable **ICD-10 picker** with about 45 common PHC conditions and free-text fallback.
-- Live vitals flags, the "Follow-up for: ..." prefill from a LinkedIn review, visit history newest first, a follow-up chip.
-- Professional touches: icons, toast notifications, page titles, keyboard focus rings.
-- Fixed a stuck "1 need attention" sync badge: a failed item is now retryable, a weak signal no longer counts as a failure, and a sync details panel shows the actual error. Fixed a dialog that rendered underneath the page by moving it into a portal.
+A `Visit` record synced through the same queue, a visit form with BP as two integers, temperature, weight, complaints, an ICD-10 diagnosis picker (about 45 common conditions plus free text), live vitals flags, the "Follow-up for:" prefill from a LinkedIn review, visit history, icons, toasts, page titles and focus rings. Fixed a stuck "1 need attention" sync badge (failed items are now retryable, weak signal no longer counts as failure, a details panel shows the real error) and a dialog that rendered behind the page (portal).
 
 ### Day 6: edit, delete and two-way sync
-- **Edit** patients and visits with the same forms. **Soft delete** with confirmation and an Undo toast, so a delete syncs to every device and is reversible.
-- **Sync v2:** a server-maintained `synced_at` clock drives a pull of changes since the last sync, applied with a "most recent edit wins" rule. Updates and deletes now sync, not just creates. Pulled records are never sent back up, using a per-transaction flag.
-- **Later vaccine doses** with the next vaccine and due date recorded, for the future follow-up list.
-- **E.164 phone numbers:** stored internationally, shown locally, searchable in any format, with a one-time migration of existing records and tap-to-call links.
+Edit forms for patients and visits, soft delete with confirmation and Undo, sync v2 with a server-maintained `synced_at` clock and a pull of changes since the last sync, later vaccine doses with the next dose recorded, and E.164 phone numbers with a one-time migration and tap-to-call links.
+
+### Day 7: insight and revenue (in progress)
+- A **dashboard** built with Recharts from local data (gender donut, age groups, per-day activity, top diagnoses, top villages), with a month selector and a development timing readout to prove it is fast.
+- A **follow-up due list** built from indexed Dexie range queries on next-due dates, showing overdue and upcoming follow-up visits and next vaccine doses, with one-tap calling. Gated to the Pro plan in the UI.
+- A **plans page** and a small plan helper, with a development-only switch for testing.
+- **Glove mode**, a response to feedback about one-handed use with gloves.
 
 ## Decisions and why
 
@@ -110,30 +91,27 @@ Feedback after Day 3: the app opened straight into a form and only worked well o
 |---|---|
 | IndexedDB first, server second | The UI must never wait for the network |
 | UUIDs and card numbers generated on the device | Offline phones cannot ask a server for the next number |
-| Card alphabet without 0, O, 1, I, L | Readable aloud and on a printed card |
-| Store date of birth, not age | Age goes stale every year |
-| Dates as `YYYY-MM-DD` strings | No timezone bugs |
+| Store date of birth, not age; dates as `YYYY-MM-DD` strings | No stale ages, no timezone bugs |
 | Exact duplicate check in Dexie, fuzzy check in Python | Exact works offline; fuzzy is a bonus that never blocks registration |
-| Only same-date-of-birth patients sent to the Python check | Minimises patient data leaving the phone |
-| BP as two integers; temperature and weight as numbers | Allows flags, charts and reports later |
 | Diagnosis as ICD-10 code plus label, with free-text fallback | Standards-aligned reporting without blocking a nurse |
-| Vitals flags are a guide, BP flags only for 13+ | Children's BP norms depend on age, height and sex |
-| Soft delete, not hard delete | Deletes must sync to other devices, be undoable, and leave an audit trail |
-| Pull cursor uses a server clock (`synced_at`), not the phone's clock | Phone clocks are often wrong |
-| Phones stored as E.164 | One format for search, dialling, export and FHIR |
+| Soft delete | Deletes must sync to other devices, be undoable, and leave an audit trail |
+| Pull cursor uses a server clock, not the phone's | Phone clocks are often wrong |
+| Dashboard computed on the device from local data | Instant and works offline |
+| Follow-up uses the patient's latest visit only | An earlier follow-up is satisfied once the patient returns |
+| Vaccine follow-ups only for under-5s | Routine schedule applies to young children |
+| Show follow-up counts to everyone, the list only on Pro | The count demonstrates the value; the names are the product |
+| Glove mode as a switch | Bigger targets cost screen space, so nurses choose |
 | Supabase + Render only | Fewer platforms, lower monthly cost |
 
 ## Challenges and how they were solved
 
 - **Server-first cannot work offline.** Rebuilt as offline-first.
-- **Python 3.11 had no Windows installer.** Installed 3.13 alongside 3.14 and pinned the project with `py -3.13 -m venv`.
-- **Card numbers without a server counter.** Random 6-character codes, a retry on local collision and a regenerate-on-sync-clash safety net.
-- **Sync loops.** Records pulled from the server must not be queued for upload again, so the sync hook checks a flag on the pull transaction.
-- **Newer Supabase projects need explicit table grants.** Added to the SQL.
-- **Hooks that write to the sync queue need the queue inside the same transaction.**
-- **Sync failures were invisible.** Added a tappable status badge with error details and a retry button.
+- **Python 3.11 had no Windows installer.** Used 3.13 alongside 3.14 with a project virtual environment.
+- **Card numbers without a server counter.** Random 6-character codes with collision retries.
+- **Sync loops.** Records pulled from the server are marked per transaction so they are not uploaded again.
+- **Invisible sync failures.** A tappable status badge with error details and a retry button.
 - **A dialog appeared behind the page** because a sticky sidebar creates its own stacking layer. Fixed with a portal.
-- **Two phones editing the same record.** Resolved by most recent edit; documented as a known trade-off because it relies on device clocks.
+- **Two phones editing the same record.** Resolved by most recent edit, documented as a trade-off because it relies on device clocks.
 
 ## Architecture
 
@@ -155,14 +133,7 @@ Feedback after Day 3: the app opened straight into a form and only worked well o
 
 ## Standards approach
 
-Prima is built local-first but standards-aware. Nigeria is moving toward FHIR and DHIS2: the National Digital Health Architecture, a Nigeria Core FHIR Implementation Guide (still under development), an immunization FHIR guide from NPHCDA, and DHIS2 as the national reporting platform. Prima aligns in layers rather than claiming compliance:
-
-- FHIR R4 export and validation (Patient, Immunization, Encounter), aligned with Nigeria Core as it matures
-- DHIS2-compatible aggregate reports
-- ICD-10 coded diagnoses (WHO standard), starting with a small list
-- ISO 8601 dates, UUID identifiers, E.164 phone numbers
-- WCAG 2.1 AA accessibility targets
-- Nigeria Data Protection Act principles: consent, data minimisation, access control, audit trail
+Nigeria is moving toward FHIR and DHIS2: the National Digital Health Architecture, a Nigeria Core FHIR Implementation Guide (still under development), an immunization FHIR guide from NPHCDA, and DHIS2 as the national reporting platform. Prima aligns in layers rather than claiming compliance: FHIR R4 export and validation, DHIS2-compatible aggregate reports, ICD-10 diagnoses, ISO 8601 dates, UUID identifiers, E.164 phone numbers, WCAG 2.1 AA accessibility targets, and Nigeria Data Protection Act principles (consent, data minimisation, access control, audit trail).
 
 ## Plans
 
@@ -170,8 +141,28 @@ Prima is built local-first but standards-aware. Nigeria is moving toward FHIR an
 |---|---|---|
 | Free | ₦0 | 1 facility, 200 patients, no export |
 | Basic | ₦500/month | Unlimited patients, CSV export, LGA report, PWA, 3 staff, offline sync |
-| Pro | ₦900/month | Basic + FHIR/DHIS2 export, smart duplicate merge, follow-up due alerts |
+| Pro | ₦900/month | Basic + follow-up due list, FHIR/DHIS2 export, smart duplicate merge |
 
+## Roadmap
+
+| Phase | Day | Focus | Status |
+|---|---|---|---|
+| Foundation | 1-2 | `phc-registry` reference build | Done |
+| | 3 | Offline engine, registration, Python setup | Done |
+| Product | 4 | App shell, responsive UI, home, patient profile | Done |
+| | 5 | Visits, ICD-10 diagnosis, history | Done |
+| | 6 | Edit and delete, sync v2, later vaccines, E.164 phones | Done |
+| Insight and revenue | 7 | Dashboard, follow-up due list, plans page, glove mode | In progress |
+| | 8 | LGA summary, CSV export, plans and paywall, 200-patient limit | Planned |
+| | 9 | Python LGA report, duplicate merge tool | Planned |
+| Trust | 10 | Supabase Auth, row level security, passcode lock, audit log, consent | Planned |
+| | 11 | PWA, installable on Android, real-device test (including with gloves) | Planned |
+| Standards and payment | 12 | FHIR export and validation, DHIS2 export | Planned |
+| | 13 | Paystack payments, subscriptions, clinical term validation | Planned |
+| Launch | 14 | Print card with QR, seed data, accessibility, sticky save bar and vitals steppers | Planned |
+| | 15 | Deploy, PHC officer guide, go live | Planned |
+
+After Day 15 the work is driven by feedback from real PHCs and reviewers.
 
 ## Run locally
 
@@ -188,3 +179,23 @@ source venv/Scripts/activate   # Git Bash on Windows
 pip install -r requirements.txt
 uvicorn main:app --reload      # http://127.0.0.1:8000/docs
 ```
+
+## Security and clinical notes
+
+- The current Supabase policies are temporary and open, for fake test data only. Day 10 replaces them with authentication and per-facility row level security. Do not enter real patient data before then.
+- Plan checks in the app are presentation only. A paid plan is verified server-side from Day 13.
+- Deletes are soft. Permanent erasure on request needs a process, planned with the audit log on Day 10.
+- Conflicts between two devices are resolved by the most recent edit time, which depends on device clocks.
+- Immunization intervals, vitals thresholds, follow-up rules and the ICD-10 list are simplified starting points. Confirm them with a health worker against national guidance before real use.
+- Glove mode is a first pass. It needs testing with real gloves on a real phone.
+
+## Facts for the LinkedIn post
+
+- Problem: paper registers lose and duplicate patients; the LGA report is counted by hand; follow-ups depend on a nurse's memory.
+- Origin: a public health graduate learning software engineering, building for PHCs.
+- Pivot: started server-first, then rebuilt offline-first after seeing that network drops break clinic workflow.
+- Numbers: 2 repos (1 reference, 1 product); about 30 API tests on Day 2; 6 Python tests on Day 3; a 31-character card alphabet; about 45 ICD-10 conditions searchable in plain language; 20 vaccine doses in the schedule; 5 charts computed on the device.
+- Day 6 headline: a phone that loses its data can rebuild itself from the cloud.
+- Day 7 headline: "5 children due for Penta 2 this week" appears from local data, with one tap to call the caregiver. Glove mode came from a reviewer's note that nurses work one-handed in gloves.
+- Learned: Python from zero, FastAPI, Dexie hooks and range queries, offline-first design, soft deletes, sync conflict handling, Recharts, responsive layouts, accessibility basics.
+- Feedback loops: product feedback produced Para/Gravida and immunizations; a LinkedIn review produced the chief complaint field and the follow-up prefill; a commenter pushed for global standards; a UI critique produced the Day 4 redesign; a clinic-practice note produced glove mode.

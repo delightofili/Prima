@@ -119,3 +119,7 @@ export function nextFor(v: VaccineOption, dateGiven: string) {
     nextVaccineLabel: VACCINE_BY_KEY.get(v.next.key)?.label,
   };
 }
+
+export const VACCINE_BY_LABEL = new Map(
+  VACCINES.map((v) => [v.label, v] as const),
+);

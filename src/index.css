@@ -56,3 +56,32 @@
     @apply rounded-2xl border-2 border-line bg-white p-4 shadow-sm md:p-5;
   }
 }
+
+html[data-glove="on"] .btn {
+  height: 4rem;
+  font-size: 1.125rem;
+}
+html[data-glove="on"] .input {
+  min-height: 4rem;
+  font-size: 1.125rem;
+}
+html[data-glove="on"] input[type="checkbox"],
+html[data-glove="on"] input[type="radio"] {
+  width: 2rem;
+  height: 2rem;
+}
+html[data-glove="on"] .size-11 {
+  width: 3.5rem;
+  height: 3.5rem;
+}
+html[data-glove="on"] .min-h-11 {
+  min-height: 3.5rem;
+}
+html[data-glove="on"] nav.fixed a {
+  height: 5rem;
+}
+@media (max-width: 767px) {
+  html[data-glove="on"] main {
+    padding-bottom: 8rem;
+  }
+}

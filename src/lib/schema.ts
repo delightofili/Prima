@@ -1,11 +1,11 @@
 import { z } from "zod";
 import { BLOOD_GROUPS } from "../types";
 import { calculateAge, isWomanOver12 } from "./age";
-import { todayISO } from "./utils";
+import { todayISO, toE164 } from "./utils";
 import { VACCINE_BY_KEY } from "./vaccines";
 
-const PHONE = /^(0[789][01]\d{8}|\+234[789][01]\d{8})$/;
-const PHONE_MSG = "Enter a valid Nigerian number, e.g. 08031234567";
+const PHONE_MSG =
+  "Enter a valid Nigerian number, e.g. 08031234567 or +2348031234567";
 
 const required = (label: string, max = 100) =>
   z
@@ -34,13 +34,16 @@ export const patientFormSchema = z
     phone: z
       .string()
       .trim()
-      .refine((v) => v === "" || PHONE.test(v), PHONE_MSG)
+      .refine((v) => v === "" || toE164(v) !== undefined, PHONE_MSG)
       .optional(),
     village: required("Village"),
     lga: required("LGA"),
     state: required("State"),
     nextOfKinName: required("Next of kin name"),
-    nextOfKinPhone: z.string().trim().regex(PHONE, PHONE_MSG),
+    nextOfKinPhone: z
+      .string()
+      .trim()
+      .refine((v) => toE164(v) !== undefined, PHONE_MSG),
     nhisNumber: z.string().trim().max(30).optional(),
     bloodGroup: z.enum(BLOOD_GROUPS).or(z.literal("")).optional(),
     allergies: z.string().trim().max(500, "Too long").optional(),

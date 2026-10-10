@@ -36,16 +36,21 @@ export interface Patient {
   initialChiefComplaint?: string;
   createdAt: number;
   updatedAt: number;
+  deletedAt?: number;
 }
 
 export interface ImmunizationRecord {
   id: string;
   patientId: string;
+  facilityId: string;
   vaccineName: string;
   doseNumber: number;
   dateGiven: string;
   nextDueDate?: string;
+  nextVaccineLabel?: string;
   createdAt: number;
+  updatedAt: number;
+  deletedAt?: number;
 }
 
 export interface Visit {
@@ -64,6 +69,12 @@ export interface Visit {
   nextDueDate?: string;
   createdAt: number;
   updatedAt: number;
+  deletedAt?: number;
+}
+
+export interface MetaItem {
+  key: string;
+  value: string;
 }
 
 export interface User {

@@ -11,7 +11,10 @@ export function usePatients(search: string) {
     () => db.patients.orderBy("createdAt").reverse().toArray(),
     [],
   );
-  const all = patients ?? EMPTY;
+  const all = useMemo(
+    () => (patients ?? EMPTY).filter((p) => !p.deletedAt),
+    [patients],
+  );
 
   const { patientMap, cardMap } = useMemo(
     () => ({
@@ -30,12 +33,16 @@ export function usePatients(search: string) {
 
     const term = normalize(raw);
     const digits = raw.replace(/\D/g, "");
+    const local = digits.startsWith("234")
+      ? digits.slice(3)
+      : digits.replace(/^0/, "");
+
     return all.filter(
       (p) =>
         p.name.includes(term) ||
         p.cardNumber.toLowerCase().includes(term) ||
         (p.nhisNumber?.toLowerCase().includes(term) ?? false) ||
-        (digits.length >= 3 && (p.phone?.includes(digits) ?? false)),
+        (local.length >= 3 && (p.phone?.slice(4).includes(local) ?? false)),
     );
   }, [all, cardMap, search]);
 

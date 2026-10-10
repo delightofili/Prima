@@ -1,13 +1,19 @@
 import Dexie, { type Table, type Transaction } from "dexie";
+import { config } from "./lib/config";
+import { toE164 } from "./lib/utils";
+import { nextLabelFor } from "./lib/vaccines";
 import type {
   ImmunizationRecord,
+  MetaItem,
   Patient,
   SyncItem,
   User,
   Visit,
 } from "./types";
 
-export const syncState = { applyingRemote: false };
+interface TxFlags {
+  remote?: boolean;
+}
 
 class PrimaDB extends Dexie {
   patients!: Table<Patient, string>;
@@ -15,6 +21,7 @@ class PrimaDB extends Dexie {
   visits!: Table<Visit, string>;
   syncQueue!: Table<SyncItem, number>;
   users!: Table<User, string>;
+  meta!: Table<MetaItem, string>;
 
   constructor() {
     super("prima");
@@ -29,17 +36,50 @@ class PrimaDB extends Dexie {
     this.version(2).stores({
       visits: "id, patientId, visitDate, nextDueDate, diagnosisCode, createdAt",
     });
+    this.version(3)
+      .stores({ meta: "key" })
+      .upgrade(async (tx) => {
+        const now = Date.now();
+        await tx
+          .table("patients")
+          .toCollection()
+          .modify((p) => {
+            p.phone = toE164(p.phone) ?? p.phone;
+            p.nextOfKinPhone = toE164(p.nextOfKinPhone) ?? p.nextOfKinPhone;
+            p.updatedAt = now;
+          });
+        await tx
+          .table("immunizations")
+          .toCollection()
+          .modify((r) => {
+            r.facilityId = r.facilityId ?? config.facilityId;
+            r.updatedAt = r.updatedAt ?? r.createdAt;
+            r.nextVaccineLabel =
+              r.nextVaccineLabel ?? nextLabelFor(r.vaccineName, r.doseNumber);
+          });
+      });
   }
 }
 
 export const db = new PrimaDB();
+
+// Run work that came FROM the server. The flag stops the sync hooks queueing it for upload again.
+export function remoteTransaction<T>(
+  tables: Table[],
+  fn: () => Promise<T>,
+): Promise<T> {
+  return db.transaction("rw", tables, async () => {
+    (Dexie.currentTransaction as unknown as TxFlags).remote = true;
+    return fn();
+  });
+}
 
 function enqueue(
   table: SyncItem["table"],
   recordId: string,
   trans: Transaction,
 ) {
-  if (syncState.applyingRemote) return;
+  if ((trans as unknown as TxFlags).remote) return;
   const item: SyncItem = {
     table,
     recordId,
@@ -53,9 +93,20 @@ function enqueue(
 db.patients.hook("creating", (_key, obj, trans) => {
   enqueue("patients", obj.id, trans);
 });
+db.patients.hook("updating", (_mods, key, _obj, trans) => {
+  enqueue("patients", key as string, trans);
+});
+
 db.immunizations.hook("creating", (_key, obj, trans) => {
   enqueue("immunizations", obj.id, trans);
 });
+db.immunizations.hook("updating", (_mods, key, _obj, trans) => {
+  enqueue("immunizations", key as string, trans);
+});
+
 db.visits.hook("creating", (_key, obj, trans) => {
   enqueue("visits", obj.id, trans);
+});
+db.visits.hook("updating", (_mods, key, _obj, trans) => {
+  enqueue("visits", key as string, trans);
 });

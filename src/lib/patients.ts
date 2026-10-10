@@ -1,8 +1,8 @@
 import Dexie from "dexie";
 import { db } from "../db";
 import { config } from "./config";
-import { generateCardNumber, normalize, addDays } from "./utils";
-import { VACCINE_BY_KEY } from "./vaccines";
+import { generateCardNumber, normalize, toE164, formatPhone } from "./utils";
+import { VACCINE_BY_KEY, nextFor } from "./vaccines";
 import { pushPending } from "./syncService";
 import type { PatientFormValues } from "./schema";
 import type { ImmunizationRecord, Patient } from "../types";
@@ -16,12 +16,62 @@ export async function findExactDuplicate(
   fullName: string,
   dob: string,
   village: string,
+  excludeId?: string,
 ) {
   if (!fullName.trim() || !dob || !village.trim()) return undefined;
   return db.patients
     .where("[name+dob+villageKey]")
     .equals([normalize(fullName), dob, normalize(village)])
+    .filter((p) => !p.deletedAt && p.id !== excludeId)
     .first();
+}
+
+function fieldsFrom(values: PatientFormValues) {
+  return {
+    fullName: values.fullName.trim(),
+    name: normalize(values.fullName),
+    dob: values.dob,
+    gender: values.gender,
+    phone: toE164(values.phone),
+    village: values.village.trim(),
+    villageKey: normalize(values.village),
+    lga: values.lga.trim(),
+    state: values.state.trim(),
+    nextOfKinName: values.nextOfKinName.trim(),
+    nextOfKinPhone:
+      toE164(values.nextOfKinPhone) ?? values.nextOfKinPhone.trim(),
+    nhisNumber: clean(values.nhisNumber),
+    bloodGroup: values.bloodGroup || undefined,
+    allergies: clean(values.allergies),
+    para: values.para,
+    gravida: values.gravida,
+    isPregnant: values.isPregnant,
+    initialChiefComplaint: values.isNewAdmission
+      ? clean(values.initialChiefComplaint)
+      : undefined,
+  };
+}
+
+export function valuesFromPatient(p: Patient): Partial<PatientFormValues> {
+  return {
+    isNewAdmission: !!p.initialChiefComplaint,
+    initialChiefComplaint: p.initialChiefComplaint ?? "",
+    fullName: p.fullName,
+    dob: p.dob,
+    gender: p.gender,
+    phone: formatPhone(p.phone) ?? "",
+    village: p.village,
+    lga: p.lga,
+    state: p.state,
+    nextOfKinName: p.nextOfKinName,
+    nextOfKinPhone: formatPhone(p.nextOfKinPhone) ?? p.nextOfKinPhone,
+    nhisNumber: p.nhisNumber ?? "",
+    bloodGroup: p.bloodGroup ?? "",
+    allergies: p.allergies ?? "",
+    para: p.para,
+    gravida: p.gravida,
+    isPregnant: p.isPregnant,
+  };
 }
 
 export async function registerPatient(
@@ -37,13 +87,13 @@ export async function registerPatient(
       return {
         id: crypto.randomUUID(),
         patientId: id,
+        facilityId: config.facilityId,
         vaccineName: vaccine.vaccineName,
         doseNumber: vaccine.doseNumber,
         dateGiven,
-        nextDueDate: vaccine.nextAfterDays
-          ? addDays(dateGiven, vaccine.nextAfterDays)
-          : undefined,
+        ...nextFor(vaccine, dateGiven),
         createdAt: now,
+        updatedAt: now,
       };
     },
   );
@@ -53,30 +103,10 @@ export async function registerPatient(
       id,
       facilityId: config.facilityId,
       cardNumber: generateCardNumber(config.facilityCode),
-      fullName: values.fullName.trim(),
-      name: normalize(values.fullName),
-      dob: values.dob,
-      gender: values.gender,
-      phone: clean(values.phone),
-      village: values.village.trim(),
-      villageKey: normalize(values.village),
-      lga: values.lga.trim(),
-      state: values.state.trim(),
-      nextOfKinName: values.nextOfKinName.trim(),
-      nextOfKinPhone: values.nextOfKinPhone.trim(),
-      nhisNumber: clean(values.nhisNumber),
-      bloodGroup: values.bloodGroup || undefined,
-      allergies: clean(values.allergies),
-      para: values.para,
-      gravida: values.gravida,
-      isPregnant: values.isPregnant,
-      initialChiefComplaint: values.isNewAdmission
-        ? clean(values.initialChiefComplaint)
-        : undefined,
+      ...fieldsFrom(values),
       createdAt: now,
       updatedAt: now,
     };
-
     try {
       await db.transaction(
         "rw",
@@ -96,4 +126,27 @@ export async function registerPatient(
     }
   }
   throw new Error("Could not create a unique card number");
+}
+
+export async function updatePatient(
+  existing: Patient,
+  values: PatientFormValues,
+): Promise<Patient> {
+  const changes = { ...fieldsFrom(values), updatedAt: Date.now() };
+  await db.transaction("rw", db.patients, db.syncQueue, async () => {
+    await db.patients.update(existing.id, changes);
+  });
+  void pushPending();
+  return { ...existing, ...changes };
+}
+
+export async function setPatientDeleted(id: string, deleted: boolean) {
+  const now = Date.now();
+  await db.transaction("rw", db.patients, db.syncQueue, async () => {
+    await db.patients.update(id, {
+      deletedAt: deleted ? now : undefined,
+      updatedAt: now,
+    });
+  });
+  void pushPending();
 }

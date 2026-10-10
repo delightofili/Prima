@@ -4,7 +4,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { db } from "../db";
 import { config } from "../lib/config";
 import { calculateAge, isUnder5, isWomanOver12 } from "../lib/age";
-import { findExactDuplicate, registerPatient } from "../lib/patients";
+import {
+  findExactDuplicate,
+  registerPatient,
+  updatePatient,
+  valuesFromPatient,
+} from "../lib/patients";
 import { findSimilar } from "../lib/fuzzy";
 import {
   patientFormSchema,
@@ -43,7 +48,14 @@ function Field({
   );
 }
 
-export function PatientForm({ onSaved }: { onSaved: (p: Patient) => void }) {
+export function PatientForm({
+  onSaved,
+  patient,
+}: {
+  onSaved: (p: Patient) => void;
+  patient?: Patient;
+}) {
+  const editing = !!patient;
   const {
     register,
     handleSubmit,
@@ -52,12 +64,14 @@ export function PatientForm({ onSaved }: { onSaved: (p: Patient) => void }) {
     formState: { errors, isSubmitting },
   } = useForm<PatientFormValues>({
     resolver: zodResolver(patientFormSchema),
-    defaultValues: {
-      isNewAdmission: false,
-      isPregnant: false,
-      lga: config.facilityLga,
-      state: config.facilityState,
-    },
+    defaultValues: patient
+      ? valuesFromPatient(patient)
+      : {
+          isNewAdmission: false,
+          isPregnant: false,
+          lga: config.facilityLga,
+          state: config.facilityState,
+        },
   });
 
   const [picked, setPicked] = useState<Record<string, string>>({});
@@ -77,7 +91,7 @@ export function PatientForm({ onSaved }: { onSaved: (p: Patient) => void }) {
     !!dob && /^\d{4}-\d{2}-\d{2}$/.test(dob) && dob <= todayISO();
   const age = validDob ? calculateAge(dob) : null;
   const showObstetric = !!age && !!gender && isWomanOver12(gender, age);
-  const showVaccines = !!age && isUnder5(age);
+  const showVaccines = !editing && !!age && isUnder5(age);
 
   useEffect(() => {
     if (!showObstetric) {
@@ -99,7 +113,7 @@ export function PatientForm({ onSaved }: { onSaved: (p: Patient) => void }) {
     let cancelled = false;
     const [n, d, v] = JSON.parse(key) as [string, string, string];
     setConfirmed(false);
-    findExactDuplicate(n, d, v).then((p) => {
+    findExactDuplicate(n, d, v, patient?.id).then((p) => {
       if (!cancelled) setHint(p ? { kind: "exact", patient: p } : null);
     });
     return () => {
@@ -121,15 +135,15 @@ export function PatientForm({ onSaved }: { onSaved: (p: Patient) => void }) {
         values.fullName,
         values.dob,
         values.village,
+        patient?.id,
       );
       if (exact) {
         setHint({ kind: "exact", patient: exact });
         return;
       }
-      const sameDob = await db.patients
-        .where("dob")
-        .equals(values.dob)
-        .toArray();
+      const sameDob = (
+        await db.patients.where("dob").equals(values.dob).toArray()
+      ).filter((p) => !p.deletedAt && p.id !== patient?.id);
       const byId = new Map(sameDob.map((p) => [p.id, p] as const));
       const matches = await findSimilar(
         normalize(values.fullName),
@@ -146,8 +160,10 @@ export function PatientForm({ onSaved }: { onSaved: (p: Patient) => void }) {
     }
 
     try {
-      const patient = await registerPatient(values, showVaccines ? picked : {});
-      onSaved(patient);
+      const saved = editing
+        ? await updatePatient(patient!, values)
+        : await registerPatient(values, showVaccines ? picked : {});
+      onSaved(saved);
     } catch (e) {
       console.error(e);
       setSaveError("Could not save this patient. Please try again.");
@@ -409,7 +425,11 @@ export function PatientForm({ onSaved }: { onSaved: (p: Patient) => void }) {
         className="btn btn-primary md:col-span-2 md:w-72 md:justify-self-end"
         disabled={isSubmitting || (hint !== null && !confirmed)}
       >
-        {isSubmitting ? "Saving…" : "Register patient"}
+        {isSubmitting
+          ? "Saving…"
+          : editing
+            ? "Save changes"
+            : "Register patient"}
       </button>
     </form>
   );

@@ -1,5 +1,5 @@
-import type { ReactNode } from "react";
-import { Link, useParams } from "react-router-dom";
+import { useState, type ReactNode } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useLiveQuery } from "dexie-react-hooks";
 import {
   ArrowLeft,
@@ -7,8 +7,11 @@ import {
   CalendarClock,
   HeartPulse,
   MapPin,
+  Pencil,
+  Plus,
   Stethoscope,
   Syringe,
+  Trash2,
   User,
   Users,
   type LucideIcon,
@@ -16,10 +19,22 @@ import {
 import { db } from "../db";
 import { usePatients } from "../hooks/usePatients";
 import { usePageTitle } from "../hooks/common";
+import { useToast } from "../hooks/useToast";
 import { calculateAge, isUnder5, isWomanOver12 } from "../lib/age";
-import { formatDate, todayISO } from "../lib/utils";
+import { setImmunizationDeleted } from "../lib/immunizations";
+import { setPatientDeleted } from "../lib/patients";
+import { setVisitDeleted } from "../lib/visits";
+import { formatDate, formatPhone, todayISO } from "../lib/utils";
+import { AddVaccineDialog } from "../components/AddVaccineDialog";
 import { PregnantBadge, Under5Badge } from "../components/Badges";
+import { ConfirmDialog } from "../components/ConfirmDialog";
 import { VisitCard } from "../components/VisitCard";
+
+type Pending =
+  | { kind: "patient" }
+  | { kind: "visit"; id: string }
+  | { kind: "vaccine"; id: string }
+  | null;
 
 const show = (v?: string | number | null) =>
   v === undefined || v === null || v === "" ? "—" : String(v);
@@ -46,31 +61,50 @@ function Card({
 function Row({
   label,
   value,
+  href,
 }: {
   label: string;
   value?: string | number | null;
+  href?: string;
 }) {
   return (
     <div className="flex justify-between gap-4 border-b border-line py-2 last:border-0">
       <dt className="text-subtext">{label}</dt>
-      <dd className="text-right font-medium">{show(value)}</dd>
+      <dd className="text-right font-medium">
+        {href && value ? (
+          <a href={href} className="font-semibold text-prima-500 underline">
+            {show(value)}
+          </a>
+        ) : (
+          show(value)
+        )}
+      </dd>
     </div>
   );
 }
 
 export function PatientDetailPage() {
   const { id = "" } = useParams();
+  const navigate = useNavigate();
+  const toast = useToast();
   const { patientMap, loading } = usePatients("");
-  const shots = useLiveQuery(
-    () => db.immunizations.where("patientId").equals(id).sortBy("dateGiven"),
-    [id],
-  );
+  const [confirm, setConfirm] = useState<Pending>(null);
+  const [addingVaccine, setAddingVaccine] = useState(false);
+
+  const shots = useLiveQuery(async () => {
+    const rows = await db.immunizations.where("patientId").equals(id).toArray();
+    return rows
+      .filter((r) => !r.deletedAt)
+      .sort((a, b) => a.dateGiven.localeCompare(b.dateGiven));
+  }, [id]);
   const visits = useLiveQuery(async () => {
     const rows = await db.visits.where("patientId").equals(id).toArray();
-    return rows.sort(
-      (a, b) =>
-        b.visitDate.localeCompare(a.visitDate) || b.createdAt - a.createdAt,
-    );
+    return rows
+      .filter((v) => !v.deletedAt)
+      .sort(
+        (a, b) =>
+          b.visitDate.localeCompare(a.visitDate) || b.createdAt - a.createdAt,
+      );
   }, [id]);
 
   const p = patientMap.get(id);
@@ -92,6 +126,54 @@ export function PatientDetailPage() {
   const today = todayISO();
   const latestFollowUp = visits?.[0]?.nextDueDate;
   const followUpOverdue = !!latestFollowUp && latestFollowUp < today;
+  const showImmunizations = isUnder5(age) || (shots?.length ?? 0) > 0;
+
+  const dialog = {
+    patient: {
+      title: `Delete ${p.fullName}?`,
+      message:
+        "They will be removed from lists and from every device. You can undo this right after.",
+      label: "Delete patient",
+    },
+    visit: {
+      title: "Delete this visit?",
+      message:
+        "The visit will be removed from this patient's history. You can undo this right after.",
+      label: "Delete visit",
+    },
+    vaccine: {
+      title: "Delete this vaccine record?",
+      message: "The record will be removed. You can undo this right after.",
+      label: "Delete record",
+    },
+  };
+
+  const runDelete = async () => {
+    const target = confirm;
+    setConfirm(null);
+    if (!target) return;
+
+    if (target.kind === "patient") {
+      await setPatientDeleted(p.id, true);
+      toast(`${p.fullName} deleted`, "ok", {
+        label: "Undo",
+        onClick: () => void setPatientDeleted(p.id, false),
+      });
+      navigate("/patients");
+    } else if (target.kind === "visit") {
+      await setVisitDeleted(target.id, true);
+      toast("Visit deleted", "ok", {
+        label: "Undo",
+        onClick: () => void setVisitDeleted(target.id, false),
+      });
+    } else {
+      await setImmunizationDeleted(target.id, true);
+      toast("Vaccine record deleted", "ok", {
+        label: "Undo",
+        onClick: () => void setImmunizationDeleted(target.id, false),
+      });
+    }
+  };
 
   return (
     <div className="space-y-5">
@@ -144,12 +226,27 @@ export function PatientDetailPage() {
           </div>
         )}
 
-        <Link
-          to={`/patients/${p.id}/visits/new`}
-          className="btn btn-accent md:w-56"
-        >
-          <Stethoscope size={20} className="mr-2" /> Add visit
-        </Link>
+        <div className="flex flex-col gap-3 md:flex-row">
+          <Link
+            to={`/patients/${p.id}/visits/new`}
+            className="btn btn-accent md:w-52"
+          >
+            <Stethoscope size={20} className="mr-2" /> Add visit
+          </Link>
+          <Link
+            to={`/patients/${p.id}/edit`}
+            className="btn btn-secondary md:w-40"
+          >
+            <Pencil size={20} className="mr-2" /> Edit
+          </Link>
+          <button
+            type="button"
+            className="btn border-2 border-danger text-danger hover:bg-danger/10 md:w-40"
+            onClick={() => setConfirm({ kind: "patient" })}
+          >
+            <Trash2 size={20} className="mr-2" /> Delete
+          </button>
+        </div>
       </section>
 
       <section className="space-y-3">
@@ -167,7 +264,12 @@ export function PatientDetailPage() {
         ) : (
           <div className="grid gap-3">
             {visits?.map((v) => (
-              <VisitCard key={v.id} v={v} dob={p.dob} />
+              <VisitCard
+                key={v.id}
+                v={v}
+                dob={p.dob}
+                onDelete={() => setConfirm({ kind: "visit", id: v.id })}
+              />
             ))}
           </div>
         )}
@@ -180,7 +282,11 @@ export function PatientDetailPage() {
             label="Gender"
             value={p.gender === "FEMALE" ? "Female" : "Male"}
           />
-          <Row label="Phone" value={p.phone} />
+          <Row
+            label="Phone"
+            value={formatPhone(p.phone)}
+            href={p.phone ? `tel:${p.phone}` : undefined}
+          />
           <Row
             label="Registered"
             value={formatDate(
@@ -195,7 +301,11 @@ export function PatientDetailPage() {
         </Card>
         <Card title="Next of kin" icon={Users}>
           <Row label="Name" value={p.nextOfKinName} />
-          <Row label="Phone" value={p.nextOfKinPhone} />
+          <Row
+            label="Phone"
+            value={formatPhone(p.nextOfKinPhone)}
+            href={p.nextOfKinPhone ? `tel:${p.nextOfKinPhone}` : undefined}
+          />
         </Card>
         <Card title="Medical" icon={HeartPulse}>
           <Row label="NHIS number" value={p.nhisNumber} />
@@ -209,44 +319,87 @@ export function PatientDetailPage() {
             <Row label="Pregnant" value={p.isPregnant ? "Yes" : "No"} />
           </Card>
         )}
-        {(shots?.length ?? 0) > 0 && (
+
+        {showImmunizations && (
           <section className="card md:col-span-2">
-            <h2 className="mb-2 flex items-center gap-2 text-lg font-bold">
-              <Syringe size={20} className="text-prima-500" /> Immunizations
-            </h2>
-            <ul className="divide-y divide-line">
-              {shots!.map((s) => (
-                <li
-                  key={s.id}
-                  className="flex flex-wrap justify-between gap-2 py-2"
-                >
-                  <span className="font-semibold">
-                    {s.vaccineName} · dose {s.doseNumber}
-                  </span>
-                  <span className="text-subtext">
-                    Given {formatDate(s.dateGiven)}
-                    {s.nextDueDate && (
-                      <>
-                        {" · "}
-                        <span
-                          className={
-                            s.nextDueDate < today
-                              ? "font-semibold text-danger"
-                              : ""
-                          }
-                        >
-                          Next due {formatDate(s.nextDueDate)}
-                          {s.nextDueDate < today && " (overdue)"}
-                        </span>
-                      </>
-                    )}
-                  </span>
-                </li>
-              ))}
-            </ul>
+            <div className="mb-2 flex items-center justify-between gap-2">
+              <h2 className="flex items-center gap-2 text-lg font-bold">
+                <Syringe size={20} className="text-prima-500" /> Immunizations
+              </h2>
+              <button
+                type="button"
+                className="inline-flex min-h-11 items-center gap-1.5 rounded-xl border-2 border-prima-500 px-3 text-sm font-semibold text-prima-500 hover:bg-prima-50"
+                onClick={() => setAddingVaccine(true)}
+              >
+                <Plus size={18} /> Add vaccine
+              </button>
+            </div>
+            {(shots?.length ?? 0) === 0 ? (
+              <p className="py-2 text-subtext">No vaccines recorded yet.</p>
+            ) : (
+              <ul className="divide-y divide-line">
+                {shots!.map((s) => {
+                  const overdue = !!s.nextDueDate && s.nextDueDate < today;
+                  return (
+                    <li
+                      key={s.id}
+                      className="flex items-center justify-between gap-2 py-2"
+                    >
+                      <div>
+                        <p className="font-semibold">
+                          {s.vaccineName} · dose {s.doseNumber}
+                        </p>
+                        <p className="text-sm text-subtext">
+                          Given {formatDate(s.dateGiven)}
+                          {s.nextDueDate && (
+                            <span
+                              className={
+                                overdue ? "font-semibold text-danger" : ""
+                              }
+                            >
+                              {" · "}
+                              {s.nextVaccineLabel ?? "Next dose"} due{" "}
+                              {formatDate(s.nextDueDate)}
+                              {overdue && " (overdue)"}
+                            </span>
+                          )}
+                        </p>
+                      </div>
+                      <button
+                        type="button"
+                        aria-label={`Delete ${s.vaccineName} dose ${s.doseNumber}`}
+                        className="inline-flex size-11 shrink-0 items-center justify-center rounded-xl text-subtext hover:bg-page hover:text-ink"
+                        onClick={() =>
+                          setConfirm({ kind: "vaccine", id: s.id })
+                        }
+                      >
+                        <Trash2 size={18} />
+                      </button>
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
           </section>
         )}
       </div>
+
+      {confirm && (
+        <ConfirmDialog
+          title={dialog[confirm.kind].title}
+          message={dialog[confirm.kind].message}
+          confirmLabel={dialog[confirm.kind].label}
+          onConfirm={runDelete}
+          onCancel={() => setConfirm(null)}
+        />
+      )}
+      {addingVaccine && (
+        <AddVaccineDialog
+          patient={p}
+          existing={shots ?? []}
+          onClose={() => setAddingVaccine(false)}
+        />
+      )}
     </div>
   );
 }

@@ -23,7 +23,7 @@ export function ImmunizationChecklist({ value, onChange }: Props) {
         </p>
       </div>
       <ul className="space-y-2">
-        {VACCINES.map((v) => {
+        {VACCINES.filter((v) => v.quick).map((v) => {
           const checked = v.key in value;
           return (
             <li key={v.key} className="flex items-center justify-between gap-3">

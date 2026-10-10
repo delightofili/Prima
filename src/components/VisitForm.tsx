@@ -13,10 +13,10 @@ import {
 } from "lucide-react";
 import { calculateAge } from "../lib/age";
 import { makeVisitSchema, type VisitFormValues } from "../lib/visitSchema";
-import { saveVisit, type Diagnosis } from "../lib/visits";
+import { saveVisit, updateVisit, type Diagnosis } from "../lib/visits";
 import { bpReading, tempReading } from "../lib/vitals";
 import { addDays, fromISO, toNumber, todayISO } from "../lib/utils";
-import type { Patient } from "../types";
+import type { Patient, Visit } from "../types";
 import { DiagnosisPicker } from "./DiagnosisPicker";
 import { Field, SectionTitle } from "./FormBits";
 import { useToast } from "../hooks/useToast";
@@ -29,7 +29,13 @@ const QUICK = [
   { label: "1 month", days: 30 },
 ];
 
-export function VisitForm({ patient }: { patient: Patient }) {
+export function VisitForm({
+  patient,
+  visit,
+}: {
+  patient: Patient;
+  visit?: Visit;
+}) {
   const navigate = useNavigate();
   const toast = useToast();
   const schema = useMemo(() => makeVisitSchema(patient.dob), [patient.dob]);
@@ -42,15 +48,30 @@ export function VisitForm({ patient }: { patient: Patient }) {
     formState: { errors, isSubmitting },
   } = useForm<VisitFormValues>({
     resolver: zodResolver(schema),
-    defaultValues: {
-      visitDate: todayISO(),
-      complaints: patient.initialChiefComplaint
-        ? `Follow-up for: ${patient.initialChiefComplaint}`
-        : "",
-    },
+    defaultValues: visit
+      ? {
+          visitDate: visit.visitDate,
+          complaints: visit.complaints,
+          systolic: visit.systolic,
+          diastolic: visit.diastolic,
+          temperature: visit.temperature,
+          weightKg: visit.weightKg,
+          treatment: visit.treatment ?? "",
+          nextDueDate: visit.nextDueDate ?? "",
+        }
+      : {
+          visitDate: todayISO(),
+          complaints: patient.initialChiefComplaint
+            ? `Follow-up for: ${patient.initialChiefComplaint}`
+            : "",
+        },
   });
 
-  const [diagnosis, setDiagnosis] = useState<Diagnosis>({ label: "" });
+  const [diagnosis, setDiagnosis] = useState<Diagnosis>(
+    visit
+      ? { code: visit.diagnosisCode, label: visit.diagnosisLabel ?? "" }
+      : { label: "" },
+  );
   const [saveError, setSaveError] = useState<string | null>(null);
 
   const visitDate = watch("visitDate");
@@ -71,8 +92,9 @@ export function VisitForm({ patient }: { patient: Patient }) {
   const onSubmit = handleSubmit(async (values) => {
     setSaveError(null);
     try {
-      await saveVisit(patient, values, diagnosis);
-      toast("Visit saved");
+      if (visit) await updateVisit(visit, values, diagnosis);
+      else await saveVisit(patient, values, diagnosis);
+      toast(visit ? "Visit updated" : "Visit saved");
       navigate(`/patients/${patient.id}`);
     } catch (e) {
       console.error(e);
@@ -96,7 +118,7 @@ export function VisitForm({ patient }: { patient: Patient }) {
           label="Complaints"
           error={errors.complaints?.message}
           hint={
-            patient.initialChiefComplaint
+            !visit && patient.initialChiefComplaint
               ? "Pre-filled from first registration. Edit as needed."
               : undefined
           }
@@ -244,7 +266,7 @@ export function VisitForm({ patient }: { patient: Patient }) {
           disabled={isSubmitting}
         >
           <Save size={20} className="mr-2" />
-          {isSubmitting ? "Saving…" : "Save visit"}
+          {isSubmitting ? "Saving…" : visit ? "Save changes" : "Save visit"}
         </button>
       </div>
     </form>

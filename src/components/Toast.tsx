@@ -3,6 +3,7 @@ import { CircleCheck, TriangleAlert } from "lucide-react";
 import {
   ToastContext,
   type PushToast,
+  type ToastAction,
   type ToastTone,
 } from "../hooks/useToast";
 
@@ -10,16 +11,25 @@ interface ToastItem {
   id: number;
   text: string;
   tone: ToastTone;
+  action?: ToastAction;
 }
 
 export function ToastProvider({ children }: { children: ReactNode }) {
   const [toasts, setToasts] = useState<ToastItem[]>([]);
 
-  const push = useCallback<PushToast>((text, tone = "ok") => {
-    const id = Date.now() + Math.random();
-    setToasts((t) => [...t, { id, text, tone }]);
-    setTimeout(() => setToasts((t) => t.filter((x) => x.id !== id)), 3500);
-  }, []);
+  const dismiss = useCallback(
+    (id: number) => setToasts((t) => t.filter((x) => x.id !== id)),
+    [],
+  );
+
+  const push = useCallback<PushToast>(
+    (text, tone = "ok", action) => {
+      const id = Date.now() + Math.random();
+      setToasts((t) => [...t, { id, text, tone, action }]);
+      setTimeout(() => dismiss(id), action ? 8000 : 3500);
+    },
+    [dismiss],
+  );
 
   return (
     <ToastContext.Provider value={push}>
@@ -39,6 +49,18 @@ export function ToastProvider({ children }: { children: ReactNode }) {
               <TriangleAlert size={20} />
             )}
             {t.text}
+            {t.action && (
+              <button
+                type="button"
+                className="ml-2 min-h-10 rounded-lg px-3 font-bold text-accent-500 underline"
+                onClick={() => {
+                  t.action!.onClick();
+                  dismiss(t.id);
+                }}
+              >
+                {t.action.label}
+              </button>
+            )}
           </div>
         ))}
       </div>

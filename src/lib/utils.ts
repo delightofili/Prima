@@ -41,3 +41,18 @@ export const fromISO = (iso: string) => {
   const [y, m, d] = iso.split("-").map(Number);
   return new Date(y, m - 1, d);
 };
+
+export function toE164(raw?: string): string | undefined {
+  if (!raw) return undefined;
+  const s = raw.replace(/[\s()-]/g, "");
+  if (/^\+234[789][01]\d{8}$/.test(s)) return s;
+  if (/^0[789][01]\d{8}$/.test(s)) return `+234${s.slice(1)}`;
+  if (/^234[789][01]\d{8}$/.test(s)) return `+${s}`;
+  return undefined;
+}
+
+export function formatPhone(e164?: string): string | undefined {
+  if (!e164) return undefined;
+  const m = /^\+234(\d{3})(\d{3})(\d{4})$/.exec(e164);
+  return m ? `0${m[1]} ${m[2]} ${m[3]}` : e164;
+}

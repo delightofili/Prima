@@ -5,6 +5,8 @@ import { PatientDetailPage } from "./pages/PatientDetailPage";
 import { PatientsPage } from "./pages/PatientsPage";
 import { RegisterPage } from "./pages/RegisterPage";
 import { NewVisitPage } from "./pages/NewVisitPage";
+import { EditPatientPage } from "./pages/EditPatientPage";
+import { EditVisitPage } from "./pages/EditVisitPage";
 
 function NotFound() {
   return (
@@ -26,6 +28,11 @@ export default function App() {
         <Route path="patients" element={<PatientsPage />} />
         <Route path="patients/:id" element={<PatientDetailPage />} />
         <Route path="patients/:id/visits/new" element={<NewVisitPage />} />
+        <Route path="patients/:id/edit" element={<EditPatientPage />} />
+        <Route
+          path="patients/:id/visits/:visitId/edit"
+          element={<EditVisitPage />}
+        />
         <Route path="*" element={<NotFound />} />
       </Route>
     </Routes>

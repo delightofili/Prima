@@ -1,7 +1,15 @@
 import { createContext, useContext } from "react";
 
 export type ToastTone = "ok" | "error";
-export type PushToast = (text: string, tone?: ToastTone) => void;
+export interface ToastAction {
+  label: string;
+  onClick: () => void;
+}
+export type PushToast = (
+  text: string,
+  tone?: ToastTone,
+  action?: ToastAction,
+) => void;
 
 export const ToastContext = createContext<PushToast>(() => {});
 

@@ -1,18 +1,32 @@
+import { Link } from "react-router-dom";
 import {
   Activity,
   Calendar,
   CalendarClock,
+  Pencil,
   Pill,
   Thermometer,
+  Trash2,
   Weight,
 } from "lucide-react";
 import { calculateAge } from "../lib/age";
-import { tempReading, bpReading } from "../lib/vitals";
+import { bpReading, tempReading } from "../lib/vitals";
 import { formatDate, fromISO, todayISO } from "../lib/utils";
 import type { Visit } from "../types";
 import { VitalChip } from "./VitalChip";
 
-export function VisitCard({ v, dob }: { v: Visit; dob: string }) {
+const ICON_BTN =
+  "inline-flex size-11 items-center justify-center rounded-xl text-subtext hover:bg-page hover:text-ink";
+
+export function VisitCard({
+  v,
+  dob,
+  onDelete,
+}: {
+  v: Visit;
+  dob: string;
+  onDelete: () => void;
+}) {
   const age = calculateAge(dob, fromISO(v.visitDate));
   const adult = age.unit === "years" && age.value >= 13;
   const bp =
@@ -24,20 +38,38 @@ export function VisitCard({ v, dob }: { v: Visit; dob: string }) {
 
   return (
     <article className="card space-y-3">
-      <div className="flex flex-wrap items-center justify-between gap-2">
+      <div className="flex items-center justify-between gap-2">
         <p className="flex items-center gap-2 font-bold">
           <Calendar size={18} className="text-prima-500" />{" "}
           {formatDate(v.visitDate)}
         </p>
-        {v.diagnosisLabel && (
-          <span className="rounded-full bg-prima-50 px-3 py-1 text-sm font-semibold text-prima-900">
-            {v.diagnosisLabel}
-            {v.diagnosisCode && (
-              <span className="ml-2 font-mono text-xs">{v.diagnosisCode}</span>
-            )}
-          </span>
-        )}
+        <div className="flex">
+          <Link
+            to={`/patients/${v.patientId}/visits/${v.id}/edit`}
+            aria-label="Edit visit"
+            className={ICON_BTN}
+          >
+            <Pencil size={18} />
+          </Link>
+          <button
+            type="button"
+            aria-label="Delete visit"
+            className={ICON_BTN}
+            onClick={onDelete}
+          >
+            <Trash2 size={18} />
+          </button>
+        </div>
       </div>
+
+      {v.diagnosisLabel && (
+        <span className="inline-block rounded-full bg-prima-50 px-3 py-1 text-sm font-semibold text-prima-900">
+          {v.diagnosisLabel}
+          {v.diagnosisCode && (
+            <span className="ml-2 font-mono text-xs">{v.diagnosisCode}</span>
+          )}
+        </span>
+      )}
 
       <p>{v.complaints}</p>
 

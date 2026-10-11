@@ -1,10 +1,22 @@
 export type Plan = "free" | "basic" | "pro";
-export type Feature = "followUps";
+export type Feature =
+  | "followUps"
+  | "csvExport"
+  | "lgaReport"
+  | "unlimitedPatients";
 
 export const PLAN_EVENT = "prima-plan";
+export const FREE_PATIENT_LIMIT = 200;
+export const LIMIT_WARNING = 180;
+
 const KEY = "prima_plan";
 const RANK: Record<Plan, number> = { free: 0, basic: 1, pro: 2 };
-const MIN_PLAN: Record<Feature, Plan> = { followUps: "pro" };
+const MIN_PLAN: Record<Feature, Plan> = {
+  followUps: "pro",
+  csvExport: "basic",
+  lgaReport: "basic",
+  unlimitedPatients: "basic",
+};
 
 export const PLANS: {
   id: Plan;
@@ -46,6 +58,13 @@ export const PLANS: {
     ],
   },
 ];
+
+export class PlanLimitError extends Error {
+  constructor() {
+    super(`The Free plan is limited to ${FREE_PATIENT_LIMIT} patients.`);
+    this.name = "PlanLimitError";
+  }
+}
 
 export function getPlan(): Plan {
   try {

@@ -6,6 +6,7 @@ import { VACCINE_BY_KEY, nextFor } from "./vaccines";
 import { pushPending } from "./syncService";
 import type { PatientFormValues } from "./schema";
 import type { ImmunizationRecord, Patient } from "../types";
+import { FREE_PATIENT_LIMIT, PlanLimitError, canUse, getPlan } from "./plan";
 
 const clean = (v?: string) => {
   const t = v?.trim();
@@ -78,6 +79,10 @@ export async function registerPatient(
   values: PatientFormValues,
   picked: Record<string, string>,
 ): Promise<Patient> {
+  if (!canUse(getPlan(), "unlimitedPatients")) {
+    const active = await db.patients.filter((p) => !p.deletedAt).count();
+    if (active >= FREE_PATIENT_LIMIT) throw new PlanLimitError();
+  }
   const now = Date.now();
   const id = crypto.randomUUID();
 

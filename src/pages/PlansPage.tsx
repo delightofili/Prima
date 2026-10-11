@@ -1,12 +1,18 @@
 import { Check } from "lucide-react";
 import { PageHeader } from "../components/PageHeader";
+import { PatientLimitBar } from "../components/PatientLimitBar";
 import { usePageTitle } from "../hooks/common";
+import { usePatients } from "../hooks/usePatients";
 import { usePlan } from "../hooks/usePlan";
+import { useToast } from "../hooks/useToast";
+import { seedDemo } from "../lib/devSeed";
 import { PLANS, setPlan } from "../lib/plan";
 
 export function PlansPage() {
   usePageTitle("Plans");
   const current = usePlan();
+  const { total } = usePatients("");
+  const toast = useToast();
 
   return (
     <>
@@ -14,6 +20,8 @@ export function PlansPage() {
         title="Plans"
         subtitle="Simple monthly pricing for your facility."
       />
+      {current === "free" && <PatientLimitBar used={total} />}
+
       <div className="grid gap-4 md:grid-cols-3">
         {PLANS.map((p) => (
           <section
@@ -56,10 +64,36 @@ export function PlansPage() {
           </section>
         ))}
       </div>
+
       {!import.meta.env.DEV && (
         <p className="mt-4 text-center text-subtext">
           Online payment is coming soon.
         </p>
+      )}
+
+      {import.meta.env.DEV && (
+        <section className="card mt-6 space-y-3">
+          <h2 className="text-lg font-bold">Developer tools</h2>
+          <p className="text-subtext">
+            Adds fake patients, visits and vaccines on this device only. Nothing
+            is sent to Supabase. Clear the site data in DevTools to remove them.
+          </p>
+          <div className="grid gap-3 sm:grid-cols-3">
+            {[25, 50, 100].map((n) => (
+              <button
+                key={n}
+                type="button"
+                className="btn btn-secondary"
+                onClick={async () => {
+                  await seedDemo(n);
+                  toast(`Added ${n} demo patients`);
+                }}
+              >
+                Add {n} patients
+              </button>
+            ))}
+          </div>
+        </section>
       )}
     </>
   );

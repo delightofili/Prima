@@ -25,9 +25,9 @@ export interface DashboardStats {
   topVillages: Count[];
 }
 
-const AGE_GROUPS = ["Under 1", "1-4", "5-14", "15-49", "50+"];
+export const AGE_GROUPS = ["Under 1", "1-4", "5-14", "15-49", "50+"];
 
-function ageGroup(a: Age): string {
+export function ageGroup(a: Age): string {
   if (a.unit === "months") return "Under 1";
   if (a.value < 5) return "1-4";
   if (a.value < 15) return "5-14";

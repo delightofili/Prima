@@ -3,9 +3,14 @@ import { Link } from "react-router-dom";
 import { CircleCheck } from "lucide-react";
 import { PageHeader } from "../components/PageHeader";
 import { PatientForm } from "../components/PatientForm";
-import { calculateAge } from "../lib/age";
-import type { Patient } from "../types";
+import { PatientLimitBar } from "../components/PatientLimitBar";
+import { UpgradeCard } from "../components/UpgradeCard";
 import { usePageTitle } from "../hooks/common";
+import { usePatients } from "../hooks/usePatients";
+import { usePlan } from "../hooks/usePlan";
+import { calculateAge } from "../lib/age";
+import { FREE_PATIENT_LIMIT, canUse } from "../lib/plan";
+import type { Patient } from "../types";
 
 function SavedCard({
   patient,
@@ -47,15 +52,27 @@ function SavedCard({
 
 export function RegisterPage() {
   usePageTitle("Register patient");
+  const plan = usePlan();
+  const { total } = usePatients("");
   const [saved, setSaved] = useState<Patient | null>(null);
+
+  const limited = !canUse(plan, "unlimitedPatients");
+  const atLimit = limited && total >= FREE_PATIENT_LIMIT;
+
   return (
     <>
       <PageHeader
         title="Register patient"
         subtitle="Saved on this device first, then synced when online."
       />
+      {limited && <PatientLimitBar used={total} />}
       {saved ? (
         <SavedCard patient={saved} onNew={() => setSaved(null)} />
+      ) : atLimit ? (
+        <UpgradeCard
+          title="You've reached 200 patients"
+          text="The Free plan holds 200 patients. Basic (₦500 a month) removes the limit and adds CSV export and the monthly LGA report."
+        />
       ) : (
         <PatientForm onSaved={setSaved} />
       )}

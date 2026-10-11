@@ -11,6 +11,7 @@ import {
   valuesFromPatient,
 } from "../lib/patients";
 import { findSimilar } from "../lib/fuzzy";
+import { PlanLimitError } from "../lib/plan";
 import {
   patientFormSchema,
   validateImmunizations,
@@ -165,6 +166,10 @@ export function PatientForm({
         : await registerPatient(values, showVaccines ? picked : {});
       onSaved(saved);
     } catch (e) {
+      if (e instanceof PlanLimitError) {
+        setSaveError(`${e.message} Upgrade to Basic to add more patients.`);
+        return;
+      }
       console.error(e);
       setSaveError("Could not save this patient. Please try again.");
     }

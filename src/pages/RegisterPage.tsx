@@ -11,6 +11,7 @@ import { usePlan } from "../hooks/usePlan";
 import { calculateAge } from "../lib/age";
 import { FREE_PATIENT_LIMIT, canUse } from "../lib/plan";
 import type { Patient } from "../types";
+import { PRICES, money } from "../lib/plan";
 
 function SavedCard({
   patient,
@@ -71,7 +72,7 @@ export function RegisterPage() {
       ) : atLimit ? (
         <UpgradeCard
           title="You've reached 200 patients"
-          text="The Free plan holds 200 patients. Basic (₦500 a month) removes the limit and adds CSV export and the monthly LGA report."
+          text={`The Free plan holds 200 patients. Basic (${money(PRICES.basic)} a month) removes the limit and adds CSV export and the monthly LGA report.`}
         />
       ) : (
         <PatientForm onSaved={setSaved} />

@@ -11,6 +11,7 @@ import { MonthNav } from "./MonthNav";
 import { StatTile } from "./StatTile";
 import { UpgradeCard } from "./UpgradeCard";
 import { UpgradeDialog } from "./UpgradeDialog";
+import { PRICES, money } from "../lib/plan";
 
 function ReportCard({
   title,
@@ -194,14 +195,14 @@ export function LgaReportView() {
       ) : (
         <UpgradeCard
           title="Unlock the monthly LGA report"
-          text="Basic (₦500 a month) gives you the full breakdown by age, sex and diagnosis, vaccine counts, and a CSV you can send to your LGA."
+          text={`Basic (${money(PRICES.basic)} a month) gives you the full breakdown by age, sex and diagnosis, vaccine counts, and a CSV you can send to your LGA.`}
         />
       )}
 
       {upgrade && (
         <UpgradeDialog
           title="Export needs the Basic plan"
-          text="Upgrade to Basic (₦500 a month) to download the LGA report and your patient register as CSV."
+          text={`Upgrade to Basic (${money(PRICES.basic)} a month) to download the LGA report and your patient register as CSV.`}
           onClose={() => setUpgrade(false)}
         />
       )}

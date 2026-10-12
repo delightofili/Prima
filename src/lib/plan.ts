@@ -18,6 +18,9 @@ const MIN_PLAN: Record<Feature, Plan> = {
   unlimitedPatients: "basic",
 };
 
+export const PRICES = { basic: 2500, pro: 5000 } as const;
+export const money = (n: number) => `₦${n.toLocaleString("en-NG")}`;
+
 export const PLANS: {
   id: Plan;
   name: string;
@@ -37,7 +40,7 @@ export const PLANS: {
   {
     id: "basic",
     name: "Basic",
-    price: "₦500",
+    price: money(PRICES.basic),
     features: [
       "Unlimited patients",
       "CSV export and LGA report",
@@ -49,7 +52,7 @@ export const PLANS: {
   {
     id: "pro",
     name: "Pro",
-    price: "₦900",
+    price: money(PRICES.pro),
     features: [
       "Everything in Basic",
       "Follow-up due list",

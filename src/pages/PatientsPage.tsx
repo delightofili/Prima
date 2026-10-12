@@ -11,6 +11,7 @@ import { downloadCsv } from "../lib/csv";
 import { patientsToRows } from "../lib/exports";
 import { canUse } from "../lib/plan";
 import { todayISO } from "../lib/utils";
+import { PRICES, money } from "../lib/plan";
 
 export function PatientsPage() {
   usePageTitle("Patients");
@@ -50,7 +51,7 @@ export function PatientsPage() {
       {upgrade && (
         <UpgradeDialog
           title="Export needs the Basic plan"
-          text="Upgrade to Basic (₦500 a month) to download your full patient register as CSV, and the LGA report too."
+          text={`Upgrade to Basic (${money(PRICES.basic)} a month) to download your full patient register as CSV, and the LGA report too.`}
           onClose={() => setUpgrade(false)}
         />
       )}

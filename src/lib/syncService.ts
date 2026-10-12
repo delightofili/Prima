@@ -39,6 +39,7 @@ const patientRow = (p: Patient) => ({
   created_at: iso(p.createdAt),
   updated_at: iso(p.updatedAt),
   deleted_at: isoOrNull(p.deletedAt),
+  merged_into_id: p.mergedIntoId ?? null,
 });
 
 const immunizationRow = (r: ImmunizationRecord) => ({
@@ -101,6 +102,7 @@ const patientFromRow = (r: Row): Patient => ({
   createdAt: Date.parse(r.created_at),
   updatedAt: Date.parse(r.updated_at),
   deletedAt: toMs(r.deleted_at),
+  mergedIntoId: r.merged_into_id ?? undefined,
 });
 
 const immunizationFromRow = (r: Row): ImmunizationRecord => ({

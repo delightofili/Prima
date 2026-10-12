@@ -5,8 +5,8 @@ import { usePageTitle } from "../hooks/common";
 import { usePatients } from "../hooks/usePatients";
 import { usePlan } from "../hooks/usePlan";
 import { useToast } from "../hooks/useToast";
-import { seedDemo } from "../lib/devSeed";
 import { PLANS, setPlan } from "../lib/plan";
+import { seedDemo, seedDuplicates } from "../lib/devSeed";
 
 export function PlansPage() {
   usePageTitle("Plans");
@@ -93,6 +93,16 @@ export function PlansPage() {
               </button>
             ))}
           </div>
+          <button
+            type="button"
+            className="btn btn-secondary sm:w-72"
+            onClick={async () => {
+              await seedDuplicates(5);
+              toast("Added 5 duplicate pairs");
+            }}
+          >
+            Add 5 duplicate pairs
+          </button>
         </section>
       )}
     </>

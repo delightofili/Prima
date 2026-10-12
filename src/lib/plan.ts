@@ -3,7 +3,8 @@ export type Feature =
   | "followUps"
   | "csvExport"
   | "lgaReport"
-  | "unlimitedPatients";
+  | "unlimitedPatients"
+  | "duplicateMerge";
 
 export const PLAN_EVENT = "prima-plan";
 export const FREE_PATIENT_LIMIT = 200;
@@ -16,6 +17,7 @@ const MIN_PLAN: Record<Feature, Plan> = {
   csvExport: "basic",
   lgaReport: "basic",
   unlimitedPatients: "basic",
+  duplicateMerge: "pro",
 };
 
 export const PRICES = { basic: 2500, pro: 5000 } as const;

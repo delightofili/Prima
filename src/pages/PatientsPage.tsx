@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Download, UserPlus } from "lucide-react";
+import { Download, GitMerge, UserPlus } from "lucide-react";
 import { PageHeader } from "../components/PageHeader";
 import { PatientList } from "../components/PatientList";
 import { UpgradeDialog } from "../components/UpgradeDialog";
@@ -33,7 +33,10 @@ export function PatientsPage() {
         title="Patients"
         subtitle="Search by name, phone, NHIS or card number."
         action={
-          <div className="flex flex-col gap-2 sm:flex-row">
+          <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap">
+            <Link to="/duplicates" className="btn btn-secondary sm:w-48">
+              <GitMerge size={20} className="mr-2" /> Find duplicates
+            </Link>
             <button
               type="button"
               className="btn btn-secondary sm:w-44"

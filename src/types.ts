@@ -37,6 +37,7 @@ export interface Patient {
   createdAt: number;
   updatedAt: number;
   deletedAt?: number;
+  mergedIntoId?: string;
 }
 
 export interface ImmunizationRecord {

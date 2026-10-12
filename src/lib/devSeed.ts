@@ -173,3 +173,52 @@ export async function seedDemo(count: number) {
     },
   );
 }
+
+export async function seedDuplicates(count: number) {
+  const all = (await db.patients.toArray()).filter((p) => !p.deletedAt);
+  const picks = [...all].sort(() => Math.random() - 0.5).slice(0, count);
+  const now = Date.now();
+  const today = todayISO();
+  const copies: Patient[] = [];
+  const visits: Visit[] = [];
+
+  picks.forEach((p, i) => {
+    const [first, ...rest] = p.fullName.split(" ");
+    const surname = rest.join(" ");
+    const swapLetters = (s: string) =>
+      s.length > 3 ? `${s.slice(0, 2)}${s[3]}${s[2]}${s.slice(4)}` : s;
+    const fullName =
+      i % 3 === 0
+        ? `${surname} ${first}`
+        : i % 3 === 1
+          ? `${swapLetters(first)} ${surname}`
+          : p.fullName;
+
+    const copy: Patient = {
+      ...p,
+      id: crypto.randomUUID(),
+      cardNumber: generateCardNumber(config.facilityCode),
+      fullName,
+      name: normalize(fullName),
+      phone: i % 2 ? p.phone : undefined,
+      nhisNumber: undefined,
+      createdAt: now,
+      updatedAt: now,
+    };
+    copies.push(copy);
+    visits.push({
+      id: crypto.randomUUID(),
+      patientId: copy.id,
+      facilityId: config.facilityId,
+      visitDate: today,
+      complaints: "Visit recorded on the second record",
+      createdAt: now,
+      updatedAt: now,
+    });
+  });
+
+  await remoteTransaction([db.patients, db.visits, db.syncQueue], async () => {
+    await db.patients.bulkAdd(copies);
+    await db.visits.bulkAdd(visits);
+  });
+}

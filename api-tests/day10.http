@@ -1,0 +1,36 @@
+@py = http://127.0.0.1:8000
+@facility = paste-your-facility-id-from-supabase
+
+### 1. Health (expect 200)
+GET {{py}}/health
+
+### 2. Similar names (expect id 2 at 100, then id 1 at 91.7, not id 3)
+POST {{py}}/api/fuzzy-check
+Content-Type: application/json
+
+{
+  "name": "Ngozi Okafor",
+  "candidates": [
+    { "id": "1", "name": "ngozy okafor" },
+    { "id": "2", "name": "Okafor Ngozi" },
+    { "id": "3", "name": "Chidi Eze" }
+  ]
+}
+
+### 3. Batch duplicates from Supabase (expect "checked" and a list of pairs)
+POST {{py}}/api/fuzzy-check/batch
+Content-Type: application/json
+
+{ "facility_id": "{{facility}}", "threshold": 70 }
+
+### 4. LGA report (expect JSON; compare with the LGA report tab in the app)
+GET {{py}}/api/lga-report?facility_id={{facility}}&month=2026-10
+
+### 5. Month that does not exist (expect 422)
+GET {{py}}/api/lga-report?facility_id={{facility}}&month=2026-13
+
+### 6. Facility id too short (expect 422)
+GET {{py}}/api/lga-report?facility_id=abc&month=2026-10
+
+### 7. Sign-in required (set REQUIRE_AUTH=true in .env, restart, expect 401)
+GET {{py}}/api/lga-report?facility_id={{facility}}&month=2026-10

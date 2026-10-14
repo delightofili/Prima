@@ -4,7 +4,7 @@
 
 A nurse registers patients, records visits, tracks vaccines, sees who is due for follow-up, cleans up duplicate records and produces the monthly LGA summary, on an Android phone, tablet or laptop, with or without network. Everything is saved on the device first and syncs both ways with the cloud in the background.
 
-> Status: built in public. Days 1-8 complete, Day 9 (duplicate merge) in progress. The roadmap runs to Day 23, then continues with feedback from real PHCs.
+> Status: built in public. Days 1-9 complete, Day 10 (Python service) in progress. The roadmap runs to Day 23, with two feedback-driven days proposed before it (see "Feedback queue").
 
 ---
 
@@ -25,8 +25,8 @@ Paper registers at PHCs lose patients, create duplicates (the same woman registe
 **Duplicate protection**
 
 - A live warning at registration (same name, date of birth, village) that works offline.
-- A similar-name check ("Ngozi" vs "Ngozy", or swapped names) at registration.
-- **Duplicate merge tool (Day 9, Pro):** scans the whole register on the device for near-duplicate patients, shows why each pair matched, and merges them safely.
+- A similar-name check at registration ("Ngozi" vs "Ngozy", or swapped names). It uses the Python service when one is configured and falls back to the device when it is not, so it always works.
+- **Duplicate merge tool (Pro):** scans the register on the device, shows why each pair matched, and merges them safely (visits and vaccines move, doses are not doubled, allergies are combined, undo for a few seconds).
 
 **Visits and vaccines**
 
@@ -48,6 +48,14 @@ Paper registers at PHCs lose patients, create duplicates (the same woman registe
 
 - Free: 1 facility, up to 200 patients, no export. A usage bar warns at 180 and registration stops at 200 with an upgrade prompt.
 - Basic: unlimited patients, CSV export, LGA report. Pro: adds the follow-up list, duplicate merge and FHIR/DHIS2 export.
+
+**Python service (Day 10, built now, hosted later)**
+
+- `GET /api/lga-report` builds the same monthly report as the app, on the server, from Supabase.
+- `POST /api/fuzzy-check/batch` finds duplicate pairs across a whole facility on the server.
+- `POST /api/fuzzy-check` scores a name against candidates (used at registration).
+- Sign-in is checked on every call (Supabase session), the matching rules are identical to the app's, and 21 automated tests cover it.
+- A deploy file is ready, but nothing needs the service to be hosted: every feature has an on-device fallback.
 
 **Comfort and polish**
 
@@ -80,7 +88,7 @@ A new repository was the cleaner choice: the architectures are fundamentally dif
 
 ### Day 3: the offline engine
 
-Vite + React + TypeScript + Tailwind with a colour system chosen for outdoor readability. Supabase tables with explicit grants and RLS. A Dexie database with a unique card number index and a compound `[name+dob+villageKey]` index. `usePatients()` with `useLiveQuery()` and `Map` caches. A registration form with React Hook Form + Zod. Sync engine v1. Python from zero: Python 3.13, a virtual environment, FastAPI, rapidfuzz and an `/api/fuzzy-check` endpoint with 6 REST Client tests.
+Vite + React + TypeScript + Tailwind with a colour system chosen for outdoor readability. Supabase tables with explicit grants and RLS. A Dexie database with a unique card number index and a compound `[name+dob+villageKey]` index. `usePatients()` with `useLiveQuery()` and `Map` caches. A registration form with React Hook Form + Zod. Sync engine v1. Python from zero: Python 3.13, a virtual environment, FastAPI, rapidfuzz and a first `/api/fuzzy-check` endpoint.
 
 ### Day 4: a real product shell
 
@@ -100,33 +108,47 @@ A Recharts dashboard computed on the device, a follow-up due list built from ind
 
 ### Day 8: reports, export and plan limits
 
-A monthly LGA summary using each patient's age on the visit date, CSV export that is safe for Excel (UTF-8, quoting, formula-injection guard), plan gating for the report, export and the 200-patient limit (enforced in the screen and in the save function), a developer-only demo data tool, and a costs and hosting plan. Prices were raised to Basic ₦2,500 and Pro ₦5,000 from a single constant.
+A monthly LGA summary using each patient's age on the visit date, CSV export that is safe for Excel (UTF-8, quoting, formula-injection guard), plan gating for the report, export and the 200-patient limit, a developer-only demo data tool, and a costs and hosting plan. Prices were raised to Basic ₦2,500 and Pro ₦5,000 from a single constant.
 
-### Day 9: duplicate merge (in progress)
+### Day 9: duplicate merge
 
-- **Scanning on the device.** Patients are sorted into groups (same gender and birth year) before comparing, so a register of thousands scans in moments. Names are compared with a typo-tolerant similarity score that also catches swapped first and last names.
-- **Evidence, not just a score.** Each match shows its reasons (same date of birth, same phone, same NHIS number, similar name, same village) and a High or Possible label.
-- **Safety rules.** Patients with different genders, different known blood groups or different NHIS numbers are never offered as duplicates. A shared NHIS number is treated as strong evidence.
-- **A merge you can trust.** The nurse chooses which record to keep. Visits and vaccine records move to it, already-recorded vaccine doses are not doubled, blanks are filled from the other record, and allergies from both records are combined so none is lost. The other record is hidden with a link to the one it was merged into, and the whole merge is a single all-or-nothing operation that syncs in the right order and can be undone for a few seconds.
-- **"Not a duplicate"** is remembered on that device.
+A scan that sorts patients into groups (same gender and birth year) before comparing, a typo-tolerant name score that also catches swapped names, visible reasons for each match, hard rules that never match different genders, blood groups or NHIS numbers, and a merge that is one all-or-nothing operation: visits and vaccines move, doses are not doubled, blanks are filled, allergies from both records are combined, the other record is hidden with a link to the survivor, and the nurse can undo for a few seconds.
+
+### Day 10: the Python service
+
+- Split the service into small files: settings, request and response models, matching rules, report logic, Supabase loading, and the API routes.
+- The batch duplicate finder and the LGA report mirror the app's TypeScript rules exactly, including rounding, so the server and the phone agree.
+- The server reads Supabase with a secret key that never reaches the browser, pages through large tables, and converts timestamps to Lagos time so a late-night registration counts in the right month.
+- Sign-in is verified on every request. Until the Supabase Auth day it can be switched off for local testing.
+- 21 automated tests run with no network, using stand-in data loaders.
+- The registration similar-name check now falls back to the device, so nothing in the app depends on the server being hosted.
+- A `render.yaml` and a deploy checklist are ready for the day money allows hosting.
+
+## Feedback queue
+
+| Feedback                                                                                             | Decision                                                     | Why                                                                                          |
+| ---------------------------------------------------------------------------------------------------- | ------------------------------------------------------------ | -------------------------------------------------------------------------------------------- |
+| Guardian link (guardians table, phone search shows guardian and children, link mother's ANC to baby) | Add as its own day, before sign-in and row level security    | Fits how PHCs work, improves follow-up calls, and changes the data model                     |
+| SMS base (consent, reminders table, auto-create on visit, dashboard count, no sending)               | Add after guardians, so reminders go to the guardian's phone | Needs the guardian phone; consent must be recorded; sending comes later                      |
+| Offline IDs like `ANK-{device}-{counter}` with a mapping table                                       | Not added                                                    | Device-generated UUIDs and random card numbers already solve it without ever rewriting an ID |
 
 ## Decisions and why
 
-| Decision                                                           | Reason                                                                |
-| ------------------------------------------------------------------ | --------------------------------------------------------------------- |
-| IndexedDB first, server second                                     | The UI must never wait for the network                                |
-| UUIDs and card numbers generated on the device                     | Offline phones cannot ask a server for the next number                |
-| Store date of birth, not age; dates as `YYYY-MM-DD` strings        | No stale ages, no timezone bugs                                       |
-| Soft delete                                                        | Deletes must sync, be undoable, and leave an audit trail              |
-| Pull cursor uses a server clock, not the phone's                   | Phone clocks are often wrong                                          |
-| Dashboard, reports and duplicate scanning computed on the device   | Instant, works offline, no server cost                                |
-| Duplicate scan groups patients before comparing                    | Comparing everyone with everyone would freeze a cheap phone           |
-| Hard exclusions (gender, blood group, NHIS)                        | Better to miss a duplicate than to merge two different people         |
-| Allergies are combined on merge                                    | A missed allergy is dangerous                                         |
-| Merge is one transaction, with a merged-into link and a short Undo | All-or-nothing, traceable and reversible                              |
-| Every Python feature gets an on-device fallback                    | The app must never show an error because a server is not paid for yet |
-| Payments verified by a Supabase Edge Function, not Python          | No extra hosting needed                                               |
-| Show counts to everyone, details on paid plans                     | The count demonstrates the value; the detail is the product           |
+| Decision                                                            | Reason                                                                                  |
+| ------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| IndexedDB first, server second                                      | The UI must never wait for the network                                                  |
+| UUIDs and card numbers generated on the device                      | Offline phones cannot ask a server for the next number, and IDs never change after sync |
+| Store date of birth, not age; dates as `YYYY-MM-DD` strings         | No stale ages, no timezone bugs                                                         |
+| Soft delete                                                         | Deletes must sync, be undoable, and leave an audit trail                                |
+| Pull cursor uses a server clock, not the phone's                    | Phone clocks are often wrong                                                            |
+| Dashboard, reports and duplicate scanning computed on the device    | Instant, works offline, no server cost                                                  |
+| Duplicate scan groups patients before comparing                     | Comparing everyone with everyone would freeze a cheap phone                             |
+| Hard exclusions (gender, blood group, NHIS)                         | Better to miss a duplicate than to merge two different people                           |
+| Allergies are combined on merge                                     | A missed allergy is dangerous                                                           |
+| Every Python feature gets an on-device fallback                     | The app must never show an error because a server is not paid for yet                   |
+| Python and TypeScript use the same scoring rules, with parity tests | The server and the phone must give the same answer                                      |
+| The server's database key is a secret kept only in server settings  | It bypasses row level security and must never reach a browser                           |
+| Payments verified by a Supabase Edge Function, not Python           | No extra hosting needed                                                                 |
 
 ## Costs and hosting: launch lean
 
@@ -137,7 +159,7 @@ A monthly LGA summary using each patient's age on the visit date, CSV export tha
 | Python service | Built and tested locally, not hosted            | Not needed yet                 | Hosted when about 4 facilities pay |
 | Domain         | Free `pages.dev` address                        | `.com.ng` (about ₦6,250/year)  | Optional `.ng`                     |
 
-The app is offline-first, so a paused or unreachable server delays syncing but never stops a nurse from working. A scheduled keep-alive request will stop the free Supabase project pausing, and a Backup and Restore feature protects the data because the free tier has no automatic backups. The LGA report, duplicate scan and export all run on the device.
+The app is offline-first, so a paused or unreachable server delays syncing but never stops a nurse from working. A scheduled keep-alive request will stop the free Supabase project pausing, and a Backup and Restore feature protects the data because the free tier has no automatic backups.
 
 ## Plans
 
@@ -161,9 +183,10 @@ Pilot offer: the first 5 PHCs get Pro free for 3 months in exchange for feedback
                     push    │       │ changes since last sync
                             ▼       │
                     Supabase (Postgres)
-
-   Python (FastAPI): built now, hosted later, with on-device
-   fallbacks for every feature that uses it
+                            ▲
+                            │ secret key, server side only
+                   Python service (FastAPI)
+        built now, hosted later, with on-device fallbacks
 ```
 
 ## Standards approach
@@ -172,16 +195,29 @@ Nigeria is moving toward FHIR and DHIS2: the National Digital Health Architectur
 
 ## Run locally
 
-Needs Node 20+, Python 3.13 (for the Python service) and a Supabase project. Run `supabase/schema.sql` (plus the Day 5, 6 and 9 SQL) in the Supabase SQL editor first.
+Needs Node 20+, Python 3.13 and a Supabase project. Run `supabase/schema.sql` (plus the Day 5, 6 and 9 SQL) in the Supabase SQL editor first.
 
 ```bash
 npm install
-cp .env.example .env.local     # fill in your values
+cp .env.example .env.local     # fill in your values; leave VITE_PYTHON_API_URL empty to use on-device matching
 npm run dev                    # http://localhost:5173
 
 cd python-service
 py -3.13 -m venv venv
 source venv/Scripts/activate   # Git Bash on Windows
-pip install -r requirements.txt
+pip install -r requirements-dev.txt
+cp .env.example .env           # fill in your Supabase values (never commit this file)
+pytest -q                      # automated tests, no network needed
 uvicorn main:app --reload      # http://127.0.0.1:8000/docs
 ```
+
+## Security and clinical notes
+
+- The current Supabase policies are temporary and open, for fake test data only. Day 11 replaces them with authentication and per-facility row level security. Do not enter real patient data before then.
+- The Python service holds Supabase's secret key. It must live only in the server's settings, never in the app, and must be rotated if it is ever exposed.
+- Plan checks in the app are presentation only. A paid plan is verified server-side from Day 17.
+- Deletes and merges are soft. Permanent erasure on request needs a process, planned with the audit log on Day 12.
+- Conflicts between two devices are resolved by the most recent edit time, which depends on device clocks.
+- Duplicate matching is a suggestion, and a nurse confirms every merge. Thresholds are starting points to tune with real PHC data.
+- Immunization intervals, vitals thresholds, follow-up rules, the ICD-10 list and the report groupings are simplified starting points. Confirm them with a health worker against national guidance before real use.
+- Before real PHC data, complete the Nigeria Data Protection Act and NDPC check planned for Day 18.

@@ -27,3 +27,5 @@ dist-ssr
 python-service/venv/
 __pycache__/
 *.pyc
+
+python-service/.env

@@ -15,5 +15,7 @@ export const config = {
   facilityName: need("VITE_FACILITY_NAME"),
   facilityLga: need("VITE_FACILITY_LGA"),
   facilityState: need("VITE_FACILITY_STATE"),
-  pythonApiUrl: need("VITE_PYTHON_API_URL"),
+  pythonApiUrl: (
+    (import.meta.env.VITE_PYTHON_API_URL as string | undefined) ?? ""
+  ).trim(),
 };

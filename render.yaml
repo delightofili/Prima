@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: prima-service
+    runtime: python
+    plan: free
+    rootDir: python-service
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.13.5 # confirm a supported version in Render's docs when you deploy
+      - key: REQUIRE_AUTH
+        value: "true"
+      - key: ALLOWED_ORIGINS
+        sync: false
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false

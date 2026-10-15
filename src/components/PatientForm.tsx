@@ -4,6 +4,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { db } from "../db";
 import { config } from "../lib/config";
 import { calculateAge, isUnder5, isWomanOver12 } from "../lib/age";
+import { Users } from "lucide-react";
+import { GuardianPicker } from "./GuardianPicker";
+import { validateGuardianChoice, type GuardianChoice } from "../lib/guardians";
 import {
   findExactDuplicate,
   registerPatient,
@@ -77,6 +80,8 @@ export function PatientForm({
 
   const [picked, setPicked] = useState<Record<string, string>>({});
   const [hint, setHint] = useState<Hint>(null);
+  const [guardian, setGuardian] = useState<GuardianChoice>({ kind: "none" });
+  const [guardianError, setGuardianError] = useState<string | null>(null);
   const [confirmed, setConfirmed] = useState(false);
   const [vaccineError, setVaccineError] = useState<string | null>(null);
   const [saveError, setSaveError] = useState<string | null>(null);
@@ -87,12 +92,16 @@ export function PatientForm({
   const dob = watch("dob");
   const fullName = watch("fullName");
   const village = watch("village");
+  const nokName = watch("nextOfKinName") ?? "";
+  const nokPhone = watch("nextOfKinPhone") ?? "";
 
   const validDob =
     !!dob && /^\d{4}-\d{2}-\d{2}$/.test(dob) && dob <= todayISO();
   const age = validDob ? calculateAge(dob) : null;
   const showObstetric = !!age && !!gender && isWomanOver12(gender, age);
   const showVaccines = !editing && !!age && isUnder5(age);
+  const showGuardian =
+    !editing && !!age && (age.unit === "months" || age.value < 18);
 
   useEffect(() => {
     if (!showObstetric) {
@@ -104,6 +113,9 @@ export function PatientForm({
   useEffect(() => {
     if (!showVaccines) setPicked({});
   }, [showVaccines]);
+  useEffect(() => {
+    if (!showGuardian) setGuardian({ kind: "none" });
+  }, [showGuardian]);
 
   // Live duplicate warning: runs 250 ms after the nurse stops typing
   const key = useDebounce(
@@ -128,9 +140,12 @@ export function PatientForm({
     const vErr = showVaccines
       ? validateImmunizations(values.dob, picked)
       : null;
+
     setVaccineError(vErr);
     if (vErr) return;
-
+    const gErr = showGuardian ? validateGuardianChoice(guardian) : null;
+    setGuardianError(gErr);
+    if (gErr) return;
     if (!confirmed) {
       const exact = await findExactDuplicate(
         values.fullName,
@@ -163,7 +178,11 @@ export function PatientForm({
     try {
       const saved = editing
         ? await updatePatient(patient!, values)
-        : await registerPatient(values, showVaccines ? picked : {});
+        : await registerPatient(
+            values,
+            showVaccines ? picked : {},
+            showGuardian ? guardian : { kind: "none" },
+          );
       onSaved(saved);
     } catch (e) {
       if (e instanceof PlanLimitError) {
@@ -378,6 +397,28 @@ export function PatientForm({
         <p role="alert" className="font-medium text-danger md:col-span-2">
           {vaccineError}
         </p>
+      )}
+      {showGuardian && (
+        <section className="card space-y-3 md:col-span-2">
+          <h2 className="flex items-center gap-2 text-lg font-bold">
+            <Users size={20} className="text-prima-500" /> Guardian (optional)
+          </h2>
+          <p className="text-subtext">
+            Adding a guardian lets Prima call the right person for vaccines and
+            follow-ups. Search first: a mother with several children is one
+            guardian.
+          </p>
+          <GuardianPicker
+            value={guardian}
+            onChange={setGuardian}
+            nextOfKin={{ name: nokName, phone: nokPhone }}
+          />
+          {guardianError && (
+            <p role="alert" className="font-medium text-danger">
+              {guardianError}
+            </p>
+          )}
+        </section>
       )}
 
       {/* DUPLICATE WARNING */}

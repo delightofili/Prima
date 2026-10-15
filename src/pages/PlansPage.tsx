@@ -6,7 +6,7 @@ import { usePatients } from "../hooks/usePatients";
 import { usePlan } from "../hooks/usePlan";
 import { useToast } from "../hooks/useToast";
 import { PLANS, setPlan } from "../lib/plan";
-import { seedDemo, seedDuplicates } from "../lib/devSeed";
+import { seedDemo, seedDuplicates, seedFamilies } from "../lib/devSeed";
 
 export function PlansPage() {
   usePageTitle("Plans");
@@ -102,6 +102,16 @@ export function PlansPage() {
             }}
           >
             Add 5 duplicate pairs
+          </button>
+          <button
+            type="button"
+            className="btn btn-secondary sm:w-72"
+            onClick={async () => {
+              const r = await seedFamilies();
+              toast(`Linked ${r.children} children to ${r.families} guardians`);
+            }}
+          >
+            Link demo children to guardians
           </button>
         </section>
       )}

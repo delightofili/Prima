@@ -9,7 +9,8 @@ import {
   todayISO,
 } from "./utils";
 import { VACCINES, nextFor } from "./vaccines";
-import type { ImmunizationRecord, Patient, Visit } from "../types";
+import type { ImmunizationRecord, Patient, Visit, Guardian } from "../types";
+import { calculateAge } from "./age";
 
 const FEMALE = [
   "Ngozi",
@@ -221,4 +222,70 @@ export async function seedDuplicates(count: number) {
     await db.patients.bulkAdd(copies);
     await db.visits.bulkAdd(visits);
   });
+}
+
+export async function seedFamilies() {
+  const now = Date.now();
+  const patients = (await db.patients.toArray()).filter((p) => !p.deletedAt);
+  const years = (dob: string) => {
+    const a = calculateAge(dob);
+    return a.unit === "years" ? a.value : 0;
+  };
+
+  const kids = patients
+    .filter(
+      (p) =>
+        !p.guardianId &&
+        (calculateAge(p.dob).unit === "months" || years(p.dob) < 18),
+    )
+    .sort(() => Math.random() - 0.5);
+  const mothers = patients
+    .filter(
+      (p) =>
+        p.gender === "FEMALE" &&
+        years(p.dob) >= 18 &&
+        years(p.dob) <= 45 &&
+        p.phone,
+    )
+    .sort(() => Math.random() - 0.5);
+
+  const guardians: Guardian[] = [];
+  const links: { kidId: string; guardianId: string }[] = [];
+  let next = 0;
+
+  for (let i = 0; i < kids.length; ) {
+    const family = kids.slice(i, i + int(1, 3));
+    i += family.length;
+
+    const mother = Math.random() < 0.5 ? mothers[next++] : undefined;
+    const surname = family[0].fullName.split(" ").slice(1).join(" ");
+    const fullName = mother ? mother.fullName : `${pick(FEMALE)} ${surname}`;
+
+    const guardian: Guardian = {
+      id: crypto.randomUUID(),
+      facilityId: config.facilityId,
+      fullName,
+      name: normalize(fullName),
+      phone: mother?.phone ?? phone(),
+      relationship: "MOTHER",
+      patientId: mother?.id,
+      createdAt: now,
+      updatedAt: now,
+    };
+    guardians.push(guardian);
+    for (const kid of family)
+      links.push({ kidId: kid.id, guardianId: guardian.id });
+  }
+
+  // Local only: nothing is queued for Supabase
+  await remoteTransaction(
+    [db.guardians, db.patients, db.syncQueue],
+    async () => {
+      await db.guardians.bulkAdd(guardians);
+      for (const l of links)
+        await db.patients.update(l.kidId, { guardianId: l.guardianId });
+    },
+  );
+
+  return { families: guardians.length, children: links.length };
 }

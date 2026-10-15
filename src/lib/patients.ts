@@ -7,6 +7,7 @@ import { pushPending } from "./syncService";
 import type { PatientFormValues } from "./schema";
 import type { ImmunizationRecord, Patient } from "../types";
 import { FREE_PATIENT_LIMIT, PlanLimitError, canUse, getPlan } from "./plan";
+import { buildGuardian, type GuardianChoice } from "./guardians";
 
 const clean = (v?: string) => {
   const t = v?.trim();
@@ -78,13 +79,20 @@ export function valuesFromPatient(p: Patient): Partial<PatientFormValues> {
 export async function registerPatient(
   values: PatientFormValues,
   picked: Record<string, string>,
+  guardian: GuardianChoice = { kind: "none" },
 ): Promise<Patient> {
   if (!canUse(getPlan(), "unlimitedPatients")) {
     const active = await db.patients.filter((p) => !p.deletedAt).count();
     if (active >= FREE_PATIENT_LIMIT) throw new PlanLimitError();
   }
+
   const now = Date.now();
   const id = crypto.randomUUID();
+
+  const newGuardian =
+    guardian.kind === "new" ? buildGuardian(guardian, now) : undefined;
+  const guardianId =
+    guardian.kind === "existing" ? guardian.id : newGuardian?.id;
 
   const records: ImmunizationRecord[] = Object.entries(picked).map(
     ([key, dateGiven]) => {
@@ -109,6 +117,7 @@ export async function registerPatient(
       facilityId: config.facilityId,
       cardNumber: generateCardNumber(config.facilityCode),
       ...fieldsFrom(values),
+      guardianId,
       createdAt: now,
       updatedAt: now,
     };
@@ -117,8 +126,10 @@ export async function registerPatient(
         "rw",
         db.patients,
         db.immunizations,
+        db.guardians,
         db.syncQueue,
         async () => {
+          if (newGuardian) await db.guardians.add(newGuardian); // before the child that points at it
           await db.patients.add(patient);
           if (records.length) await db.immunizations.bulkAdd(records);
         },

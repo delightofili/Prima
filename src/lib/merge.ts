@@ -13,6 +13,7 @@ export interface MergePlan {
   before: Partial<Patient>;
   filled: string[];
   differences: string[];
+  guardianIds: string[];
 }
 
 const LABELS: Partial<Record<keyof Patient, string>> = {
@@ -23,6 +24,7 @@ const LABELS: Partial<Record<keyof Patient, string>> = {
   initialChiefComplaint: "reason for first registration",
   para: "para",
   gravida: "gravida",
+  guardianId: "guardian",
 };
 
 export async function planMerge(
@@ -104,6 +106,16 @@ export async function planMerge(
       `Pregnant: ${keep.isPregnant ? "Yes" : "No"} (kept) and ${drop.isPregnant ? "Yes" : "No"}`,
     );
   }
+  // If the kept record has no guardian, take the other one's
+  if (!keep.guardianId && drop.guardianId)
+    setFill("guardianId", drop.guardianId);
+
+  // Guardians whose own patient record is the one being removed now point at the kept record
+  const guardianLinks = await db.guardians
+    .where("patientId")
+    .equals(drop.id)
+    .filter((g) => !g.deletedAt)
+    .toArray();
 
   return {
     keep,
@@ -115,6 +127,7 @@ export async function planMerge(
     before,
     filled,
     differences,
+    guardianIds: guardianLinks.map((g) => g.id),
   };
 }
 
@@ -126,6 +139,7 @@ export async function executeMerge(plan: MergePlan) {
     db.visits,
     db.immunizations,
     db.syncQueue,
+    db.guardians,
     async () => {
       await db.patients.update(plan.keep.id, { ...plan.fills, updatedAt: now });
       for (const id of plan.visitIds)
@@ -144,6 +158,12 @@ export async function executeMerge(plan: MergePlan) {
         mergedIntoId: plan.keep.id,
         updatedAt: now,
       });
+      for (const id of plan.guardianIds) {
+        await db.guardians.update(id, {
+          patientId: plan.keep.id,
+          updatedAt: now,
+        });
+      }
     },
   );
   void pushPending();
@@ -157,6 +177,7 @@ export async function undoMerge(plan: MergePlan) {
     db.visits,
     db.immunizations,
     db.syncQueue,
+    db.guardians,
     async () => {
       await db.patients.update(plan.drop.id, {
         deletedAt: undefined,
@@ -181,6 +202,12 @@ export async function undoMerge(plan: MergePlan) {
         ...plan.before,
         updatedAt: now,
       });
+      for (const id of plan.guardianIds) {
+        await db.guardians.update(id, {
+          patientId: plan.drop.id,
+          updatedAt: now,
+        });
+      }
     },
   );
   void pushPending();

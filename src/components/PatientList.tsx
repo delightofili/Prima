@@ -1,12 +1,21 @@
-import { useState } from "react";
-import { usePatients } from "../hooks/usePatients";
+import { useMemo, useState } from "react";
+import { Users } from "lucide-react";
 import { useDebounce } from "../hooks/common";
+import { useGuardians } from "../hooks/useGuardians";
+import { usePatients } from "../hooks/usePatients";
+import { searchGuardians } from "../lib/guardians";
+import { GuardianCard } from "./GuardianCard";
 import { PatientCard } from "./PatientCard";
 
 export function PatientList() {
   const [search, setSearch] = useState("");
   const query = useDebounce(search, 200);
   const { results, total } = usePatients(query);
+  const { guardians, childrenOf } = useGuardians();
+  const guardianMatches = useMemo(
+    () => searchGuardians(guardians, query),
+    [guardians, query],
+  );
   const shown = results.slice(0, 100);
 
   return (
@@ -27,26 +36,47 @@ export function PatientList() {
             Register the first patient and they will appear here.
           </p>
         </div>
-      ) : results.length === 0 ? (
+      ) : results.length === 0 && guardianMatches.length === 0 ? (
         <p className="py-8 text-center text-subtext">
-          No patient matches “{search}”.
+          No patient or guardian matches “{search}”.
         </p>
       ) : (
         <>
-          <p className="text-sm text-subtext">
-            {results.length} of {total} patients
-          </p>
-          <ul className="grid gap-3 md:grid-cols-2">
-            {shown.map((p) => (
-              <li key={p.id}>
-                <PatientCard p={p} />
-              </li>
-            ))}
-          </ul>
-          {results.length > shown.length && (
-            <p className="text-center text-sm text-subtext">
-              Showing the first 100. Search to narrow down.
-            </p>
+          {guardianMatches.length > 0 && (
+            <div className="space-y-2">
+              <h2 className="flex items-center gap-2 text-lg font-bold">
+                <Users size={20} className="text-prima-500" /> Guardians
+              </h2>
+              <div className="grid gap-3 md:grid-cols-2">
+                {guardianMatches.map((g) => (
+                  <GuardianCard
+                    key={g.id}
+                    guardian={g}
+                    kids={childrenOf.get(g.id) ?? []}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+
+          {results.length > 0 && (
+            <>
+              <p className="text-sm text-subtext">
+                {results.length} of {total} patients
+              </p>
+              <ul className="grid gap-3 md:grid-cols-2">
+                {shown.map((p) => (
+                  <li key={p.id}>
+                    <PatientCard p={p} />
+                  </li>
+                ))}
+              </ul>
+              {results.length > shown.length && (
+                <p className="text-center text-sm text-subtext">
+                  Showing the first 100. Search to narrow down.
+                </p>
+              )}
+            </>
           )}
         </>
       )}

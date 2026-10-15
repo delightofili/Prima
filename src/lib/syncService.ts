@@ -3,7 +3,13 @@ import { db, remoteTransaction } from "../db";
 import { supabase } from "./supabase";
 import { config } from "./config";
 import { generateCardNumber } from "./utils";
-import type { ImmunizationRecord, Patient, SyncItem, Visit } from "../types";
+import type {
+  ImmunizationRecord,
+  Patient,
+  SyncItem,
+  Visit,
+  Guardian,
+} from "../types";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Row = Record<string, any>;
@@ -40,6 +46,7 @@ const patientRow = (p: Patient) => ({
   updated_at: iso(p.updatedAt),
   deleted_at: isoOrNull(p.deletedAt),
   merged_into_id: p.mergedIntoId ?? null,
+  guardian_id: p.guardianId ?? null,
 });
 
 const immunizationRow = (r: ImmunizationRecord) => ({
@@ -103,6 +110,7 @@ const patientFromRow = (r: Row): Patient => ({
   updatedAt: Date.parse(r.updated_at),
   deletedAt: toMs(r.deleted_at),
   mergedIntoId: r.merged_into_id ?? undefined,
+  guardianId: r.guardian_id ?? undefined,
 });
 
 const immunizationFromRow = (r: Row): ImmunizationRecord => ({
@@ -138,30 +146,61 @@ const visitFromRow = (r: Row): Visit => ({
   deletedAt: toMs(r.deleted_at),
 });
 
-/* ---------- push ---------- */
+const guardianRow = (g: Guardian) => ({
+  id: g.id,
+  facility_id: g.facilityId,
+  full_name: g.fullName,
+  name_key: g.name,
+  phone: g.phone ?? null,
+  relationship: g.relationship,
+  patient_id: g.patientId ?? null,
+  created_at: iso(g.createdAt),
+  updated_at: iso(g.updatedAt),
+  deleted_at: isoOrNull(g.deletedAt),
+});
+
+const guardianFromRow = (r: Row): Guardian => ({
+  id: r.id,
+  facilityId: r.facility_id,
+  fullName: r.full_name,
+  name: r.name_key,
+  phone: r.phone ?? undefined,
+  relationship: r.relationship,
+  patientId: r.patient_id ?? undefined,
+  createdAt: Date.parse(r.created_at),
+  updatedAt: Date.parse(r.updated_at),
+  deletedAt: toMs(r.deleted_at),
+});
+
+/* ---------- push ----------*/
+
+async function upsertRow(table: string, row: object) {
+  const { error } = await supabase
+    .from(table)
+    .upsert(row, { onConflict: "id" });
+  if (error) throw error;
+}
 
 async function pushOne(item: SyncItem) {
   if (item.table === "patients") {
     const p = await db.patients.get(item.recordId);
     if (!p) return;
-    const { error } = await supabase
-      .from("patients")
-      .upsert(patientRow(p), { onConflict: "id" });
-    if (error) throw error;
+    // The patient may point at a guardian that was created after the patient's first upload.
+    // Send the guardian first so the cloud never sees a pointer to nothing.
+    if (p.guardianId) {
+      const g = await db.guardians.get(p.guardianId);
+      if (g) await upsertRow("guardians", guardianRow(g));
+    }
+    await upsertRow("patients", patientRow(p));
+  } else if (item.table === "guardians") {
+    const g = await db.guardians.get(item.recordId);
+    if (g) await upsertRow("guardians", guardianRow(g));
   } else if (item.table === "immunizations") {
     const r = await db.immunizations.get(item.recordId);
-    if (!r) return;
-    const { error } = await supabase
-      .from("immunization_records")
-      .upsert(immunizationRow(r), { onConflict: "id" });
-    if (error) throw error;
+    if (r) await upsertRow("immunization_records", immunizationRow(r));
   } else {
     const v = await db.visits.get(item.recordId);
-    if (!v) return;
-    const { error } = await supabase
-      .from("visits")
-      .upsert(visitRow(v), { onConflict: "id" });
-    if (error) throw error;
+    if (v) await upsertRow("visits", visitRow(v));
   }
 }
 
@@ -257,7 +296,7 @@ async function applyRemote<T extends { id: string; updatedAt: number }>(
 }
 
 async function pullOne<T extends { id: string; updatedAt: number }>(
-  remote: "patients" | "visits" | "immunization_records",
+  remote: "patients" | "visits" | "immunization_records" | "guardians",
   table: Table<T, string>,
   fromRow: (r: Row) => T,
 ) {
@@ -294,6 +333,7 @@ export async function pullChanges() {
   try {
     await pullOne("patients", db.patients, patientFromRow);
     await pullOne("visits", db.visits, visitFromRow);
+    await pullOne("guardians", db.guardians, guardianFromRow);
     await pullOne(
       "immunization_records",
       db.immunizations,

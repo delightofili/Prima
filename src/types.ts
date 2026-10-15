@@ -1,4 +1,11 @@
 export type Gender = "MALE" | "FEMALE";
+export type Relationship =
+  | "MOTHER"
+  | "FATHER"
+  | "GRANDPARENT"
+  | "SIBLING"
+  | "AUNT_UNCLE"
+  | "OTHER";
 
 export const BLOOD_GROUPS = [
   "A+",
@@ -38,6 +45,7 @@ export interface Patient {
   updatedAt: number;
   deletedAt?: number;
   mergedIntoId?: string;
+  guardianId?: string;
 }
 
 export interface ImmunizationRecord {
@@ -86,10 +94,23 @@ export interface User {
 
 export interface SyncItem {
   id?: number;
-  table: "patients" | "immunizations" | "visits";
+  table: "patients" | "immunizations" | "visits" | "guardians";
   recordId: string;
   attempts: number;
   status: "pending" | "failed";
   lastError?: string;
   createdAt: number;
+}
+
+export interface Guardian {
+  id: string;
+  facilityId: string;
+  fullName: string;
+  name: string;
+  phone?: string;
+  relationship: Relationship;
+  patientId?: string; // the guardian's own patient record, e.g. a mother in antenatal care
+  createdAt: number;
+  updatedAt: number;
+  deletedAt?: number;
 }

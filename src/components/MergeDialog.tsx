@@ -180,6 +180,16 @@ export function MergeDialog({
                 </ul>
               </div>
             )}
+            {plan.guardianIds.length > 0 && (
+              <li>
+                {plural(
+                  plan.guardianIds.length,
+                  "guardian link moves",
+                  "guardian links move",
+                )}{" "}
+                to {plan.keep.fullName}
+              </li>
+            )}
           </div>
         )}
 

@@ -29,6 +29,7 @@ import { AddVaccineDialog } from "../components/AddVaccineDialog";
 import { PregnantBadge, Under5Badge } from "../components/Badges";
 import { ConfirmDialog } from "../components/ConfirmDialog";
 import { VisitCard } from "../components/VisitCard";
+import { FamilySection } from "../components/FamilySection";
 
 type Pending =
   | { kind: "patient" }
@@ -248,7 +249,7 @@ export function PatientDetailPage() {
           </button>
         </div>
       </section>
-
+      <FamilySection patient={p} />
       <section className="space-y-3">
         <h2 className="flex items-center gap-2 text-lg font-bold">
           <Stethoscope size={20} className="text-prima-500" /> Visits (

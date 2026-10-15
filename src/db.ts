@@ -9,6 +9,7 @@ import type {
   SyncItem,
   User,
   Visit,
+  Guardian,
 } from "./types";
 
 interface TxFlags {
@@ -22,6 +23,7 @@ class PrimaDB extends Dexie {
   syncQueue!: Table<SyncItem, number>;
   users!: Table<User, string>;
   meta!: Table<MetaItem, string>;
+  guardians!: Table<Guardian, string>;
 
   constructor() {
     super("prima");
@@ -58,6 +60,11 @@ class PrimaDB extends Dexie {
               r.nextVaccineLabel ?? nextLabelFor(r.vaccineName, r.doseNumber);
           });
       });
+    this.version(4).stores({
+      patients:
+        "id, &cardNumber, name, phone, nhisNumber, dob, gender, createdAt, guardianId, [name+dob+villageKey]",
+      guardians: "id, phone, name, patientId, createdAt",
+    });
   }
 }
 
@@ -109,4 +116,10 @@ db.visits.hook("creating", (_key, obj, trans) => {
 });
 db.visits.hook("updating", (_mods, key, _obj, trans) => {
   enqueue("visits", key as string, trans);
+});
+db.guardians.hook("creating", (_key, obj, trans) => {
+  enqueue("guardians", obj.id, trans);
+});
+db.guardians.hook("updating", (_mods, key, _obj, trans) => {
+  enqueue("guardians", key as string, trans);
 });

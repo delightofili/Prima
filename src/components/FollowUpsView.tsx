@@ -7,6 +7,8 @@ import { calculateAge, isUnder5 } from "../lib/age";
 import { canUse } from "../lib/plan";
 import { formatDate } from "../lib/utils";
 import { UpgradeCard } from "./UpgradeCard";
+import { useGuardians } from "../hooks/useGuardians";
+import type { Guardian } from "../types";
 
 const WINDOWS = [7, 14, 30];
 
@@ -16,12 +18,20 @@ function dueText(days: number, dueDate: string) {
   return `Due in ${days} ${days === 1 ? "day" : "days"} · ${formatDate(dueDate)}`;
 }
 
-function Row({ item }: { item: FollowUpItem }) {
+function Row({
+  item,
+  guardianPhone,
+}: {
+  item: FollowUpItem;
+  guardianPhone?: string;
+}) {
   const p = item.patient;
-  // For young children the caregiver is the person to call
-  const phone = isUnder5(calculateAge(p.dob))
-    ? p.nextOfKinPhone
-    : (p.phone ?? p.nextOfKinPhone);
+  // The guardian is the person to call; otherwise fall back to the old rule
+  const phone =
+    guardianPhone ??
+    (isUnder5(calculateAge(p.dob))
+      ? p.nextOfKinPhone
+      : (p.phone ?? p.nextOfKinPhone));
   const Icon = item.kind === "vaccine" ? Syringe : Stethoscope;
 
   return (
@@ -55,7 +65,15 @@ function Row({ item }: { item: FollowUpItem }) {
   );
 }
 
-function Section({ title, items }: { title: string; items: FollowUpItem[] }) {
+function Section({
+  title,
+  items,
+  guardianMap,
+}: {
+  title: string;
+  items: FollowUpItem[];
+  guardianMap: Map<string, Guardian>;
+}) {
   if (items.length === 0) return null;
   return (
     <section className="space-y-3">
@@ -64,7 +82,15 @@ function Section({ title, items }: { title: string; items: FollowUpItem[] }) {
       </h2>
       <ul className="grid gap-3 md:grid-cols-2">
         {items.map((i) => (
-          <Row key={i.key} item={i} />
+          <Row
+            key={i.key}
+            item={i}
+            guardianPhone={
+              i.patient.guardianId
+                ? guardianMap.get(i.patient.guardianId)?.phone
+                : undefined
+            }
+          />
         ))}
       </ul>
     </section>
@@ -75,6 +101,7 @@ export function FollowUpsView() {
   const plan = usePlan();
   const [windowDays, setWindowDays] = useState(7);
   const items = useFollowUps(windowDays);
+  const { guardianMap } = useGuardians();
 
   const groups = useMemo(() => {
     const m = new Map<string, number>();
@@ -140,9 +167,13 @@ export function FollowUpsView() {
         </div>
       ) : unlocked ? (
         <>
-          <Section title="Overdue" items={overdue} />
-          <Section title="Due today" items={today} />
-          <Section title="Coming up" items={upcoming} />
+          <Section title="Overdue" items={overdue} guardianMap={guardianMap} />
+          <Section title="Due today" items={today} guardianMap={guardianMap} />
+          <Section
+            title="Coming up"
+            items={upcoming}
+            guardianMap={guardianMap}
+          />
         </>
       ) : (
         <UpgradeCard

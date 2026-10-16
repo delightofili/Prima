@@ -12,6 +12,8 @@ import {
   Stethoscope,
   UserPlus,
   Users,
+  MessageSquare,
+  Smartphone,
   type LucideIcon,
 } from "lucide-react";
 import { useDashboardStats } from "../hooks/useDashboardStats";
@@ -20,6 +22,7 @@ import { monthLabel, monthOf, shiftMonth, todayISO } from "../lib/utils";
 import { GenderDonut, HorizontalBars, VerticalBars } from "./Charts";
 import { COLORS } from "../lib/chartColors";
 import { StatTile } from "./StatTile";
+import { useSmsStats } from "../hooks/useSmsStats";
 
 const ARROW =
   "inline-flex size-11 items-center justify-center rounded-xl text-ink hover:bg-page disabled:opacity-30";
@@ -53,6 +56,7 @@ export function DashboardOverview() {
   const [month, setMonth] = useState(monthOf(todayISO()));
   const result = useDashboardStats(month);
   const followUps = useFollowUps(7);
+  const sms = useSmsStats();
   const isCurrent = month === monthOf(todayISO());
 
   if (!result) return null;
@@ -95,7 +99,7 @@ export function DashboardOverview() {
         </button>
       </div>
 
-      <section className="grid grid-cols-2 gap-3 lg:grid-cols-3">
+      <section className="grid grid-cols-2 gap-3 lg:grid-cols-4">
         <StatTile label="Total patients" value={stats.total} icon={Users} />
         <StatTile
           label="New this month"
@@ -125,6 +129,21 @@ export function DashboardOverview() {
             value={followUps?.length ?? 0}
             icon={CalendarClock}
             tone="orange"
+          />
+        </Link>
+        <Link to="/dashboard?tab=reminders">
+          <StatTile
+            label="SMS reminders queued"
+            value={sms?.pending ?? 0}
+            icon={MessageSquare}
+            tone="orange"
+          />
+        </Link>
+        <Link to="/dashboard?tab=reminders">
+          <StatTile
+            label="Reachable by SMS"
+            value={sms?.reachable ?? 0}
+            icon={Smartphone}
           />
         </Link>
       </section>

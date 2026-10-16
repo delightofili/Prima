@@ -19,6 +19,9 @@ export const BLOOD_GROUPS = [
 ] as const;
 export type BloodGroup = (typeof BLOOD_GROUPS)[number];
 
+export type ReminderKind = "visit" | "vaccine";
+export type ReminderStatus = "pending" | "sent" | "cancelled";
+
 export interface Patient {
   id: string;
   facilityId: string;
@@ -46,6 +49,8 @@ export interface Patient {
   deletedAt?: number;
   mergedIntoId?: string;
   guardianId?: string;
+  smsConsent?: boolean;
+  smsConsentAt?: number;
 }
 
 export interface ImmunizationRecord {
@@ -94,7 +99,7 @@ export interface User {
 
 export interface SyncItem {
   id?: number;
-  table: "patients" | "immunizations" | "visits" | "guardians";
+  table: "patients" | "immunizations" | "visits" | "guardians" | "reminders";
   recordId: string;
   attempts: number;
   status: "pending" | "failed";
@@ -109,8 +114,28 @@ export interface Guardian {
   name: string;
   phone?: string;
   relationship: Relationship;
-  patientId?: string; // the guardian's own patient record, e.g. a mother in antenatal care
+  patientId?: string;
   createdAt: number;
   updatedAt: number;
   deletedAt?: number;
+  smsConsent?: boolean;
+  smsConsentAt?: number;
+}
+
+export interface Reminder {
+  id: string;
+  facilityId: string;
+  patientId: string;
+  kind: ReminderKind;
+  sourceId: string;
+  title: string;
+  dueDate: string;
+  sendOn: string;
+  phone: string;
+  recipient: "patient" | "guardian";
+  message: string;
+  status: ReminderStatus;
+  sentAt?: number;
+  createdAt: number;
+  updatedAt: number;
 }

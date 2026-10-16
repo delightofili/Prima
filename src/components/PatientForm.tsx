@@ -24,6 +24,7 @@ import { normalize, todayISO } from "../lib/utils";
 import { BLOOD_GROUPS, type Patient } from "../types";
 import { useDebounce } from "../hooks/common";
 import { ImmunizationChecklist } from "./ImmunizationChecklist";
+import { toE164 } from "../lib/utils";
 
 type Hint =
   | { kind: "exact"; patient: Patient }
@@ -75,6 +76,7 @@ export function PatientForm({
           isPregnant: false,
           lga: config.facilityLga,
           state: config.facilityState,
+          smsConsent: false,
         },
   });
 
@@ -94,6 +96,7 @@ export function PatientForm({
   const village = watch("village");
   const nokName = watch("nextOfKinName") ?? "";
   const nokPhone = watch("nextOfKinPhone") ?? "";
+  const phoneValue = watch("phone");
 
   const validDob =
     !!dob && /^\d{4}-\d{2}-\d{2}$/.test(dob) && dob <= todayISO();
@@ -102,6 +105,9 @@ export function PatientForm({
   const showVaccines = !editing && !!age && isUnder5(age);
   const showGuardian =
     !editing && !!age && (age.unit === "months" || age.value < 18);
+
+  const adult = !!age && age.unit === "years" && age.value >= 18;
+  const showSms = adult && !!toE164(phoneValue ?? "");
 
   useEffect(() => {
     if (!showObstetric) {
@@ -116,6 +122,9 @@ export function PatientForm({
   useEffect(() => {
     if (!showGuardian) setGuardian({ kind: "none" });
   }, [showGuardian]);
+  useEffect(() => {
+    if (!showSms) setValue("smsConsent", false);
+  }, [showSms, setValue]);
 
   // Live duplicate warning: runs 250 ms after the nurse stops typing
   const key = useDebounce(
@@ -279,6 +288,32 @@ export function PatientForm({
             {...register("phone")}
           />
         </Field>
+        {showSms && (
+          <label className="flex min-h-12 items-start gap-3 rounded-xl bg-page p-3">
+            <input
+              type="checkbox"
+              className="mt-1 size-6 accent-prima-500"
+              {...register("smsConsent")}
+            />
+            <span>
+              <span className="block font-semibold">
+                Send appointment reminders by SMS
+              </span>
+              <span className="block text-sm text-subtext">
+                The patient agrees to receive reminders on this number. Messages
+                never include health details.
+              </span>
+              {errors.smsConsent && (
+                <span
+                  role="alert"
+                  className="block text-sm font-medium text-danger"
+                >
+                  {errors.smsConsent.message}
+                </span>
+              )}
+            </span>
+          </label>
+        )}
       </section>
 
       {/* 3. ADDRESS */}

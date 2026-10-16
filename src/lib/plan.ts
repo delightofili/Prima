@@ -4,7 +4,8 @@ export type Feature =
   | "csvExport"
   | "lgaReport"
   | "unlimitedPatients"
-  | "duplicateMerge";
+  | "duplicateMerge"
+  | "smsReminders";
 
 export const PLAN_EVENT = "prima-plan";
 export const FREE_PATIENT_LIMIT = 200;
@@ -18,6 +19,7 @@ const MIN_PLAN: Record<Feature, Plan> = {
   lgaReport: "basic",
   unlimitedPatients: "basic",
   duplicateMerge: "pro",
+  smsReminders: "pro",
 };
 
 export const PRICES = { basic: 2500, pro: 5000 } as const;
@@ -60,6 +62,7 @@ export const PLANS: {
       "Follow-up due list",
       "FHIR and DHIS2 export",
       "Smart duplicate merge",
+      "SMS reminder queue (sending coming soon)",
     ],
   },
 ];

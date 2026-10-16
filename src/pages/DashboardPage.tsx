@@ -3,13 +3,15 @@ import { DashboardOverview } from "../components/DashboardOverview";
 import { FollowUpsView } from "../components/FollowUpsView";
 import { LgaReportView } from "../components/LgaReportView";
 import { PageHeader } from "../components/PageHeader";
+import { RemindersView } from "../components/RemindersView";
 import { usePageTitle } from "../hooks/common";
 
-type Tab = "overview" | "followups" | "report";
+type Tab = "overview" | "followups" | "reminders" | "report";
 
 const TABS: { id: Tab; label: string }[] = [
   { id: "overview", label: "Overview" },
   { id: "followups", label: "Follow-ups" },
+  { id: "reminders", label: "Reminders" },
   { id: "report", label: "LGA report" },
 ];
 
@@ -17,7 +19,7 @@ export function DashboardPage() {
   usePageTitle("Dashboard");
   const [params, setParams] = useSearchParams();
   const raw = params.get("tab");
-  const tab: Tab = raw === "followups" || raw === "report" ? raw : "overview";
+  const tab: Tab = TABS.some((t) => t.id === raw) ? (raw as Tab) : "overview";
 
   return (
     <>
@@ -43,6 +45,7 @@ export function DashboardPage() {
       </div>
       {tab === "overview" && <DashboardOverview />}
       {tab === "followups" && <FollowUpsView />}
+      {tab === "reminders" && <RemindersView />}
       {tab === "report" && <LgaReportView />}
     </>
   );

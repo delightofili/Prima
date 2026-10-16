@@ -10,6 +10,7 @@ import type {
   User,
   Visit,
   Guardian,
+  Reminder,
 } from "./types";
 
 interface TxFlags {
@@ -24,6 +25,7 @@ class PrimaDB extends Dexie {
   users!: Table<User, string>;
   meta!: Table<MetaItem, string>;
   guardians!: Table<Guardian, string>;
+  reminders!: Table<Reminder, string>;
 
   constructor() {
     super("prima");
@@ -64,6 +66,9 @@ class PrimaDB extends Dexie {
       patients:
         "id, &cardNumber, name, phone, nhisNumber, dob, gender, createdAt, guardianId, [name+dob+villageKey]",
       guardians: "id, phone, name, patientId, createdAt",
+    });
+    this.version(5).stores({
+      reminders: "id, patientId, status, sendOn, dueDate",
     });
   }
 }
@@ -122,4 +127,10 @@ db.guardians.hook("creating", (_key, obj, trans) => {
 });
 db.guardians.hook("updating", (_mods, key, _obj, trans) => {
   enqueue("guardians", key as string, trans);
+});
+db.reminders.hook("creating", (_key, obj, trans) => {
+  enqueue("reminders", obj.id, trans);
+});
+db.reminders.hook("updating", (_mods, key, _obj, trans) => {
+  enqueue("reminders", key as string, trans);
 });

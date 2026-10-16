@@ -153,6 +153,7 @@ export function GuardianEditDialog({
       fullName,
       phone,
       relationship,
+      smsConsent: false,
     });
     if (problem) {
       setError(problem);

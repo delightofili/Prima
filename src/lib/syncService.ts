@@ -9,6 +9,7 @@ import type {
   SyncItem,
   Visit,
   Guardian,
+  Reminder,
 } from "../types";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -47,6 +48,8 @@ const patientRow = (p: Patient) => ({
   deleted_at: isoOrNull(p.deletedAt),
   merged_into_id: p.mergedIntoId ?? null,
   guardian_id: p.guardianId ?? null,
+  sms_consent: p.smsConsent ?? false,
+  sms_consent_at: isoOrNull(p.smsConsentAt),
 });
 
 const immunizationRow = (r: ImmunizationRecord) => ({
@@ -111,6 +114,8 @@ const patientFromRow = (r: Row): Patient => ({
   deletedAt: toMs(r.deleted_at),
   mergedIntoId: r.merged_into_id ?? undefined,
   guardianId: r.guardian_id ?? undefined,
+  smsConsent: r.sms_consent || undefined,
+  smsConsentAt: toMs(r.sms_consent_at),
 });
 
 const immunizationFromRow = (r: Row): ImmunizationRecord => ({
@@ -157,6 +162,8 @@ const guardianRow = (g: Guardian) => ({
   created_at: iso(g.createdAt),
   updated_at: iso(g.updatedAt),
   deleted_at: isoOrNull(g.deletedAt),
+  sms_consent: g.smsConsent ?? false,
+  sms_consent_at: isoOrNull(g.smsConsentAt),
 });
 
 const guardianFromRow = (r: Row): Guardian => ({
@@ -170,9 +177,49 @@ const guardianFromRow = (r: Row): Guardian => ({
   createdAt: Date.parse(r.created_at),
   updatedAt: Date.parse(r.updated_at),
   deletedAt: toMs(r.deleted_at),
+  smsConsent: r.sms_consent || undefined,
+  smsConsentAt: toMs(r.sms_consent_at),
+});
+
+const reminderRow = (r: Reminder) => ({
+  id: r.id,
+  facility_id: r.facilityId,
+  patient_id: r.patientId,
+  kind: r.kind,
+  source_id: r.sourceId,
+  title: r.title,
+  due_date: r.dueDate,
+  send_on: r.sendOn,
+  phone: r.phone,
+  recipient: r.recipient,
+  message: r.message,
+  status: r.status,
+  sent_at: isoOrNull(r.sentAt),
+  created_at: iso(r.createdAt),
+  updated_at: iso(r.updatedAt),
+});
+
+const reminderFromRow = (r: Row): Reminder => ({
+  id: r.id,
+  facilityId: r.facility_id,
+  patientId: r.patient_id,
+  kind: r.kind,
+  sourceId: r.source_id,
+  title: r.title,
+  dueDate: r.due_date,
+  sendOn: r.send_on,
+  phone: r.phone,
+  recipient: r.recipient,
+  message: r.message,
+  status: r.status,
+  sentAt: toMs(r.sent_at),
+  createdAt: Date.parse(r.created_at),
+  updatedAt: Date.parse(r.updated_at),
 });
 
 /* ---------- push ----------*/
+
+let pushedThisRun = new Set<string>();
 
 async function upsertRow(table: string, row: object) {
   const { error } = await supabase
@@ -181,20 +228,30 @@ async function upsertRow(table: string, row: object) {
   if (error) throw error;
 }
 
+// Sends a patient (and the guardian they point at) once per sync run. A reminder needs its patient in the cloud.
+async function ensurePatient(patientId: string) {
+  if (pushedThisRun.has(patientId)) return;
+  const p = await db.patients.get(patientId);
+  if (!p) return;
+  if (p.guardianId) {
+    const g = await db.guardians.get(p.guardianId);
+    if (g) await upsertRow("guardians", guardianRow(g));
+  }
+  await upsertRow("patients", patientRow(p));
+  pushedThisRun.add(patientId);
+}
+
 async function pushOne(item: SyncItem) {
   if (item.table === "patients") {
-    const p = await db.patients.get(item.recordId);
-    if (!p) return;
-    // The patient may point at a guardian that was created after the patient's first upload.
-    // Send the guardian first so the cloud never sees a pointer to nothing.
-    if (p.guardianId) {
-      const g = await db.guardians.get(p.guardianId);
-      if (g) await upsertRow("guardians", guardianRow(g));
-    }
-    await upsertRow("patients", patientRow(p));
+    await ensurePatient(item.recordId);
   } else if (item.table === "guardians") {
     const g = await db.guardians.get(item.recordId);
     if (g) await upsertRow("guardians", guardianRow(g));
+  } else if (item.table === "reminders") {
+    const r = await db.reminders.get(item.recordId);
+    if (!r) return;
+    await ensurePatient(r.patientId);
+    await upsertRow("reminders", reminderRow(r));
   } else if (item.table === "immunizations") {
     const r = await db.immunizations.get(item.recordId);
     if (r) await upsertRow("immunization_records", immunizationRow(r));
@@ -226,6 +283,7 @@ let running = false;
 export async function pushPending() {
   if (running || !navigator.onLine) return;
   running = true;
+  pushedThisRun = new Set();
   try {
     const items = await db.syncQueue.orderBy("id").toArray();
     const seen = new Set<string>();
@@ -296,7 +354,12 @@ async function applyRemote<T extends { id: string; updatedAt: number }>(
 }
 
 async function pullOne<T extends { id: string; updatedAt: number }>(
-  remote: "patients" | "visits" | "immunization_records" | "guardians",
+  remote:
+    | "patients"
+    | "visits"
+    | "immunization_records"
+    | "guardians"
+    | "reminders",
   table: Table<T, string>,
   fromRow: (r: Row) => T,
 ) {
@@ -339,6 +402,7 @@ export async function pullChanges() {
       db.immunizations,
       immunizationFromRow,
     );
+    await pullOne("reminders", db.reminders, reminderFromRow);
   } catch (e) {
     console.warn("Pull failed, will retry", e);
   } finally {

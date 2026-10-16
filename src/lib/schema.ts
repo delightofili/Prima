@@ -60,6 +60,7 @@ export const patientFormSchema = z
       .max(20)
       .optional(),
     isPregnant: z.boolean(),
+    smsConsent: z.boolean(),
   })
   .superRefine((d, ctx) => {
     const issue = (path: string, message: string) =>
@@ -73,6 +74,13 @@ export const patientFormSchema = z
     }
 
     const age = calculateAge(d.dob);
+    if (d.smsConsent) {
+      const adult = age.unit === "years" && age.value >= 18;
+      if (!adult)
+        issue("smsConsent", "For children, the guardian gives SMS consent.");
+      else if (!toE164(d.phone ?? ""))
+        issue("smsConsent", "Enter a phone number to receive SMS reminders.");
+    }
     if (!isWomanOver12(d.gender, age)) {
       if (d.para !== undefined)
         issue("para", "Only for female patients over 12");

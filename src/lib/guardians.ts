@@ -28,6 +28,7 @@ export type GuardianChoice =
       phone: string;
       relationship: Relationship;
       patientId?: string;
+      smsConsent: boolean;
     };
 
 type NewChoice = Extract<GuardianChoice, { kind: "new" }>;
@@ -39,6 +40,8 @@ export function validateGuardianChoice(c: GuardianChoice): string | null {
   if (c.fullName.trim().length < 2) return "Enter the guardian's name.";
   if (c.phone.trim() && !toE164(c.phone))
     return "Enter a valid Nigerian phone number for the guardian.";
+  if (c.smsConsent && !toE164(c.phone))
+    return "Enter the guardian's phone number to send SMS reminders.";
   return null;
 }
 
@@ -53,6 +56,8 @@ export function buildGuardian(c: NewChoice, now = Date.now()): Guardian {
     patientId: c.patientId,
     createdAt: now,
     updatedAt: now,
+    smsConsent: c.smsConsent ? true : undefined,
+    smsConsentAt: c.smsConsent ? now : undefined,
   };
 }
 
@@ -127,11 +132,18 @@ export async function updateGuardian(
   v: { fullName: string; phone: string; relationship: Relationship },
 ) {
   await db.transaction("rw", db.guardians, db.syncQueue, async () => {
+    const current = await db.guardians.get(id);
+    const phone = toE164(v.phone);
+    const phoneChanged = phone !== current?.phone;
     await db.guardians.update(id, {
       fullName: v.fullName.trim(),
       name: normalize(v.fullName),
-      phone: toE164(v.phone),
+      phone,
       relationship: v.relationship,
+      // Consent was given for a specific number: a new number needs a fresh yes
+      ...(phoneChanged
+        ? { smsConsent: undefined, smsConsentAt: undefined }
+        : {}),
       updatedAt: Date.now(),
     });
   });

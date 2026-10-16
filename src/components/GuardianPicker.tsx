@@ -8,7 +8,7 @@ import {
   searchGuardians,
   type GuardianChoice,
 } from "../lib/guardians";
-import { formatPhone, normalize } from "../lib/utils";
+import { formatPhone, normalize, toE164 } from "../lib/utils";
 import type { Relationship } from "../types";
 import { GuardianCard } from "./GuardianCard";
 
@@ -107,6 +107,28 @@ function NewGuardianForm({
           onChange={(e) => onChange({ ...value, phone: e.target.value })}
         />
       </label>
+
+      {toE164(value.phone) && (
+        <label className="flex min-h-12 items-start gap-3 rounded-xl bg-white p-3">
+          <input
+            type="checkbox"
+            className="mt-1 size-6 accent-prima-500"
+            checked={value.smsConsent}
+            onChange={(e) =>
+              onChange({ ...value, smsConsent: e.target.checked })
+            }
+          />
+          <span>
+            <span className="block font-semibold">
+              Send appointment reminders by SMS to this number
+            </span>
+            <span className="block text-sm text-subtext">
+              The guardian agrees to reminders for every child linked to them.
+              Messages never include health details.
+            </span>
+          </span>
+        </label>
+      )}
 
       {nextOfKin.name.trim() && (
         <button
@@ -294,6 +316,7 @@ export function GuardianPicker({
             fullName: "",
             phone: looksLikePhone ? query : "",
             relationship: "MOTHER",
+            smsConsent: false,
           })
         }
       >

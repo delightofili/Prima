@@ -73,6 +73,7 @@ export function valuesFromPatient(p: Patient): Partial<PatientFormValues> {
     para: p.para,
     gravida: p.gravida,
     isPregnant: p.isPregnant,
+    smsConsent: !!p.smsConsent,
   };
 }
 
@@ -120,6 +121,8 @@ export async function registerPatient(
       guardianId,
       createdAt: now,
       updatedAt: now,
+      smsConsent: values.smsConsent ? true : undefined,
+      smsConsentAt: values.smsConsent ? now : undefined,
     };
     try {
       await db.transaction(
@@ -148,7 +151,23 @@ export async function updatePatient(
   existing: Patient,
   values: PatientFormValues,
 ): Promise<Patient> {
-  const changes = { ...fieldsFrom(values), updatedAt: Date.now() };
+  const now = Date.now();
+  const fields = fieldsFrom(values);
+  const phoneChanged = fields.phone !== existing.phone;
+  // Consent was given for a specific number: a new number needs a fresh yes
+  const consent = values.smsConsent && (!existing.smsConsent || !phoneChanged);
+  const keepsDate = consent && !!existing.smsConsent;
+
+  const changes = {
+    ...fields,
+    smsConsent: consent ? true : undefined,
+    smsConsentAt: consent
+      ? keepsDate
+        ? existing.smsConsentAt
+        : now
+      : undefined,
+    updatedAt: now,
+  };
   await db.transaction("rw", db.patients, db.syncQueue, async () => {
     await db.patients.update(existing.id, changes);
   });

@@ -289,3 +289,35 @@ export async function seedFamilies() {
 
   return { families: guardians.length, children: links.length };
 }
+
+export async function seedConsent() {
+  const now = Date.now();
+  const guardians = (await db.guardians.toArray()).filter(
+    (g) => !g.deletedAt && g.phone,
+  );
+  const patients = (await db.patients.toArray()).filter(
+    (p) => !p.deletedAt && p.phone,
+  );
+
+  // Local only: nothing is queued for Supabase from here
+  await remoteTransaction(
+    [db.guardians, db.patients, db.syncQueue],
+    async () => {
+      for (const g of guardians) {
+        if (Math.random() < 0.7)
+          await db.guardians.update(g.id, {
+            smsConsent: true,
+            smsConsentAt: now,
+          });
+      }
+      for (const p of patients) {
+        if (Math.random() < 0.5)
+          await db.patients.update(p.id, {
+            smsConsent: true,
+            smsConsentAt: now,
+          });
+      }
+    },
+  );
+  return guardians.length + patients.length;
+}

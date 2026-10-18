@@ -33,6 +33,8 @@ def setup_function():
     main.app.dependency_overrides[main.current_user] = lambda: "test-user"
     main.app.dependency_overrides[main.get_month_loader] = lambda: fake_month_loader
     main.app.dependency_overrides[main.get_patient_loader] = lambda: fake_patient_loader
+    main.app.dependency_overrides[main.get_role_lookup] = lambda: (lambda user_id, facility_id: "admin") 
+    
 
 
 def teardown_function():
@@ -85,3 +87,14 @@ def test_sign_in_is_required_when_auth_is_on():
     main.app.dependency_overrides[get_settings] = lambda: Settings("", "", [], True)
     response = client.get("/api/lga-report", params={"facility_id": FACILITY, "month": "2026-10"})
     assert response.status_code == 401
+
+def test_lga_report_refuses_someone_from_another_facility():
+    main.app.dependency_overrides[main.get_role_lookup] = lambda: (lambda user_id, facility_id: None)
+    response = client.get("/api/lga-report", params={"facility_id": FACILITY, "month": "2026-10"})
+    assert response.status_code == 403
+
+
+def test_batch_refuses_someone_from_another_facility():
+    main.app.dependency_overrides[main.get_role_lookup] = lambda: (lambda user_id, facility_id: None)
+    response = client.post("/api/fuzzy-check/batch", json={"facility_id": FACILITY})
+    assert response.status_code == 403    

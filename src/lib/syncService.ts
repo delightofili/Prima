@@ -217,6 +217,20 @@ const reminderFromRow = (r: Row): Reminder => ({
   updatedAt: Date.parse(r.updated_at),
 });
 
+async function hasCloudSession() {
+  const { data } = await supabase.auth.getSession();
+  return !!data.session;
+}
+
+const isAuthError = (e: unknown) => {
+  const err = e as { code?: string; status?: number; message?: string };
+  return (
+    err?.status === 401 ||
+    /^PGRST30[123]$/.test(err?.code ?? "") ||
+    /jwt/i.test(err?.message ?? "")
+  );
+};
+
 /* ---------- push ----------*/
 
 let pushedThisRun = new Set<string>();
@@ -282,6 +296,7 @@ let running = false;
 
 export async function pushPending() {
   if (running || !navigator.onLine) return;
+  if (!(await hasCloudSession())) return; // signed out of the cloud: wait quietly, records stay safe
   running = true;
   pushedThisRun = new Set();
   try {
@@ -307,6 +322,13 @@ export async function pushPending() {
         const message = err?.message ?? String(e);
         const network =
           !err?.code || /failed to fetch|network|load failed/i.test(message);
+
+        if (isAuthError(e)) {
+          await db.syncQueue.update(item.id!, {
+            lastError: "Sign in again to sync",
+          });
+          break; // does not count as a failed attempt
+        }
 
         if (network) {
           await db.syncQueue.update(item.id!, { lastError: message });
@@ -392,6 +414,7 @@ async function pullOne<T extends { id: string; updatedAt: number }>(
 
 export async function pullChanges() {
   if (pulling || !navigator.onLine) return;
+  if (!(await hasCloudSession())) return; // signed out of the cloud: wait quietly, records stay safe
   pulling = true;
   try {
     await pullOne("patients", db.patients, patientFromRow);

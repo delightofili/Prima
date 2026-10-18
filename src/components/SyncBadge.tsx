@@ -14,6 +14,8 @@ import { useOnline } from "../hooks/common";
 import { useToast } from "../hooks/useToast";
 import { retryFailed } from "../lib/syncService";
 import type { SyncItem } from "../types";
+import { KeyRound } from "lucide-react";
+import { useAuth } from "../hooks/useAuth";
 
 function SyncPanel({
   items,
@@ -91,6 +93,7 @@ export function SyncBadge() {
   const items = queue ?? [];
   const waiting = items.filter((i) => i.status !== "failed").length;
   const failed = items.filter((i) => i.status === "failed").length;
+  const { cloudOk } = useAuth();
 
   let Icon: LucideIcon = Check;
   let text = "Synced";
@@ -100,6 +103,9 @@ export function SyncBadge() {
   } else if (!online) {
     Icon = CloudOff;
     text = waiting > 0 ? `Offline · ${waiting} saved` : "Offline";
+  } else if (!cloudOk) {
+    Icon = KeyRound;
+    text = "Sign in to sync";
   } else if (waiting > 0) {
     Icon = RefreshCw;
     text = `Syncing ${waiting}…`;

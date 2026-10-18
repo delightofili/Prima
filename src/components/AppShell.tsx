@@ -1,5 +1,6 @@
-import { NavLink, Outlet } from "react-router-dom";
-import { ChartColumn, House, UserPlus, Users } from "lucide-react";
+import { NavLink, Outlet, Link } from "react-router-dom";
+import { ChartColumn, House, UserPlus, Users, CircleUser } from "lucide-react";
+import { SessionBanner } from "./SessionBanner";
 import { GloveToggle } from "./GloveToggle";
 import { Logo } from "./Logo";
 import { SyncBadge } from "./SyncBadge";
@@ -37,6 +38,16 @@ export function AppShell() {
             </NavLink>
           ))}
         </nav>
+        <NavLink
+          to="/account"
+          className={({ isActive }) =>
+            `mt-1 flex h-12 items-center gap-3 rounded-xl px-3 text-base font-semibold ${
+              isActive ? "bg-prima-50 text-prima-900" : "text-ink hover:bg-page"
+            }`
+          }
+        >
+          <CircleUser size={22} /> Account
+        </NavLink>
         <div className="mt-auto space-y-3">
           <GloveToggle />
           <SyncBadge />
@@ -47,10 +58,16 @@ export function AppShell() {
         {/* Top bar: phones */}
         <header className="flex items-center justify-between bg-prima-500 px-4 pb-3 pt-[calc(0.75rem+env(safe-area-inset-top))] md:hidden">
           <Logo light size={32} />
-          <SyncBadge />
+          <div className="flex items-center gap-1">
+            <SyncBadge />
+            <Link to="/account" aria-label="Account" className="p-2 text-white">
+              <CircleUser size={26} />
+            </Link>
+          </div>
         </header>
 
         <main className="mx-auto w-full max-w-5xl flex-1 px-4 pb-28 pt-5 md:px-8 md:pb-10 md:pt-8">
+          <SessionBanner />
           <Outlet />
         </main>
       </div>

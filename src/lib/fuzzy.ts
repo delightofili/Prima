@@ -1,5 +1,6 @@
 import { config } from "./config";
 import { nameSimilarity } from "./duplicates";
+import { supabase } from "./supabase";
 
 export interface SimilarMatch {
   id: string;
@@ -30,9 +31,13 @@ async function findSimilarRemote(
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), 2500);
   try {
+    const token = (await supabase.auth.getSession()).data.session?.access_token;
     const res = await fetch(`${config.pythonApiUrl}/api/fuzzy-check`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
       body: JSON.stringify({ name, candidates, threshold: THRESHOLD }),
       signal: controller.signal,
     });

@@ -59,3 +59,19 @@ def load_month(facility_id: str, month: str) -> tuple[list[dict], list[dict], li
         .lt("date_given", end)
     )
     return patients, visits, shots
+def get_role(user_id: str, facility_id: str) -> str | None:
+    """'admin', 'staff', or None if this person does not belong to the facility."""
+    rows = (
+        get_supabase()
+        .table("memberships")
+        .select("role")
+        .eq("user_id", user_id)
+        .eq("facility_id", facility_id)
+        .limit(1)
+        .execute()
+        .data
+        or []
+    )
+    return rows[0]["role"] if rows else None
+
+    

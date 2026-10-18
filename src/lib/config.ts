@@ -7,15 +7,46 @@ function need(name: string): string {
   return value;
 }
 
+export interface FacilityInfo {
+  id: string;
+  name: string;
+  code: string;
+  lga: string;
+  state: string;
+  plan: "free" | "basic" | "pro";
+}
+
+// The facility comes from the signed-in account, not from a setting in the app.
+let current: FacilityInfo | null = null;
+export const setCurrentFacility = (f: FacilityInfo | null) => {
+  current = f;
+};
+export const getCurrentFacility = () => current;
+
+function facility(): FacilityInfo {
+  if (!current) throw new Error("No facility is signed in.");
+  return current;
+}
+
 export const config = {
   supabaseUrl: need("VITE_SUPABASE_URL"),
   supabaseKey: need("VITE_SUPABASE_KEY"),
-  facilityId: need("VITE_FACILITY_ID"),
-  facilityCode: need("VITE_FACILITY_CODE"),
-  facilityName: need("VITE_FACILITY_NAME"),
-  facilityLga: need("VITE_FACILITY_LGA"),
-  facilityState: need("VITE_FACILITY_STATE"),
   pythonApiUrl: (
     (import.meta.env.VITE_PYTHON_API_URL as string | undefined) ?? ""
   ).trim(),
+  get facilityId() {
+    return facility().id;
+  },
+  get facilityCode() {
+    return facility().code;
+  },
+  get facilityName() {
+    return facility().name;
+  },
+  get facilityLga() {
+    return facility().lga;
+  },
+  get facilityState() {
+    return facility().state;
+  },
 };

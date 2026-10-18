@@ -10,6 +10,7 @@ import { EditVisitPage } from "./pages/EditVisitPage";
 import { DashboardPage } from "./pages/DashboardPage";
 import { PlansPage } from "./pages/PlansPage";
 import { DuplicatesPage } from "./pages/DuplicatesPage";
+import { AccountPage } from "./pages/AccountPage";
 
 function NotFound() {
   return (
@@ -39,6 +40,7 @@ export default function App() {
         <Route path="dashboard" element={<DashboardPage />} />
         <Route path="plans" element={<PlansPage />} />
         <Route path="duplicates" element={<DuplicatesPage />} />
+        <Route path="account" element={<AccountPage />} />
         <Route path="*" element={<NotFound />} />
       </Route>
     </Routes>

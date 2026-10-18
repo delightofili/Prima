@@ -1,5 +1,5 @@
 import Dexie, { type Table, type Transaction } from "dexie";
-import { config } from "./lib/config";
+import { getCurrentFacility } from "./lib/config";
 import { toE164 } from "./lib/utils";
 import { nextLabelFor } from "./lib/vaccines";
 import type {
@@ -56,7 +56,7 @@ class PrimaDB extends Dexie {
           .table("immunizations")
           .toCollection()
           .modify((r) => {
-            r.facilityId = r.facilityId ?? config.facilityId;
+            r.facilityId = r.facilityId ?? getCurrentFacility()?.id ?? "";
             r.updatedAt = r.updatedAt ?? r.createdAt;
             r.nextVaccineLabel =
               r.nextVaccineLabel ?? nextLabelFor(r.vaccineName, r.doseNumber);

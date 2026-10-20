@@ -51,6 +51,9 @@ export interface Patient {
   guardianId?: string;
   smsConsent?: boolean;
   smsConsentAt?: number;
+  noticeAt?: number; // when the privacy notice was explained
+  noticeVersion?: string;
+  erasedAt?: number; // set only by the server's erase function
 }
 
 export interface ImmunizationRecord {
@@ -84,6 +87,19 @@ export interface Visit {
   createdAt: number;
   updatedAt: number;
   deletedAt?: number;
+  erasedAt?: number;
+}
+
+export interface AuditEntry {
+  id: string;
+  facilityId: string;
+  actorId: string;
+  actorName: string;
+  action: string; // "patient.create", "visit.delete", "consent.sms.on" ...
+  entityType?: string;
+  entityId?: string;
+  summary: string; // card numbers and field names only, never names or diagnoses
+  createdAt: number;
 }
 
 export interface MetaItem {
@@ -99,7 +115,13 @@ export interface User {
 
 export interface SyncItem {
   id?: number;
-  table: "patients" | "immunizations" | "visits" | "guardians" | "reminders";
+  table:
+    | "patients"
+    | "immunizations"
+    | "visits"
+    | "guardians"
+    | "reminders"
+    | "audit";
   recordId: string;
   attempts: number;
   status: "pending" | "failed";

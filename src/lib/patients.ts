@@ -8,6 +8,7 @@ import type { PatientFormValues } from "./schema";
 import type { ImmunizationRecord, Patient } from "../types";
 import { FREE_PATIENT_LIMIT, PlanLimitError, canUse, getPlan } from "./plan";
 import { buildGuardian, type GuardianChoice } from "./guardians";
+import { NOTICE_VERSION } from "./privacy";
 
 const clean = (v?: string) => {
   const t = v?.trim();
@@ -74,6 +75,7 @@ export function valuesFromPatient(p: Patient): Partial<PatientFormValues> {
     gravida: p.gravida,
     isPregnant: p.isPregnant,
     smsConsent: !!p.smsConsent,
+    noticeGiven: !!p.noticeAt,
   };
 }
 
@@ -123,6 +125,8 @@ export async function registerPatient(
       updatedAt: now,
       smsConsent: values.smsConsent ? true : undefined,
       smsConsentAt: values.smsConsent ? now : undefined,
+      noticeAt: values.noticeGiven ? now : undefined,
+      noticeVersion: values.noticeGiven ? NOTICE_VERSION : undefined,
     };
     try {
       await db.transaction(

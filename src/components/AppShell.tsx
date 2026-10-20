@@ -1,10 +1,18 @@
 import { NavLink, Outlet, Link } from "react-router-dom";
-import { ChartColumn, House, UserPlus, Users, CircleUser } from "lucide-react";
+import {
+  ChartColumn,
+  House,
+  UserPlus,
+  Users,
+  CircleUser,
+  Lock,
+} from "lucide-react";
 import { SessionBanner } from "./SessionBanner";
 import { GloveToggle } from "./GloveToggle";
 import { Logo } from "./Logo";
 import { SyncBadge } from "./SyncBadge";
 import { config } from "../lib/config";
+import { useLock } from "../hooks/useLock";
 
 const NAV = [
   { to: "/", label: "Home", icon: House, end: true },
@@ -14,6 +22,7 @@ const NAV = [
 ];
 
 export function AppShell() {
+  const { lockNow } = useLock();
   return (
     <div className="min-h-screen md:flex">
       {/* Sidebar: tablets and laptops */}
@@ -38,6 +47,13 @@ export function AppShell() {
             </NavLink>
           ))}
         </nav>
+        <button
+          type="button"
+          onClick={lockNow}
+          className="mt-1 flex h-12 w-full items-center gap-3 rounded-xl px-3 text-base font-semibold text-ink hover:bg-page"
+        >
+          <Lock size={22} /> Lock
+        </button>
         <NavLink
           to="/account"
           className={({ isActive }) =>
@@ -63,6 +79,14 @@ export function AppShell() {
             <Link to="/account" aria-label="Account" className="p-2 text-white">
               <CircleUser size={26} />
             </Link>
+            <button
+              type="button"
+              aria-label="Lock Prima"
+              className="p-2 text-white"
+              onClick={lockNow}
+            >
+              <Lock size={24} />
+            </button>
           </div>
         </header>
 

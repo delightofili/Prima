@@ -11,6 +11,8 @@ import { DashboardPage } from "./pages/DashboardPage";
 import { PlansPage } from "./pages/PlansPage";
 import { DuplicatesPage } from "./pages/DuplicatesPage";
 import { AccountPage } from "./pages/AccountPage";
+import { AdminPage } from "./pages/AdminPage";
+import { PrivacyPage } from "./pages/PrivacyPage";
 
 function NotFound() {
   return (
@@ -41,6 +43,8 @@ export default function App() {
         <Route path="plans" element={<PlansPage />} />
         <Route path="duplicates" element={<DuplicatesPage />} />
         <Route path="account" element={<AccountPage />} />
+        <Route path="privacy" element={<PrivacyPage />} />
+        <Route path="admin" element={<AdminPage />} />
         <Route path="*" element={<NotFound />} />
       </Route>
     </Routes>

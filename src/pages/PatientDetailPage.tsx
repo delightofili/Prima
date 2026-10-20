@@ -31,6 +31,8 @@ import { ConfirmDialog } from "../components/ConfirmDialog";
 import { VisitCard } from "../components/VisitCard";
 import { FamilySection } from "../components/FamilySection";
 import { SmsSection } from "../components/SmsSection";
+import { PrivacyCard } from "../components/PrivacyCard";
+import { useCan } from "../hooks/useCan";
 
 type Pending =
   | { kind: "patient" }
@@ -92,6 +94,7 @@ export function PatientDetailPage() {
   const { patientMap, loading } = usePatients("");
   const [confirm, setConfirm] = useState<Pending>(null);
   const [addingVaccine, setAddingVaccine] = useState(false);
+  const can = useCan();
 
   const shots = useLiveQuery(async () => {
     const rows = await db.immunizations.where("patientId").equals(id).toArray();
@@ -241,17 +244,20 @@ export function PatientDetailPage() {
           >
             <Pencil size={20} className="mr-2" /> Edit
           </Link>
-          <button
-            type="button"
-            className="btn border-2 border-danger text-danger hover:bg-danger/10 md:w-40"
-            onClick={() => setConfirm({ kind: "patient" })}
-          >
-            <Trash2 size={20} className="mr-2" /> Delete
-          </button>
+          {can("deletePatient") && (
+            <button
+              type="button"
+              className="btn border-2 border-danger text-danger hover:bg-danger/10 md:w-40"
+              onClick={() => setConfirm({ kind: "patient" })}
+            >
+              <Trash2 size={20} className="mr-2" /> Delete
+            </button>
+          )}
         </div>
       </section>
       <FamilySection patient={p} />
       <SmsSection patient={p} />
+      <PrivacyCard patient={p} />
       <section className="space-y-3">
         <h2 className="flex items-center gap-2 text-lg font-bold">
           <Stethoscope size={20} className="text-prima-500" /> Visits (

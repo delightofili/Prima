@@ -7,6 +7,7 @@ interface Props {
   children: ReactNode;
   onClose?: () => void;
   dismissible?: boolean;
+  top?: boolean;
 }
 
 export function Modal({ title, children, onClose, dismissible = true }: Props) {
@@ -24,7 +25,7 @@ export function Modal({ title, children, onClose, dismissible = true }: Props) {
       role="dialog"
       aria-modal="true"
       aria-label={title}
-      className="fixed inset-0 z-50 flex items-end justify-center bg-ink/40 p-4 md:items-center"
+      className={`fixed inset-0 ${top ? "z-[80]" : "z-50"} flex items-end justify-center bg-ink/40 p-4 md:items-center`}
       onClick={dismissible ? onClose : undefined}
     >
       <div

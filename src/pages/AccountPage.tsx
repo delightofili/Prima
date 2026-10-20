@@ -31,6 +31,9 @@ import {
   type Member,
 } from "../lib/team";
 import { formatDate } from "../lib/utils";
+import { Link } from "react-router-dom";
+import { SecurityCard } from "../components/SecurityCard";
+import { useCan } from "../hooks/useCan";
 
 function EditFacilityDialog({ onClose }: { onClose: () => void }) {
   const { facility, refreshFacility } = useAuth();
@@ -142,6 +145,7 @@ function InviteDialog({
 
 export function AccountPage() {
   usePageTitle("Account");
+  const can = useCan();
   const { account, facility, role, signOut } = useAuth();
   const toast = useToast();
   const online = useOnline();
@@ -236,6 +240,23 @@ export function AccountPage() {
             >
               <Pencil size={20} className="mr-2" /> Edit details
             </button>
+          )}
+        </section>
+
+        <SecurityCard />
+
+        <section className="card space-y-3 md:col-span-2">
+          <h2 className="text-lg font-bold">Privacy</h2>
+          <Link
+            to="/privacy"
+            className="block font-semibold text-prima-500 underline"
+          >
+            Read the privacy notice
+          </Link>
+          {can("viewAudit") && (
+            <Link to="/admin" className="btn btn-secondary sm:w-64">
+              Audit log and data requests
+            </Link>
           )}
         </section>
 

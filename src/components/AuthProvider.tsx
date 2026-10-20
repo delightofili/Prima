@@ -37,6 +37,10 @@ import {
   WelcomeScreen,
 } from "./AuthScreens";
 
+import { setAuditActor } from "../lib/auditCore";
+import { logAudit } from "../lib/audit";
+import { SecurityGate } from "./SecurityGate";
+
 const nameOf = (u: User) =>
   (u.user_metadata?.full_name as string | undefined) ??
   u.email?.split("@")[0] ??
@@ -67,6 +71,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
     await writeLocal(next, mine.facility);
     setCurrentFacility(mine.facility);
+    setAuditActor({ id: user.id, name: nameOf(user) });
+    void logAudit("auth.sign_in", "user", user.id, "signed in");
     setAccount(next);
     setFacility(mine.facility);
     setStatus("ready");
@@ -162,6 +168,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       window.removeEventListener("online", run);
     };
   }, [status, account, facility]);
+
+  useEffect(() => {
+    setAuditActor(account ? { id: account.userId, name: account.name } : null);
+  }, [account]);
 
   const signIn = useCallback(
     async (email: string, password: string) => {
@@ -272,7 +282,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       {status === "loading" && <Splash />}
       {status === "signedOut" && <WelcomeScreen />}
       {status === "needsFacility" && <FacilityChooser />}
-      {status === "ready" && (accessEnded ? <AccessEndedScreen /> : children)}
+      {status === "ready" &&
+        (accessEnded ? (
+          <AccessEndedScreen />
+        ) : (
+          <SecurityGate>{children}</SecurityGate>
+        ))}
       {foreign && <ForeignDataDialog unsynced={foreign.unsynced} />}
     </AuthContext.Provider>
   );

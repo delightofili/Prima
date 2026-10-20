@@ -12,6 +12,9 @@ import { patientsToRows } from "../lib/exports";
 import { canUse } from "../lib/plan";
 import { todayISO } from "../lib/utils";
 import { PRICES, money } from "../lib/plan";
+import { useCan } from "../hooks/useCan";
+import { logAudit } from "../lib/audit";
+import { config } from "../lib/config";
 
 export function PatientsPage() {
   usePageTitle("Patients");
@@ -25,7 +28,14 @@ export function PatientsPage() {
       return;
     }
     downloadCsv(`prima-patients-${todayISO()}.csv`, patientsToRows(results));
+    void logAudit(
+      "export.patients",
+      "facility",
+      config.facilityId,
+      `${results.length} patients`,
+    );
   };
+  const can = useCan();
 
   return (
     <>
@@ -34,16 +44,20 @@ export function PatientsPage() {
         subtitle="Search by name, phone, NHIS or card number."
         action={
           <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap">
-            <Link to="/duplicates" className="btn btn-secondary sm:w-48">
-              <GitMerge size={20} className="mr-2" /> Find duplicates
-            </Link>
-            <button
-              type="button"
-              className="btn btn-secondary sm:w-44"
-              onClick={exportCsv}
-            >
-              <Download size={20} className="mr-2" /> Export CSV
-            </button>
+            {can("mergeDuplicates") && (
+              <Link to="/duplicates" className="btn btn-secondary sm:w-48">
+                <GitMerge size={20} className="mr-2" /> Find duplicates
+              </Link>
+            )}
+            {can("exportData") && (
+              <button
+                type="button"
+                className="btn btn-secondary sm:w-44"
+                onClick={exportCsv}
+              >
+                <Download size={20} className="mr-2" /> Export CSV
+              </button>
+            )}
             <Link to="/register" className="btn btn-primary sm:w-44">
               <UserPlus size={20} className="mr-2" /> Register
             </Link>

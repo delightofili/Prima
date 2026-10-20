@@ -12,6 +12,8 @@ import { StatTile } from "./StatTile";
 import { UpgradeCard } from "./UpgradeCard";
 import { UpgradeDialog } from "./UpgradeDialog";
 import { PRICES, money } from "../lib/plan";
+import { useCan } from "../hooks/useCan";
+import { logAudit } from "../lib/audit";
 
 function ReportCard({
   title,
@@ -39,6 +41,7 @@ function SimpleTable({
 }) {
   const align = (i: number) =>
     i >= numericFrom ? "text-right tabular-nums" : "";
+
   return (
     <div className="overflow-x-auto">
       <table className="w-full">
@@ -72,6 +75,7 @@ export function LgaReportView() {
   const [month, setMonth] = useState(monthOf(todayISO()));
   const [upgrade, setUpgrade] = useState(false);
   const report = useLgaReport(month);
+  const can = useCan();
 
   if (!report) return null;
   const unlocked = canUse(plan, "lgaReport");
@@ -89,6 +93,7 @@ export function LgaReportView() {
         state: config.facilityState,
       }),
     );
+    void logAudit("export.report", "facility", config.facilityId, month);
   };
 
   return (
@@ -103,13 +108,19 @@ export function LgaReportView() {
             {monthLabel(month)}
           </p>
         </div>
-        <button
-          type="button"
-          className="btn btn-primary md:w-60"
-          onClick={exportReport}
-        >
-          <Download size={20} className="mr-2" /> Download report (CSV)
-        </button>
+        {can("exportData") ? (
+          <button
+            type="button"
+            className="btn btn-primary md:w-60"
+            onClick={exportReport}
+          >
+            <Download size={20} className="mr-2" /> Download report (CSV)
+          </button>
+        ) : (
+          <p className="text-sm text-subtext">
+            Ask your facility admin to download the report.
+          </p>
+        )}
       </section>
 
       <section className="grid grid-cols-1 gap-3 sm:grid-cols-3">

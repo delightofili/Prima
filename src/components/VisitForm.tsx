@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Activity,
@@ -43,7 +43,7 @@ export function VisitForm({
   const {
     register,
     handleSubmit,
-    watch,
+    control,
     setValue,
     formState: { errors, isSubmitting },
   } = useForm<VisitFormValues>({
@@ -74,10 +74,10 @@ export function VisitForm({
   );
   const [saveError, setSaveError] = useState<string | null>(null);
 
-  const visitDate = watch("visitDate");
-  const sys = watch("systolic");
-  const dia = watch("diastolic");
-  const temp = watch("temperature");
+  const visitDate = useWatch({ control, name: "visitDate" });
+  const sys = useWatch({ control, name: "systolic" });
+  const dia = useWatch({ control, name: "diastolic" });
+  const temp = useWatch({ control, name: "temperature" });
 
   const age = calculateAge(patient.dob, fromISO(visitDate || todayISO()));
   const adult = age.unit === "years" && age.value >= 13;

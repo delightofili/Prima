@@ -1,5 +1,10 @@
-import { useEffect, useState, type ReactNode } from "react";
-import { useForm } from "react-hook-form";
+import {
+  useEffect,
+  useState,
+  type ChangeEvent,
+  type ReactNode,
+} from "react";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { db } from "../db";
 import { config } from "../lib/config";
@@ -64,7 +69,7 @@ export function PatientForm({
   const {
     register,
     handleSubmit,
-    watch,
+    control,
     setValue,
     formState: { errors, isSubmitting },
   } = useForm<PatientFormValues>({
@@ -77,6 +82,7 @@ export function PatientForm({
           lga: config.facilityLga,
           state: config.facilityState,
           smsConsent: false,
+          noticeGiven: false,
         },
   });
 
@@ -84,19 +90,19 @@ export function PatientForm({
   const [hint, setHint] = useState<Hint>(null);
   const [guardian, setGuardian] = useState<GuardianChoice>({ kind: "none" });
   const [guardianError, setGuardianError] = useState<string | null>(null);
-  const [confirmed, setConfirmed] = useState(false);
+  const [confirmedForKey, setConfirmedForKey] = useState<string | null>(null);
   const [vaccineError, setVaccineError] = useState<string | null>(null);
   const [saveError, setSaveError] = useState<string | null>(null);
 
-  const isNewAdmission = watch("isNewAdmission");
-  const complaint = watch("initialChiefComplaint") ?? "";
-  const gender = watch("gender");
-  const dob = watch("dob");
-  const fullName = watch("fullName");
-  const village = watch("village");
-  const nokName = watch("nextOfKinName") ?? "";
-  const nokPhone = watch("nextOfKinPhone") ?? "";
-  const phoneValue = watch("phone");
+  const isNewAdmission = useWatch({ control, name: "isNewAdmission" });
+  const complaint = useWatch({ control, name: "initialChiefComplaint" }) ?? "";
+  const gender = useWatch({ control, name: "gender" });
+  const dob = useWatch({ control, name: "dob" });
+  const fullName = useWatch({ control, name: "fullName" });
+  const village = useWatch({ control, name: "village" });
+  const nokName = useWatch({ control, name: "nextOfKinName" }) ?? "";
+  const nokPhone = useWatch({ control, name: "nextOfKinPhone" }) ?? "";
+  const phoneValue = useWatch({ control, name: "phone" });
 
   const validDob =
     !!dob && /^\d{4}-\d{2}-\d{2}$/.test(dob) && dob <= todayISO();
@@ -117,31 +123,42 @@ export function PatientForm({
     }
   }, [showObstetric, setValue]);
   useEffect(() => {
-    if (!showVaccines) setPicked({});
-  }, [showVaccines]);
-  useEffect(() => {
-    if (!showGuardian) setGuardian({ kind: "none" });
-  }, [showGuardian]);
-  useEffect(() => {
     if (!showSms) setValue("smsConsent", false);
   }, [showSms, setValue]);
+
+  const dobRegistration = register("dob");
+  const handleDobChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const value = event.currentTarget.value;
+    void dobRegistration.onChange(event);
+    const nextValidDob =
+      /^\d{4}-\d{2}-\d{2}$/.test(value) && value <= todayISO();
+    const nextAge = nextValidDob ? calculateAge(value) : null;
+    const nextShowVaccines = !editing && !!nextAge && isUnder5(nextAge);
+    const nextShowGuardian =
+      !editing &&
+      !!nextAge &&
+      (nextAge.unit === "months" || nextAge.value < 18);
+
+    if (showVaccines && !nextShowVaccines) setPicked({});
+    if (showGuardian && !nextShowGuardian) setGuardian({ kind: "none" });
+  };
 
   // Live duplicate warning: runs 250 ms after the nurse stops typing
   const key = useDebounce(
     JSON.stringify([fullName ?? "", dob ?? "", village ?? ""]),
     250,
   );
+  const confirmed = confirmedForKey === key;
   useEffect(() => {
     let cancelled = false;
     const [n, d, v] = JSON.parse(key) as [string, string, string];
-    setConfirmed(false);
     findExactDuplicate(n, d, v, patient?.id).then((p) => {
       if (!cancelled) setHint(p ? { kind: "exact", patient: p } : null);
     });
     return () => {
       cancelled = true;
     };
-  }, [key]);
+  }, [key, patient?.id]);
 
   const onSubmit = handleSubmit(async (values) => {
     setSaveError(null);
@@ -249,7 +266,8 @@ export function PatientForm({
             type="date"
             className="input"
             max={todayISO()}
-            {...register("dob")}
+            {...dobRegistration}
+            onChange={handleDobChange}
           />
           {age && <span className="block text-subtext">Age: {age.label}</span>}
         </Field>
@@ -456,6 +474,27 @@ export function PatientForm({
         </section>
       )}
 
+      {!editing && (
+        <label className="flex min-h-12 items-start gap-3 rounded-2xl border-2 border-line bg-white p-4 md:col-span-2">
+          <input
+            type="checkbox"
+            className="mt-1 size-6 accent-prima-500"
+            {...register("noticeGiven")}
+          />
+          <span>
+            <span className="block font-semibold">
+              Privacy notice explained
+            </span>
+            <span className="block text-sm text-subtext">
+              I told the patient (or their guardian) how their information is
+              used, and that they can ask to see, correct or remove it. If this
+              was not possible now, leave it unticked and record it later from
+              the profile.
+            </span>
+          </span>
+        </label>
+      )}
+
       {/* DUPLICATE WARNING */}
       {hint && (
         <div
@@ -488,7 +527,9 @@ export function PatientForm({
               type="checkbox"
               className="size-6 accent-prima-500"
               checked={confirmed}
-              onChange={(e) => setConfirmed(e.target.checked)}
+              onChange={(e) =>
+                setConfirmedForKey(e.target.checked ? key : null)
+              }
             />
             This is a different person
           </label>

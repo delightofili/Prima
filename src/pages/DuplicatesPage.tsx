@@ -17,6 +17,7 @@ import {
 import { canUse, PRICES, money } from "../lib/plan";
 import { formatPhone } from "../lib/utils";
 import type { Patient } from "../types";
+import { useCan } from "../hooks/useCan";
 
 function Person({ p }: { p: Patient }) {
   const age = calculateAge(p.dob);
@@ -112,6 +113,16 @@ export function DuplicatesPage() {
   };
 
   const high = matches?.filter((m) => m.level === "high").length ?? 0;
+  const can = useCan();
+  if (!can("mergeDuplicates")) {
+    return (
+      <div className="card mx-auto max-w-md text-center">
+        <p className="text-lg font-semibold">
+          Only a facility admin can find and merge duplicates.
+        </p>
+      </div>
+    );
+  }
 
   return (
     <>

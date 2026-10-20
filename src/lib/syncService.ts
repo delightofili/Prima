@@ -10,6 +10,7 @@ import type {
   Visit,
   Guardian,
   Reminder,
+  AuditEntry,
 } from "../types";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -20,6 +21,18 @@ const isoOrNull = (ms?: number) => (ms ? iso(ms) : null);
 const toMs = (s?: string | null) => (s ? Date.parse(s) : undefined);
 
 /* ---------- local -> server ---------- */
+
+const auditRow = (a: AuditEntry) => ({
+  id: a.id,
+  facility_id: a.facilityId,
+  actor_id: a.actorId,
+  actor_name: a.actorName,
+  action: a.action,
+  entity_type: a.entityType ?? null,
+  entity_id: a.entityId ?? null,
+  summary: a.summary,
+  created_at: iso(a.createdAt),
+});
 
 const patientRow = (p: Patient) => ({
   id: p.id,
@@ -50,6 +63,9 @@ const patientRow = (p: Patient) => ({
   guardian_id: p.guardianId ?? null,
   sms_consent: p.smsConsent ?? false,
   sms_consent_at: isoOrNull(p.smsConsentAt),
+  notice_given_at: isoOrNull(p.noticeAt),
+  notice_version: p.noticeVersion ?? null,
+  erased_at: isoOrNull(p.erasedAt),
 });
 
 const immunizationRow = (r: ImmunizationRecord) => ({
@@ -83,6 +99,7 @@ const visitRow = (v: Visit) => ({
   created_at: iso(v.createdAt),
   updated_at: iso(v.updatedAt),
   deleted_at: isoOrNull(v.deletedAt),
+  erased_at: isoOrNull(v.erasedAt),
 });
 
 /* ---------- server -> local ---------- */
@@ -116,6 +133,9 @@ const patientFromRow = (r: Row): Patient => ({
   guardianId: r.guardian_id ?? undefined,
   smsConsent: r.sms_consent || undefined,
   smsConsentAt: toMs(r.sms_consent_at),
+  noticeAt: toMs(r.notice_given_at),
+  noticeVersion: r.notice_version ?? undefined,
+  erasedAt: toMs(r.erased_at),
 });
 
 const immunizationFromRow = (r: Row): ImmunizationRecord => ({
@@ -149,6 +169,7 @@ const visitFromRow = (r: Row): Visit => ({
   createdAt: Date.parse(r.created_at),
   updatedAt: Date.parse(r.updated_at),
   deletedAt: toMs(r.deleted_at),
+  erasedAt: toMs(r.erased_at),
 });
 
 const guardianRow = (g: Guardian) => ({
@@ -266,6 +287,14 @@ async function pushOne(item: SyncItem) {
     if (!r) return;
     await ensurePatient(r.patientId);
     await upsertRow("reminders", reminderRow(r));
+  } else if (item.table === "audit") {
+    const a = await db.audit.get(item.recordId);
+    if (!a) return;
+    const { error } = await supabase
+      .from("audit_log")
+      .upsert(auditRow(a), { onConflict: "id", ignoreDuplicates: true });
+    if (error) throw error;
+    await db.audit.delete(a.id);
   } else if (item.table === "immunizations") {
     const r = await db.immunizations.get(item.recordId);
     if (r) await upsertRow("immunization_records", immunizationRow(r));
@@ -363,7 +392,10 @@ async function applyRemote<T extends { id: string; updatedAt: number }>(
         const local = await table.get(remote.id);
         if (!local) {
           await table.add(remote);
-        } else if (remote.updatedAt > local.updatedAt) {
+        } else if (
+          (remote as { erasedAt?: number }).erasedAt ||
+          remote.updatedAt > local.updatedAt
+        ) {
           await table.put(remote);
           // The newer server copy replaces our older one, so our stale queued upload is dropped.
           await db.syncQueue.where("recordId").equals(remote.id).delete();

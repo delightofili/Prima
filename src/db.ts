@@ -2,6 +2,7 @@ import Dexie, { type Table, type Transaction } from "dexie";
 import { getCurrentFacility } from "./lib/config";
 import { toE164 } from "./lib/utils";
 import { nextLabelFor } from "./lib/vaccines";
+import { buildAudit } from "./lib/auditCore";
 import type {
   ImmunizationRecord,
   MetaItem,
@@ -11,6 +12,7 @@ import type {
   Visit,
   Guardian,
   Reminder,
+  AuditEntry,
 } from "./types";
 
 interface TxFlags {
@@ -26,6 +28,7 @@ class PrimaDB extends Dexie {
   meta!: Table<MetaItem, string>;
   guardians!: Table<Guardian, string>;
   reminders!: Table<Reminder, string>;
+  audit!: Table<AuditEntry, string>;
 
   constructor() {
     super("prima");
@@ -70,6 +73,9 @@ class PrimaDB extends Dexie {
     this.version(5).stores({
       reminders: "id, patientId, status, sendOn, dueDate",
     });
+    this.version(6).stores({
+      audit: "id, createdAt",
+    });
   }
 }
 
@@ -102,35 +108,170 @@ function enqueue(
   trans.table("syncQueue").add(item);
 }
 
+export async function writeAudit(entry: AuditEntry) {
+  await db.transaction("rw", db.audit, db.syncQueue, async () => {
+    await db.audit.add(entry);
+  });
+}
+
+// Writes the audit line only AFTER the change has really been saved.
+function track(
+  trans: Transaction,
+  action: string,
+  entityType: string,
+  entityId: string,
+  summary: string,
+) {
+  if ((trans as unknown as TxFlags).remote) return; // pulled from the server: it was audited where it happened
+  const entry = buildAudit(action, entityType, entityId, summary);
+  if (!entry) return;
+  trans.on("complete", () => {
+    void writeAudit(entry);
+  });
+}
+
+const has = (mods: object, key: string) =>
+  Object.prototype.hasOwnProperty.call(mods, key);
+const val = (mods: object, key: string) =>
+  (mods as Record<string, unknown>)[key];
+const fieldsOf = (mods: object) =>
+  Object.keys(mods).filter((k) => k !== "updatedAt");
+
+/* ---------- patients ---------- */
 db.patients.hook("creating", (_key, obj, trans) => {
   enqueue("patients", obj.id, trans);
+  track(trans, "patient.create", "patient", obj.id, `card ${obj.cardNumber}`);
 });
-db.patients.hook("updating", (_mods, key, _obj, trans) => {
-  enqueue("patients", key as string, trans);
+db.patients.hook("updating", (mods, key, obj, trans) => {
+  const id = key as string;
+  const card = `card ${obj.cardNumber}`;
+  enqueue("patients", id, trans);
+
+  if (has(mods, "deletedAt")) {
+    const merged = has(mods, "mergedIntoId") && !!val(mods, "mergedIntoId");
+    const action = val(mods, "deletedAt")
+      ? merged
+        ? "patient.merge"
+        : "patient.delete"
+      : "patient.restore";
+    track(trans, action, "patient", id, card);
+  } else if (has(mods, "smsConsent")) {
+    track(
+      trans,
+      val(mods, "smsConsent") ? "consent.sms.on" : "consent.sms.off",
+      "patient",
+      id,
+      card,
+    );
+  } else if (has(mods, "noticeAt")) {
+    track(trans, "consent.notice", "patient", id, card);
+  } else if (fieldsOf(mods).length > 0) {
+    track(
+      trans,
+      "patient.update",
+      "patient",
+      id,
+      `${card}: ${fieldsOf(mods).join(", ")}`,
+    );
+  }
 });
 
-db.immunizations.hook("creating", (_key, obj, trans) => {
-  enqueue("immunizations", obj.id, trans);
-});
-db.immunizations.hook("updating", (_mods, key, _obj, trans) => {
-  enqueue("immunizations", key as string, trans);
-});
-
+/* ---------- visits (logged against the patient) ---------- */
 db.visits.hook("creating", (_key, obj, trans) => {
   enqueue("visits", obj.id, trans);
+  track(
+    trans,
+    "visit.create",
+    "patient",
+    obj.patientId,
+    `visit on ${obj.visitDate}`,
+  );
 });
-db.visits.hook("updating", (_mods, key, _obj, trans) => {
+db.visits.hook("updating", (mods, key, obj, trans) => {
   enqueue("visits", key as string, trans);
+  const what = `visit on ${obj.visitDate}`;
+  if (has(mods, "deletedAt")) {
+    track(
+      trans,
+      val(mods, "deletedAt") ? "visit.delete" : "visit.restore",
+      "patient",
+      obj.patientId,
+      what,
+    );
+  } else if (has(mods, "patientId")) {
+    track(
+      trans,
+      "visit.move",
+      "patient",
+      obj.patientId,
+      `${what}, moved by a merge`,
+    );
+  } else {
+    track(trans, "visit.update", "patient", obj.patientId, what);
+  }
 });
+
+/* ---------- vaccines ---------- */
+db.immunizations.hook("creating", (_key, obj, trans) => {
+  enqueue("immunizations", obj.id, trans);
+  track(
+    trans,
+    "vaccine.add",
+    "patient",
+    obj.patientId,
+    `${obj.vaccineName} dose ${obj.doseNumber}`,
+  );
+});
+db.immunizations.hook("updating", (mods, key, obj, trans) => {
+  enqueue("immunizations", key as string, trans);
+  const what = `${obj.vaccineName} dose ${obj.doseNumber}`;
+  if (has(mods, "deletedAt")) {
+    track(
+      trans,
+      val(mods, "deletedAt") ? "vaccine.delete" : "vaccine.restore",
+      "patient",
+      obj.patientId,
+      what,
+    );
+  } else if (has(mods, "patientId")) {
+    track(
+      trans,
+      "vaccine.move",
+      "patient",
+      obj.patientId,
+      `${what}, moved by a merge`,
+    );
+  }
+});
+
+/* ---------- guardians ---------- */
 db.guardians.hook("creating", (_key, obj, trans) => {
   enqueue("guardians", obj.id, trans);
+  track(trans, "guardian.create", "guardian", obj.id, obj.relationship);
 });
-db.guardians.hook("updating", (_mods, key, _obj, trans) => {
-  enqueue("guardians", key as string, trans);
+db.guardians.hook("updating", (mods, key, _obj, trans) => {
+  const id = key as string;
+  enqueue("guardians", id, trans);
+  if (has(mods, "smsConsent")) {
+    track(
+      trans,
+      val(mods, "smsConsent") ? "consent.sms.on" : "consent.sms.off",
+      "guardian",
+      id,
+      "guardian",
+    );
+  } else if (fieldsOf(mods).length > 0) {
+    track(trans, "guardian.update", "guardian", id, fieldsOf(mods).join(", "));
+  }
 });
+
+/* ---------- reminders (system generated, not audited) and the audit table itself ---------- */
 db.reminders.hook("creating", (_key, obj, trans) => {
   enqueue("reminders", obj.id, trans);
 });
 db.reminders.hook("updating", (_mods, key, _obj, trans) => {
   enqueue("reminders", key as string, trans);
+});
+db.audit.hook("creating", (_key, obj, trans) => {
+  enqueue("audit", obj.id, trans);
 });

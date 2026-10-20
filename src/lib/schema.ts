@@ -60,6 +60,7 @@ export const patientFormSchema = z
       .max(20)
       .optional(),
     isPregnant: z.boolean(),
+    noticeGiven: z.boolean(),
     smsConsent: z.boolean(),
   })
   .superRefine((d, ctx) => {

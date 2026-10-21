@@ -34,6 +34,8 @@ import { formatDate } from "../lib/utils";
 import { Link } from "react-router-dom";
 import { SecurityCard } from "../components/SecurityCard";
 import { useCan } from "../hooks/useCan";
+import { BackupCard } from "../components/BackupCard";
+import { PlanCard } from "../components/PlanCard";
 
 function EditFacilityDialog({ onClose }: { onClose: () => void }) {
   const { facility, refreshFacility } = useAuth();
@@ -244,6 +246,8 @@ export function AccountPage() {
         </section>
 
         <SecurityCard />
+        <PlanCard />
+        {can("backup") && <BackupCard />}
 
         <section className="card space-y-3 md:col-span-2">
           <h2 className="text-lg font-bold">Privacy</h2>

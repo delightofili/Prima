@@ -1,3 +1,7 @@
+//FREE_PATIENT_LIMIT: // Mirrors the database function patient_limit();
+
+import { getCurrentFacility } from "./config";
+
 export type Plan = "free" | "basic" | "pro";
 export type Feature =
   | "followUps"
@@ -74,18 +78,32 @@ export class PlanLimitError extends Error {
   }
 }
 
-export function getPlan(): Plan {
+export function planOverride(): Plan | null {
+  if (!import.meta.env.DEV) return null;
   try {
     const v = localStorage.getItem(KEY);
-    return v === "basic" || v === "pro" ? v : "free";
+    return v === "free" || v === "basic" || v === "pro" ? v : null;
   } catch {
-    return "free";
+    return null;
   }
 }
 
+export const getPlan = (): Plan =>
+  planOverride() ?? getCurrentFacility()?.plan ?? "free";
+
 export function setPlan(plan: Plan) {
+  if (!import.meta.env.DEV) return; // testing only
   try {
     localStorage.setItem(KEY, plan);
+  } catch {
+    /* storage unavailable */
+  }
+  window.dispatchEvent(new Event(PLAN_EVENT));
+}
+
+export function clearPlanOverride() {
+  try {
+    localStorage.removeItem(KEY);
   } catch {
     /* storage unavailable */
   }

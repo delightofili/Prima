@@ -6,7 +6,8 @@ export type Action =
   | "exportData"
   | "viewAudit"
   | "handleRequests"
-  | "manageTeam";
+  | "manageTeam"
+  | "backup";
 
 const ADMIN_ACTIONS: ReadonlySet<Action> = new Set([
   "deletePatient",

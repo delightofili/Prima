@@ -1,5 +1,6 @@
 import { startReminderSync } from "./reminders";
 import { startSync } from "./syncService";
+import { requestPersistence } from "./storage";
 
 let started = false;
 
@@ -9,4 +10,5 @@ export function startEngines() {
   started = true;
   startSync();
   startReminderSync();
+  void requestPersistence();
 }

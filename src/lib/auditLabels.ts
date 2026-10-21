@@ -34,4 +34,6 @@ export const ACTION_LABELS: Record<string, string> = {
   "security.pin_changed": "Set or changed the PIN",
   "security.pin_lockout": "Too many wrong PINs",
   "staff.acknowledge": "Accepted the staff confidentiality terms",
+  "backup.create": "Created a backup",
+  "backup.restore": "Restored a backup",
 };

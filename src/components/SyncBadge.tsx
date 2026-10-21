@@ -16,6 +16,7 @@ import { retryFailed } from "../lib/syncService";
 import type { SyncItem } from "../types";
 import { KeyRound } from "lucide-react";
 import { useAuth } from "../hooks/useAuth";
+import { friendlySyncError } from "../lib/syncHealth";
 
 function SyncPanel({
   items,
@@ -65,7 +66,7 @@ function SyncPanel({
               </p>
               {i.lastError && (
                 <p className="mt-1 break-words text-sm text-danger">
-                  {i.lastError}
+                  {friendlySyncError(i.lastError)}
                 </p>
               )}
             </li>

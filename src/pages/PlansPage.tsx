@@ -5,12 +5,13 @@ import { usePageTitle } from "../hooks/common";
 import { usePatients } from "../hooks/usePatients";
 import { usePlan } from "../hooks/usePlan";
 import { useToast } from "../hooks/useToast";
-import { PLANS, setPlan } from "../lib/plan";
+import { PLANS, setPlan, clearPlanOverride } from "../lib/plan";
 import {
   seedDemo,
   seedDuplicates,
   seedFamilies,
   seedConsent,
+  touchPatients,
 } from "../lib/devSeed";
 
 export function PlansPage() {
@@ -83,8 +84,8 @@ export function PlansPage() {
             Adds fake patients, visits and vaccines on this device only. Nothing
             is sent to Supabase. Clear the site data in DevTools to remove them.
           </p>
-          <div className="grid gap-3 sm:grid-cols-3">
-            {[25, 50, 100].map((n) => (
+          <div className="grid gap-3 sm:grid-cols-4">
+            {[25, 100, 1000, 5000].map((n) => (
               <button
                 key={n}
                 type="button"
@@ -127,6 +128,26 @@ export function PlansPage() {
             }}
           >
             Switch on SMS consent (demo)
+          </button>
+          <button
+            type="button"
+            className="btn btn-secondary sm:w-72"
+            onClick={() => {
+              clearPlanOverride();
+              toast("Using your facility's real plan");
+            }}
+          >
+            Use my facility's real plan
+          </button>
+          <button
+            type="button"
+            className="btn btn-secondary sm:w-72"
+            onClick={async () => {
+              const n = await touchPatients(300);
+              toast(`Queued ${n} uploads`);
+            }}
+          >
+            Queue 300 uploads (test)
           </button>
         </section>
       )}

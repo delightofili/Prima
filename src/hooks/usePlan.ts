@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
-import { PLAN_EVENT, getPlan, type Plan } from "../lib/plan";
+import { PLAN_EVENT, planOverride, type Plan } from "../lib/plan";
+import { useAuth } from "./useAuth";
 
 export function usePlan(): Plan {
-  const [plan, setPlanState] = useState<Plan>(getPlan);
+  const { facility } = useAuth();
+  const [override, setOverride] = useState(planOverride);
 
   useEffect(() => {
-    const sync = () => setPlanState(getPlan());
+    const sync = () => setOverride(planOverride());
     window.addEventListener(PLAN_EVENT, sync);
     window.addEventListener("storage", sync);
     return () => {
@@ -14,5 +16,5 @@ export function usePlan(): Plan {
     };
   }, []);
 
-  return plan;
+  return override ?? facility?.plan ?? "free";
 }

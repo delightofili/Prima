@@ -12,6 +12,7 @@ import type {
   Reminder,
   AuditEntry,
 } from "../types";
+import { LIMIT_TAG, markNetworkFail, markOk } from "./syncHealth";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Row = Record<string, any>;
@@ -256,14 +257,35 @@ const isAuthError = (e: unknown) => {
 
 let pushedThisRun = new Set<string>();
 
-async function upsertRow(table: string, row: object) {
+const errMessage = (e: unknown) =>
+  (e as { message?: string })?.message ?? String(e);
+const isLimitError = (e: unknown) => (e as { code?: string })?.code === "PR402";
+const isNetworkError = (e: unknown) => {
+  const err = e as { code?: string; message?: string };
+  return (
+    !err?.code ||
+    /failed to fetch|network|load failed|timeout|unavailable|gateway|paused|<!doctype/i.test(
+      err.message ?? "",
+    )
+  );
+};
+
+const present = <T>(rows: (T | undefined)[]) =>
+  rows.filter((r): r is T => r !== undefined);
+const idsOf = (batch: SyncItem[]) => batch.map((i) => i.recordId);
+
+/* ---------- push ---------- */
+
+async function upsertRows(table: string, rows: object[]) {
+  if (rows.length === 0) return;
   const { error } = await supabase
     .from(table)
-    .upsert(row, { onConflict: "id" });
+    .upsert(rows, { onConflict: "id" });
   if (error) throw error;
 }
+const upsertRow = (table: string, row: object) => upsertRows(table, [row]);
 
-// Sends a patient (and the guardian they point at) once per sync run. A reminder needs its patient in the cloud.
+// Sends a patient (and the guardian they point at) once per run. A reminder needs its patient in the cloud.
 async function ensurePatient(patientId: string) {
   if (pushedThisRun.has(patientId)) return;
   const p = await db.patients.get(patientId);
@@ -276,6 +298,7 @@ async function ensurePatient(patientId: string) {
   pushedThisRun.add(patientId);
 }
 
+// One record at a time. Used when a batch is refused, to find out which record is the problem.
 async function pushOne(item: SyncItem) {
   if (item.table === "patients") {
     await ensurePatient(item.recordId);
@@ -321,6 +344,204 @@ async function pushItem(item: SyncItem) {
   }
 }
 
+/* ---------- batches ---------- */
+
+const BATCH = 100;
+// A visit needs its patient, a patient needs its guardian: send parents first.
+const WAVES: SyncItem["table"][][] = [
+  ["guardians"],
+  ["patients"],
+  ["visits", "immunizations", "reminders"],
+  ["audit"],
+];
+
+async function sendGuardians(batch: SyncItem[]) {
+  await upsertRows(
+    "guardians",
+    present(await db.guardians.bulkGet(idsOf(batch))).map(guardianRow),
+  );
+}
+
+async function sendPatients(batch: SyncItem[]) {
+  const patients = present(await db.patients.bulkGet(idsOf(batch)));
+  const guardianIds = [
+    ...new Set(
+      patients.map((p) => p.guardianId).filter((g): g is string => !!g),
+    ),
+  ];
+  if (guardianIds.length > 0) {
+    await upsertRows(
+      "guardians",
+      present(await db.guardians.bulkGet(guardianIds)).map(guardianRow),
+    );
+  }
+  await upsertRows("patients", patients.map(patientRow));
+  for (const p of patients) pushedThisRun.add(p.id);
+}
+
+async function sendVisits(batch: SyncItem[]) {
+  await upsertRows(
+    "visits",
+    present(await db.visits.bulkGet(idsOf(batch))).map(visitRow),
+  );
+}
+
+async function sendImmunizations(batch: SyncItem[]) {
+  await upsertRows(
+    "immunization_records",
+    present(await db.immunizations.bulkGet(idsOf(batch))).map(immunizationRow),
+  );
+}
+
+async function sendReminders(batch: SyncItem[]) {
+  const reminders = present(await db.reminders.bulkGet(idsOf(batch)));
+  for (const patientId of new Set(reminders.map((r) => r.patientId)))
+    await ensurePatient(patientId);
+  await upsertRows("reminders", reminders.map(reminderRow));
+}
+
+async function sendAudit(batch: SyncItem[]) {
+  const entries = present(await db.audit.bulkGet(idsOf(batch)));
+  if (entries.length > 0) {
+    const { error } = await supabase
+      .from("audit_log")
+      .upsert(entries.map(auditRow), {
+        onConflict: "id",
+        ignoreDuplicates: true,
+      });
+    if (error) throw error;
+  }
+  await db.audit.bulkDelete(entries.map((e) => e.id)); // safely on the server, so the phone keeps no copy
+}
+
+const SENDERS: Record<SyncItem["table"], (batch: SyncItem[]) => Promise<void>> =
+  {
+    guardians: sendGuardians,
+    patients: sendPatients,
+    visits: sendVisits,
+    immunizations: sendImmunizations,
+    reminders: sendReminders,
+    audit: sendAudit,
+  };
+
+async function patientIdOf(item: SyncItem): Promise<string | undefined> {
+  if (item.table === "patients") return item.recordId;
+  if (item.table === "visits")
+    return (await db.visits.get(item.recordId))?.patientId;
+  if (item.table === "immunizations")
+    return (await db.immunizations.get(item.recordId))?.patientId;
+  if (item.table === "reminders")
+    return (await db.reminders.get(item.recordId))?.patientId;
+  return undefined; // guardians and audit lines do not depend on a patient
+}
+
+// True when the whole run should stop: the sign-in or the network is the problem, not the record.
+async function shouldStop(e: unknown, item: SyncItem) {
+  if (isAuthError(e)) {
+    await db.syncQueue.update(item.id!, { lastError: "Sign in again to sync" });
+    return true;
+  }
+  if (isNetworkError(e)) {
+    markNetworkFail();
+    await db.syncQueue.update(item.id!, { lastError: errMessage(e) });
+    return true;
+  }
+  return false;
+}
+
+async function sendTable(
+  table: SyncItem["table"],
+  items: SyncItem[],
+  blocked: Set<string>,
+): Promise<"ok" | "stop"> {
+  for (let i = 0; i < items.length; i += BATCH) {
+    const chunk = items.slice(i, i + BATCH);
+    try {
+      await SENDERS[table](chunk);
+      await db.syncQueue.bulkDelete(chunk.map((c) => c.id!));
+      markOk();
+      continue;
+    } catch (e) {
+      if (await shouldStop(e, chunk[0])) return "stop";
+    }
+
+    // The batch was refused because of a record. Send one at a time to find which.
+    for (const item of chunk) {
+      try {
+        await pushItem(item);
+        await db.syncQueue.delete(item.id!);
+        markOk();
+      } catch (e) {
+        if (await shouldStop(e, item)) return "stop";
+
+        if (isLimitError(e)) {
+          // Plan limit: park it. It is not a failure of the record, and it must not be retried until the plan changes.
+          await db.syncQueue.update(item.id!, {
+            status: "failed",
+            attempts: 5,
+            lastError: `${LIMIT_TAG}: ${errMessage(e)}`,
+          });
+          const pid = await patientIdOf(item);
+          if (pid) blocked.add(pid);
+          continue;
+        }
+
+        const attempts = item.attempts + 1;
+        await db.syncQueue.update(item.id!, {
+          attempts,
+          lastError: errMessage(e),
+          status: attempts >= 5 ? "failed" : "pending",
+        });
+        if (attempts < 5) return "stop";
+      }
+    }
+  }
+  return "ok";
+}
+
+async function runWaves() {
+  const all = await db.syncQueue.orderBy("id").toArray();
+
+  // Several edits to one record become one upload: it always sends the latest state
+  const seen = new Set<string>();
+  const live: SyncItem[] = [];
+  for (const item of all) {
+    if (item.status === "failed") continue;
+    const key = `${item.table}:${item.recordId}`;
+    if (seen.has(key)) {
+      await db.syncQueue.delete(item.id!);
+      continue;
+    }
+    seen.add(key);
+    live.push(item);
+  }
+
+  // Patients parked by the plan limit: their visits and reminders wait quietly too
+  const blocked = new Set<string>();
+  for (const item of all) {
+    if (item.status === "failed" && item.lastError?.startsWith(LIMIT_TAG)) {
+      const pid = await patientIdOf(item);
+      if (pid) blocked.add(pid);
+    }
+  }
+
+  for (const tables of WAVES) {
+    for (const table of tables) {
+      let mine = live.filter((i) => i.table === table);
+      if (blocked.size > 0) {
+        const keep: SyncItem[] = [];
+        for (const item of mine) {
+          const pid = await patientIdOf(item);
+          if (!pid || !blocked.has(pid)) keep.push(item);
+        }
+        mine = keep;
+      }
+      if (mine.length === 0) continue;
+      if ((await sendTable(table, mine, blocked)) === "stop") return;
+    }
+  }
+}
+
 let running = false;
 
 export async function pushPending() {
@@ -329,49 +550,9 @@ export async function pushPending() {
   running = true;
   pushedThisRun = new Set();
   try {
-    const items = await db.syncQueue.orderBy("id").toArray();
-    const seen = new Set<string>();
-
-    for (const item of items) {
-      if (item.status === "failed") continue;
-
-      // Several edits to one record: the first push sends its latest state, so drop the repeats.
-      const key = `${item.table}:${item.recordId}`;
-      if (seen.has(key)) {
-        await db.syncQueue.delete(item.id!);
-        continue;
-      }
-      seen.add(key);
-
-      try {
-        await pushItem(item);
-        await db.syncQueue.delete(item.id!);
-      } catch (e) {
-        const err = e as { code?: string; message?: string };
-        const message = err?.message ?? String(e);
-        const network =
-          !err?.code || /failed to fetch|network|load failed/i.test(message);
-
-        if (isAuthError(e)) {
-          await db.syncQueue.update(item.id!, {
-            lastError: "Sign in again to sync",
-          });
-          break; // does not count as a failed attempt
-        }
-
-        if (network) {
-          await db.syncQueue.update(item.id!, { lastError: message });
-          break;
-        }
-        const attempts = item.attempts + 1;
-        await db.syncQueue.update(item.id!, {
-          attempts,
-          lastError: message,
-          status: attempts >= 5 ? "failed" : "pending",
-        });
-        if (attempts < 5) break;
-      }
-    }
+    await runWaves();
+  } catch (e) {
+    console.warn("Upload run stopped", e);
   } finally {
     running = false;
   }
@@ -380,6 +561,7 @@ export async function pushPending() {
 /* ---------- pull ---------- */
 
 const PAGE = 500;
+const PULSE_KEY = "pulse";
 let pulling = false;
 
 async function applyRemote<T extends { id: string; updatedAt: number }>(
@@ -397,7 +579,7 @@ async function applyRemote<T extends { id: string; updatedAt: number }>(
           remote.updatedAt > local.updatedAt
         ) {
           await table.put(remote);
-          // The newer server copy replaces our older one, so our stale queued upload is dropped.
+          // The server copy wins, so our stale queued upload is dropped.
           await db.syncQueue.where("recordId").equals(remote.id).delete();
         }
       } catch (e) {
@@ -444,21 +626,42 @@ async function pullOne<T extends { id: string; updatedAt: number }>(
   }
 }
 
-export async function pullChanges() {
+// One cheap call: "what is the newest change in my facility?"
+async function remotePulse(): Promise<string | null> {
+  const { data, error } = await supabase.rpc("facility_pulse");
+  if (error) {
+    if ((error as { code?: string }).code === "PGRST202") return null; // function not installed yet: always pull
+    throw error;
+  }
+  return (data as string | null) ?? null;
+}
+
+export async function pullChanges(force = false) {
   if (pulling || !navigator.onLine) return;
-  if (!(await hasCloudSession())) return; // signed out of the cloud: wait quietly, records stay safe
+  if (!(await hasCloudSession())) return;
   pulling = true;
   try {
+    const pulse = await remotePulse();
+    const known = (await db.meta.get(PULSE_KEY))?.value ?? null;
+    if (!force && pulse && pulse === known) {
+      markOk();
+      return; // nothing new anywhere in this facility
+    }
+
+    await pullOne("guardians", db.guardians, guardianFromRow);
     await pullOne("patients", db.patients, patientFromRow);
     await pullOne("visits", db.visits, visitFromRow);
-    await pullOne("guardians", db.guardians, guardianFromRow);
     await pullOne(
       "immunization_records",
       db.immunizations,
       immunizationFromRow,
     );
     await pullOne("reminders", db.reminders, reminderFromRow);
+
+    if (pulse) await db.meta.put({ key: PULSE_KEY, value: pulse });
+    markOk();
   } catch (e) {
+    if (isNetworkError(e)) markNetworkFail();
     console.warn("Pull failed, will retry", e);
   } finally {
     pulling = false;
@@ -482,8 +685,60 @@ export async function retryFailed() {
   await syncNow();
 }
 
+/* ---------- when to sync ---------- */
+
+const PULL_EVERY = 180_000; // 3 minutes, only while the app is visible
+const MIN_PULL_GAP = 45_000;
+const BACKOFF_START = 15_000;
+const BACKOFF_MAX = 300_000;
+
+const jitter = (ms: number) => ms * (0.8 + Math.random() * 0.4); // phones must not all call at the same second
+const waitingCount = () =>
+  db.syncQueue.filter((i) => i.status !== "failed").count();
+
+let lastPullTry = 0;
+let backoff = BACKOFF_START;
+
+async function pullIfDue() {
+  if (document.visibilityState !== "visible") return;
+  if (Date.now() - lastPullTry < MIN_PULL_GAP) return;
+  lastPullTry = Date.now();
+  await pullChanges();
+}
+
+// Retries uploads only while something is waiting, and slows down while the server keeps failing
+async function retryLoop() {
+  try {
+    if (navigator.onLine && (await waitingCount()) > 0) {
+      await pushPending();
+      backoff =
+        (await waitingCount()) > 0
+          ? Math.min(backoff * 2, BACKOFF_MAX)
+          : BACKOFF_START;
+    } else {
+      backoff = BACKOFF_START;
+    }
+  } finally {
+    setTimeout(() => void retryLoop(), jitter(backoff));
+  }
+}
+
+function pullLoop() {
+  setTimeout(async () => {
+    await pullIfDue();
+    pullLoop();
+  }, jitter(PULL_EVERY));
+}
+
 export function startSync() {
-  window.addEventListener("online", () => void syncNow());
-  setInterval(() => void syncNow(), 30000);
+  window.addEventListener("online", () => {
+    backoff = BACKOFF_START;
+    lastPullTry = Date.now();
+    void syncNow();
+  });
+  document.addEventListener("visibilitychange", () => void pullIfDue());
+  lastPullTry = Date.now();
   void syncNow();
+  pullLoop();
+  setTimeout(() => void retryLoop(), jitter(backoff));
 }

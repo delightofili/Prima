@@ -3,6 +3,7 @@ import {
   useEffect,
   useMemo,
   useState,
+  useRef,
   type ReactNode,
 } from "react";
 import type { User } from "@supabase/supabase-js";
@@ -40,6 +41,7 @@ import {
 import { setAuditActor } from "../lib/auditCore";
 import { logAudit } from "../lib/audit";
 import { SecurityGate } from "./SecurityGate";
+import { retryFailed } from "../lib/syncService";
 
 const nameOf = (u: User) =>
   (u.user_metadata?.full_name as string | undefined) ??
@@ -77,6 +79,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setFacility(mine.facility);
     setStatus("ready");
   }, []);
+
+  const lastPlan = useRef(facility?.plan);
+  useEffect(() => {
+    if (!facility) return;
+    if (lastPlan.current && lastPlan.current !== facility.plan)
+      void retryFailed();
+    lastPlan.current = facility.plan;
+  }, [facility]);
 
   const resolveCloud = useCallback(
     async (user: User) => {
@@ -239,6 +249,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setFacility(mine.facility);
     setAccount(next);
   }, [account]);
+
+  useEffect(() => {
+    if (status !== "ready") return;
+    let last = Date.now();
+    const onVisible = () => {
+      if (document.visibilityState !== "visible" || !navigator.onLine) return;
+      if (Date.now() - last < 300_000) return;
+      last = Date.now();
+      void refreshFacility();
+    };
+    document.addEventListener("visibilitychange", onVisible);
+    return () => document.removeEventListener("visibilitychange", onVisible);
+  }, [status, refreshFacility]);
 
   const signOut = useCallback(() => signOutThisPhone(), []);
   const eraseAndSignOut = useCallback(() => eraseThisPhone(), []);

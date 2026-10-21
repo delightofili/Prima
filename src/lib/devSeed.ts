@@ -321,3 +321,14 @@ export async function seedConsent() {
   );
   return guardians.length + patients.length;
 }
+export async function touchPatients(n: number) {
+  const list = await db.patients
+    .filter((p) => !p.deletedAt)
+    .limit(n)
+    .toArray();
+  const now = Date.now();
+  await db.transaction("rw", db.patients, db.syncQueue, async () => {
+    for (const p of list) await db.patients.update(p.id, { updatedAt: now });
+  });
+  return list.length;
+}

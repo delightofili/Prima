@@ -16,7 +16,8 @@ import type {
 } from "./types";
 
 interface TxFlags {
-  remote?: boolean;
+  remote?: boolean; // data pulled from the server: do not queue it, do not audit it
+  quiet?: boolean; // a bulk restore: queue it for upload, but write one audit line instead of thousands
 }
 
 class PrimaDB extends Dexie {
@@ -92,6 +93,16 @@ export function remoteTransaction<T>(
   });
 }
 
+export function quietTransaction<T>(
+  tables: Table[],
+  fn: () => Promise<T>,
+): Promise<T> {
+  return db.transaction("rw", tables, async () => {
+    (Dexie.currentTransaction as unknown as TxFlags).quiet = true;
+    return fn();
+  });
+}
+
 function enqueue(
   table: SyncItem["table"],
   recordId: string,
@@ -122,7 +133,8 @@ function track(
   entityId: string,
   summary: string,
 ) {
-  if ((trans as unknown as TxFlags).remote) return; // pulled from the server: it was audited where it happened
+  const flags = trans as unknown as TxFlags;
+  if (flags.remote || flags.quiet) return;
   const entry = buildAudit(action, entityType, entityId, summary);
   if (!entry) return;
   trans.on("complete", () => {

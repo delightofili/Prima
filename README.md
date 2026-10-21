@@ -4,7 +4,7 @@
 
 A nurse registers patients, records visits, tracks vaccines, links children to their guardians, sees who is due for follow-up, queues appointment reminders, cleans up duplicate records and produces the monthly LGA summary, on an Android phone, tablet or laptop, with or without network. Everything is saved on the device first and syncs both ways with the cloud in the background. Each facility's records are private to its own staff, and every sensitive action is logged.
 
-> Status: built in public. Days 1-13 complete, Day 14 (privacy and security) in progress. The roadmap runs to Day 25, then continues with feedback from real PHCs.
+> Status: built in public. Days 1-14 complete, Day 15 (reliability, plan limits and backups) in progress. The roadmap runs to Day 25, then continues with feedback from real PHCs.
 
 ---
 
@@ -13,6 +13,15 @@ A nurse registers patients, records visits, tracks vaccines, links children to t
 Paper registers at PHCs lose patients, create duplicates (the same woman registered three times under different spellings), make the monthly LGA report a slow manual count, and give nobody a way to see who is due for a follow-up or the next vaccine. Children are usually registered under their mother's phone, so the card of a baby and the antenatal card of the mother are never connected. Many PHCs also have unreliable network, so an app that needs the internet to save a record does not work for them. Prima is **offline-first** for that reason.
 
 ## What Prima does today
+
+**Reliability, limits and backups (Day 15)**
+
+- A facility's plan is read from its record in the database, and the database itself enforces the Free plan's 200-patient cap and each plan's staff seats. A phone that is out of date can still register a patient offline; the cloud then says no politely and the patient waits safely on the phone until the plan changes.
+- A calm degraded mode: when the cloud is paused, unreachable or the plan limit is hit, one short, non-alarming banner explains that everything is saved on the phone and will upload by itself. Raw error text is translated into plain language.
+- Sync that holds up with hundreds of facilities: uploads go in batches of 100 in dependency order (guardians, patients, then visits, vaccines and reminders), a one-call "has anything changed?" check skips idle polls, polling happens only while the app is visible (every 3 minutes, with random jitter), and failed uploads back off instead of hammering the server.
+- Encrypted backup and restore (admin only). A backup is a password-protected file the admin can save or share; restore adds missing records and keeps whichever copy is newer, never deletes anything, refuses a backup from another facility, and never brings back a patient who was erased.
+- Storage protection: Prima asks the browser to keep its data from being cleared automatically, and shows how much space is used.
+- A free keep-alive: a scheduled GitHub job calls a tiny database function every 3 days so a free Supabase project does not pause from inactivity.
 
 **Privacy and security (Day 14)**
 
@@ -145,13 +154,22 @@ Consent stored where the phone is, a reminder queue that reconciles itself from 
 
 Email and password sign-in, facility creation and invite codes, row level security on every table (guardians and reminders included), team management through checked database functions, an offline-first sign-in record on the phone, a shared-phone safeguard, and a facility-membership check in the Python service.
 
-### Day 14: privacy and security (in progress)
+### Day 14: privacy and security
 
 - **PIN lock.** A 6-digit PIN stored only as a salted hash on the phone, with auto-lock, a lock-now button, growing delays after wrong PINs, and a password-based reset. The app stays mounted while locked, so a half-filled form is not lost.
 - **Roles with teeth.** Admin-only actions are hidden from staff and, for deleting and merging patients, refused by a database trigger.
 - **Audit log.** Written by the same database hooks that already queue sync, so a change cannot happen without a record. Entries sync to an insert-only table that nobody can edit or delete, and the server stamps who really sent each one. Team changes are logged by database triggers.
 - **Consent and notice.** A draft privacy notice page, a per-patient record of when the notice was explained, and a staff confidentiality agreement recorded in the audit log.
 - **Data requests and erasure.** A request log, one-patient record export, and an erase function that wipes identifying details on the server and on every phone, and refuses to be undone by a stale device.
+
+### Day 15: reliability, plan limits and backups (in progress)
+
+- **Plan limits in the database.** A trigger refuses the 201st active patient on the Free plan (a custom error code the app understands), serialised per facility so two phones cannot both slip through. Staff seats were already enforced by the join function. A `plan_usage()` function reports usage, and members still have no way to change their own plan.
+- **The app follows the facility's plan.** The old browser-storage plan switch now exists only in `npm run dev`. The plan refreshes when the app is opened, when the tab returns to the foreground, and after sign-in changes, and an upgrade automatically retries blocked uploads.
+- **Calm degraded mode.** A small health store counts consecutive network failures; one banner at a time explains what is happening, always saying the records are safe.
+- **Sync at scale.** Composite `(facility_id, synced_at)` indexes, a `facility_pulse()` check that lets idle devices skip five queries, visible-only jittered polling, batched dependency-ordered uploads with one-by-one fallback to find a bad record, and exponential backoff.
+- **Backup and restore.** AES-GCM encryption with a PBKDF2 key from the admin's password, strict validation of the file, merge-never-delete restore, facility check, erased patients stay erased, restore uses the normal sync queue so the cloud is repopulated, and a single audit line instead of thousands.
+- **Keep-alive.** A `keepalive()` database function and a GitHub Actions workflow every 3 days, with an optional second ping from a monitoring service.
 
 ## Feedback queue
 
@@ -184,6 +202,13 @@ Email and password sign-in, facility creation and invite codes, row level securi
 | Erasure needs the card number typed and a log entry                               | It cannot be undone, and health records may have retention rules                                                                                |
 | Privacy notice and staff agreement are drafts for legal review                    | Compliance wording must come from a lawyer or the facility's data protection officer                                                            |
 | One facility per phone                                                            | Records from two facilities must never mix on one device                                                                                        |
+| The database enforces what only the database can: patient cap and staff seats     | Exports, reports and follow-up lists run on the device from data it already holds, so they are a convenience gate, not a security boundary      |
+| An over-limit upload is parked, not deleted                                       | The patient is already registered in front of a nurse; losing the record is worse than a delayed upload                                         |
+| One calm banner at a time, always saying the records are safe                     | Frightened nurses stop trusting the app; most failures here are not their fault                                                                 |
+| Uploads in dependency order and in batches, with one-by-one fallback              | Hundreds of queued items must not mean hundreds of requests, and one bad record must not hide the good ones                                     |
+| Idle devices ask one cheap question before pulling                                | At 1,500 devices, five queries each every few minutes is the real load                                                                          |
+| Backups are always encrypted with a password                                      | A full register in a Downloads folder or a WhatsApp chat is a data breach waiting to happen                                                     |
+| Restore never deletes and never resurrects erased patients                        | A restore must not be able to undo a legal erasure or destroy newer work                                                                        |
 | Confirmation email off, staff join by invite code                                 | The free built-in email only works for the project's own team                                                                                   |
 
 ## Costs and hosting: launch lean
@@ -205,7 +230,7 @@ Email and password sign-in, facility creation and invite codes, row level securi
 | Basic | ₦2,500  | ₦25,000                | Unlimited patients, CSV export, LGA report, PWA, 3 staff accounts, offline sync                                               |
 | Pro   | ₦5,000  | ₦50,000                | Basic + follow-up due list, SMS reminder queue (sending coming soon), duplicate merge, FHIR/DHIS2 export, more staff accounts |
 
-Pilot offer: the first 5 PHCs get Pro free for 3 months in exchange for feedback and a testimonial. A facility's plan is set in the database, which is also how a pilot is granted.
+Pilot offer: the first 5 PHCs get Pro free for 3 months in exchange for feedback and a testimonial. A facility's plan is set in the database (which is also how a pilot is granted until Paystack arrives on Day 19). The app reads it from the facility record, and the database enforces the patient cap and staff seats.
 
 ## Architecture
 
@@ -242,8 +267,8 @@ Nigeria is moving toward FHIR and DHIS2: the National Digital Health Architectur
 | Data quality        | 9-10  | Duplicate merge tool, Python service                                                         | Done        |
 | Families            | 11-12 | Guardians and family links, SMS reminders base                                               | Done        |
 | Trust               | 13    | Accounts, facilities, row level security, staff accounts                                     | Done        |
-|                     | 14    | PIN lock, roles, audit log, consent and privacy notice, data requests                        | In progress |
-|                     | 15    | Server-side plan limits, calm degraded mode, scale hardening, backup and restore, keep-alive | Planned     |
+|                     | 14    | PIN lock, roles, audit log, consent and privacy notice, data requests                        | Done        |
+|                     | 15    | Server-side plan limits, calm degraded mode, scale hardening, backup and restore, keep-alive | In progress |
 | Phone-ready         | 16    | PWA, install on Android, real-device test including gloves                                   | Planned     |
 | Standards and money | 17    | FHIR and DHIS2 export, larger ICD-10 list                                                    | Planned     |
 |                     | 18    | Chief-complaint term check, print card with QR, sticky save bar, vitals steppers             | Planned     |
@@ -259,7 +284,7 @@ After Day 25 the work is driven by feedback from real PHCs and reviewers.
 
 ## Run locally
 
-Needs Node 20+, Python 3.13 and a Supabase project. Run `supabase/schema.sql` (plus the Day 5, 6, 9, 11, 12, 13 and 14 SQL) in the Supabase SQL editor first. In Supabase, open Authentication and turn off "Confirm email" (until custom mail is set up) and set the minimum password length to 8.
+Needs Node 20+, Python 3.13 and a Supabase project. Run `supabase/schema.sql` (plus the Day 5, 6, 9, 11, 12, 13, 14 and 15 SQL) in the Supabase SQL editor first. In Supabase, open Authentication and turn off "Confirm email" (until custom mail is set up) and set the minimum password length to 8.
 
 ```bash
 npm install
@@ -275,6 +300,10 @@ python -m pytest -q
 python -m uvicorn main:app --reload
 ```
 
+## Keep the free database awake
+
+Free Supabase projects pause after about a week without activity. Prima calls `keepalive()` every 3 days from GitHub Actions (`.github/workflows/keepalive.yml`). In the GitHub repository open Settings, then Secrets and variables, then Actions, and add `SUPABASE_URL` and `SUPABASE_ANON_KEY` (the publishable key). Run the workflow once by hand from the Actions tab to confirm it is green. For a second, independent ping, a free uptime monitor can call the same function over HTTPS. Scheduled GitHub jobs can be late, and GitHub may switch them off after a long period without repository activity, so make an occasional commit. This lowers the chance of a pause; it does not remove it, and a paused project resumes from the Supabase dashboard with nothing lost.
+
 ## Security and clinical notes
 
 - Row level security separates facilities, and the audit log is insert-only. Keep using fake data until the Day 20 gate.
@@ -285,7 +314,9 @@ python -m uvicorn main:app --reload
 - Password reset by email does not work until custom mail is configured. A locked-out staff member is removed and re-invited by the admin.
 - Guardians' and patients' phone numbers and SMS consent are personal data. A reminder never goes to the next of kin and never contains a diagnosis.
 - The Python service holds Supabase's secret key. It must live only in the server's settings, never in the app.
-- A facility's plan is stored in the database but the app's plan checks still use the testing switch until Day 15.
+- A facility's plan comes from the database. The browser-storage testing switch works only in `npm run dev`. Only the patient cap and staff seats are enforced by the server; export, report and follow-up gates run on the device and can be bypassed by a technical user, so treat them as a product boundary, not a security one.
+- Backups contain the full patient register. They are encrypted with the admin's password, and a forgotten password cannot be recovered by anyone. A backup taken before an erasure still contains that person, so delete old backups and do not keep them indefinitely. Restore never brings an erased patient back, but backups remain the facility's responsibility.
+- Browsers can clear a site's storage if the phone runs low on space unless the site is granted persistent storage. Prima asks for it, but the browser decides; regular backups are the safety net.
 - Immunization intervals, vitals thresholds, follow-up rules, the ICD-10 list and the report groupings are simplified starting points. Confirm them with a health worker before real use.
 - Before real PHC data, complete the Nigeria Data Protection Act and NDPC check planned for Day 20.
 
@@ -296,6 +327,7 @@ python -m uvicorn main:app --reload
 - Pivot: started server-first, then rebuilt offline-first after seeing that network drops break clinic workflow.
 - Numbers: 2 repos (1 reference, 1 product); 23 automated Python tests; about 45 ICD-10 conditions searchable in plain language; a 25-day roadmap.
 - Day 14 headline: a PIN that works with no signal, an audit log that nobody can edit (not even an admin), and a "right to be forgotten" button that really reaches every phone. The log records which fields changed and which card, never a name or a diagnosis.
-- Lesson: security features should not live in each screen. The audit log is written by the same database hooks that already queue sync, so a change cannot happen without a record. And a PIN is a lock, not a vault, so say so. 7552035533
+- Day 15 headline: the database now says no to the 201st free patient, but a nurse's patient is never lost: the record waits on the phone and uploads when the plan changes. Uploads travel in batches in dependency order, idle phones skip the server entirely, and backups are encrypted so a full register never sits in a chat as plain text.
+- Lesson: security features should not live in each screen. The audit log is written by the same database hooks that already queue sync, so a change cannot happen without a record. And a PIN is a lock, not a vault, so say so.
 - Learned: Python from zero, FastAPI dependencies and testing, Dexie hooks, transactions and live queries, offline-first design, Postgres row level security, security-definer functions, triggers, insert-only audit tables, PBKDF2 PIN hashing, offline-first authentication.
 - Feedback loops so far: product feedback produced Para/Gravida and immunizations; a LinkedIn review produced the chief complaint field and the follow-up prefill; a commenter pushed for global standards; a UI critique produced the Day 4 redesign; a clinic-practice note produced glove mode; clinic-workflow feedback produced guardian links and SMS reminders.

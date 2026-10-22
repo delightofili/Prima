@@ -4,7 +4,7 @@
 
 A nurse registers patients, records visits, tracks vaccines, links children to their guardians, sees who is due for follow-up, queues appointment reminders, cleans up duplicate records and produces the monthly LGA summary, on an Android phone, tablet or laptop, with or without network. Everything is saved on the device first and syncs both ways with the cloud in the background. Each facility's records are private to its own staff, and every sensitive action is logged.
 
-> Status: built in public. Days 1-14 complete, Day 15 (reliability, plan limits and backups) in progress. The roadmap runs to Day 25, then continues with feedback from real PHCs.
+> Status: built in public. Days 1-15 complete, Day 16 (installable app, offline shell, update prompt, real-phone test) in progress. The roadmap runs to Day 25, then continues with feedback from real PHCs.
 
 ---
 
@@ -13,6 +13,14 @@ A nurse registers patients, records visits, tracks vaccines, links children to t
 Paper registers at PHCs lose patients, create duplicates (the same woman registered three times under different spellings), make the monthly LGA report a slow manual count, and give nobody a way to see who is due for a follow-up or the next vaccine. Children are usually registered under their mother's phone, so the card of a baby and the antenatal card of the mother are never connected. Many PHCs also have unreliable network, so an app that needs the internet to save a record does not work for them. Prima is **offline-first** for that reason.
 
 ## What Prima does today
+
+**Installable, offline-first app (Day 16)**
+
+- Prima is a progressive web app: it installs on an Android home screen from Chrome, opens without the browser bar, has a teal-cross icon and long-press shortcuts for registering and finding a patient.
+- The app shell (all of Prima's own code) is stored on the phone, so Prima opens from the home screen with no signal at all, straight to the PIN screen. Patient data lives in the phone's database, never in the offline file cache, and calls to the cloud are never cached.
+- Updates are announced, not forced: a small prompt above the bottom tabs says a new version is ready, "Later" hides it, "Update now" reloads. Nobody loses a half-saved form to a surprise reload.
+- An install card on the Account page, with plain steps when the browser does not offer the install button.
+- A Phone check page (Account, then Phone check) that reports the phone's capabilities, measures tapping accuracy at different target sizes with and without gloves, times the unlock step and local search, and produces a report to send back. A written device test sheet lives in `docs/DEVICE_TEST.md`.
 
 **Reliability, limits and backups (Day 15)**
 
@@ -162,7 +170,7 @@ Email and password sign-in, facility creation and invite codes, row level securi
 - **Consent and notice.** A draft privacy notice page, a per-patient record of when the notice was explained, and a staff confidentiality agreement recorded in the audit log.
 - **Data requests and erasure.** A request log, one-patient record export, and an erase function that wipes identifying details on the server and on every phone, and refuses to be undone by a stale device.
 
-### Day 15: reliability, plan limits and backups (in progress)
+### Day 15: reliability, plan limits and backups
 
 - **Plan limits in the database.** A trigger refuses the 201st active patient on the Free plan (a custom error code the app understands), serialised per facility so two phones cannot both slip through. Staff seats were already enforced by the join function. A `plan_usage()` function reports usage, and members still have no way to change their own plan.
 - **The app follows the facility's plan.** The old browser-storage plan switch now exists only in `npm run dev`. The plan refreshes when the app is opened, when the tab returns to the foreground, and after sign-in changes, and an upgrade automatically retries blocked uploads.
@@ -170,6 +178,15 @@ Email and password sign-in, facility creation and invite codes, row level securi
 - **Sync at scale.** Composite `(facility_id, synced_at)` indexes, a `facility_pulse()` check that lets idle devices skip five queries, visible-only jittered polling, batched dependency-ordered uploads with one-by-one fallback to find a bad record, and exponential backoff.
 - **Backup and restore.** AES-GCM encryption with a PBKDF2 key from the admin's password, strict validation of the file, merge-never-delete restore, facility check, erased patients stay erased, restore uses the normal sync queue so the cloud is repopulated, and a single audit line instead of thousands.
 - **Keep-alive.** A `keepalive()` database function and a GitHub Actions workflow every 3 days, with an optional second ping from a monitoring service.
+
+### Day 16: the phone (in progress)
+
+- **Installable.** A web app manifest (name, teal theme, cream background, full-bleed icon so Android can shape it, shortcuts) and a service worker that stores Prima's own files. Chrome offers installation once both exist and the page is served over HTTPS.
+- **Offline shell.** Navigations fall back to the stored page, so every route opens offline. Nothing from the cloud is cached by the worker; the database in the phone is the only home for patient data.
+- **Update prompt.** The worker waits until the person agrees, then takes over and reloads. The app checks for a new version when it returns to the foreground and hourly while open.
+- **Phone-first CSS.** No pull-to-refresh (it would reload the app and lose a form), no double-tap zoom delay, a brand-tinted tap highlight, and a stable chunk layout so an update downloads only what changed.
+- **Testing on a real phone.** USB port forwarding (the phone treats `localhost` as safe) or a private test deploy to Cloudflare Pages. A plain local-network address cannot be used: without HTTPS there is no PIN hashing, no install and no offline worker.
+- **Phone check page and device test sheet**, so the first real-phone test produces numbers, not impressions.
 
 ## Feedback queue
 
@@ -207,6 +224,9 @@ Email and password sign-in, facility creation and invite codes, row level securi
 | One calm banner at a time, always saying the records are safe                     | Frightened nurses stop trusting the app; most failures here are not their fault                                                                 |
 | Uploads in dependency order and in batches, with one-by-one fallback              | Hundreds of queued items must not mean hundreds of requests, and one bad record must not hide the good ones                                     |
 | Idle devices ask one cheap question before pulling                                | At 1,500 devices, five queries each every few minutes is the real load                                                                          |
+| Updates wait for a tap, never reload by themselves                                | A nurse mid-registration must never lose her form to a version change                                                                           |
+| The offline worker caches Prima's own files and nothing else                      | Patient data belongs in the phone's database under the PIN, not in a browser cache                                                              |
+| Test on a real phone over HTTPS, with the gloves staff actually wear              | Targets that pass on a desk fail in a glove, and a plain local-network address disables the security features                                   |
 | Backups are always encrypted with a password                                      | A full register in a Downloads folder or a WhatsApp chat is a data breach waiting to happen                                                     |
 | Restore never deletes and never resurrects erased patients                        | A restore must not be able to undo a legal erasure or destroy newer work                                                                        |
 | Confirmation email off, staff join by invite code                                 | The free built-in email only works for the project's own team                                                                                   |
@@ -268,8 +288,8 @@ Nigeria is moving toward FHIR and DHIS2: the National Digital Health Architectur
 | Families            | 11-12 | Guardians and family links, SMS reminders base                                               | Done        |
 | Trust               | 13    | Accounts, facilities, row level security, staff accounts                                     | Done        |
 |                     | 14    | PIN lock, roles, audit log, consent and privacy notice, data requests                        | Done        |
-|                     | 15    | Server-side plan limits, calm degraded mode, scale hardening, backup and restore, keep-alive | In progress |
-| Phone-ready         | 16    | PWA, install on Android, real-device test including gloves                                   | Planned     |
+|                     | 15    | Server-side plan limits, calm degraded mode, scale hardening, backup and restore, keep-alive | Done        |
+| Phone-ready         | 16    | PWA, install on Android, real-device test including gloves                                   | In progress |
 | Standards and money | 17    | FHIR and DHIS2 export, larger ICD-10 list                                                    | Planned     |
 |                     | 18    | Chief-complaint term check, print card with QR, sticky save bar, vitals steppers             | Planned     |
 |                     | 19    | Paystack, Edge Function payment check, subscriptions, annual plans                           | Planned     |
@@ -300,6 +320,10 @@ python -m pytest -q
 python -m uvicorn main:app --reload
 ```
 
+## Testing on a real phone
+
+A phone only allows the PIN, installing and offline use on HTTPS pages or `localhost`, so a plain `http://192.168...` address will not work. Two options: plug the phone in with USB debugging on, forward port 4173 in Chrome's `chrome://inspect` page, run `npm run build && npm run preview`, and open `http://localhost:4173` on the phone; or publish `dist` to a private Cloudflare Pages project for a real HTTPS address. The full checklist, including the glove protocol, is in `docs/DEVICE_TEST.md`. Fake data only until the Day 20 gate.
+
 ## Keep the free database awake
 
 Free Supabase projects pause after about a week without activity. Prima calls `keepalive()` every 3 days from GitHub Actions (`.github/workflows/keepalive.yml`). In the GitHub repository open Settings, then Secrets and variables, then Actions, and add `SUPABASE_URL` and `SUPABASE_ANON_KEY` (the publishable key). Run the workflow once by hand from the Actions tab to confirm it is green. For a second, independent ping, a free uptime monitor can call the same function over HTTPS. Scheduled GitHub jobs can be late, and GitHub may switch them off after a long period without repository activity, so make an occasional commit. This lowers the chance of a pause; it does not remove it, and a paused project resumes from the Supabase dashboard with nothing lost.
@@ -327,6 +351,7 @@ Free Supabase projects pause after about a week without activity. Prima calls `k
 - Pivot: started server-first, then rebuilt offline-first after seeing that network drops break clinic workflow.
 - Numbers: 2 repos (1 reference, 1 product); 23 automated Python tests; about 45 ICD-10 conditions searchable in plain language; a 25-day roadmap.
 - Day 14 headline: a PIN that works with no signal, an audit log that nobody can edit (not even an admin), and a "right to be forgotten" button that really reaches every phone. The log records which fields changed and which card, never a name or a diagnosis.
+- Day 16 headline: Prima now installs on an Android home screen and opens with no signal at all, straight to the PIN screen. Updates ask first instead of reloading under a nurse's thumb, and the app has a built-in tap test so gloves get measured, not guessed.
 - Day 15 headline: the database now says no to the 201st free patient, but a nurse's patient is never lost: the record waits on the phone and uploads when the plan changes. Uploads travel in batches in dependency order, idle phones skip the server entirely, and backups are encrypted so a full register never sits in a chat as plain text.
 - Lesson: security features should not live in each screen. The audit log is written by the same database hooks that already queue sync, so a change cannot happen without a record. And a PIN is a lock, not a vault, so say so.
 - Learned: Python from zero, FastAPI dependencies and testing, Dexie hooks, transactions and live queries, offline-first design, Postgres row level security, security-definer functions, triggers, insert-only audit tables, PBKDF2 PIN hashing, offline-first authentication.

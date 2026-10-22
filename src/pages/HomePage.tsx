@@ -11,6 +11,7 @@ import { usePageTitle } from "../hooks/common";
 import { CalendarClock, ChevronRight } from "lucide-react";
 import { GloveToggle } from "../components/GloveToggle";
 import { useFollowUps } from "../hooks/useFollowUps";
+import { InstallBanner } from "../components/InstallCard";
 
 function greeting() {
   const h = new Date().getHours();
@@ -60,6 +61,7 @@ export function HomePage() {
           </Link>
         </div>
       </section>
+      <InstallBanner />
 
       <section className="grid grid-cols-2 gap-3 lg:grid-cols-4">
         <StatTile label="Total patients" value={patients.length} icon={Users} />

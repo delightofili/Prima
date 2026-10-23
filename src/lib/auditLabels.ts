@@ -36,4 +36,6 @@ export const ACTION_LABELS: Record<string, string> = {
   "staff.acknowledge": "Accepted the staff confidentiality terms",
   "backup.create": "Created a backup",
   "backup.restore": "Restored a backup",
+  "export.fhir": "Exported records as FHIR",
+  "export.dhis2": "Exported the DHIS2 monthly file",
 };

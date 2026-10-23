@@ -5,11 +5,11 @@ LAGOS = ZoneInfo("Africa/Lagos")
 
 AGE_GROUPS = ["Under 1", "1-4", "5-14", "15-49", "50+"]
 
-MATERNAL = [
-    ("Z34.9", "Antenatal visits"),
-    ("Z39.2", "Postnatal visits"),
-    ("Z00.1", "Child welfare visits"),
-    ("Z30.9", "Family planning visits"),
+SERVICE_LINES = [
+    ("anc", "Antenatal visits", ("Z34", "Z35")),
+    ("pnc", "Postnatal visits", ("Z39",)),
+    ("childWelfare", "Child welfare visits", ("Z00.1", "Z76.2")),
+    ("familyPlanning", "Family planning visits", ("Z30",)),
 ]
 
 # Same order as the app's vaccine schedule
@@ -70,7 +70,7 @@ def compute_report(patients: list[dict], visits: list[dict], shots: list[dict], 
     people = {p["id"]: p for p in patients}
     age_sex = {group: {"male": 0, "female": 0} for group in AGE_GROUPS}
     diagnoses: dict[str, dict] = {}
-    maternal = {code: 0 for code, _ in MATERNAL}
+    service = {key: 0 for key, _, _ in SERVICE_LINES}
     seen: set[str] = set()
     total_visits = 0
 
@@ -96,8 +96,10 @@ def compute_report(patients: list[dict], visits: list[dict], shots: list[dict], 
                 code or label, {"code": code or "", "label": label, "male": 0, "female": 0}
             )
             row[side] += 1
-        if code in maternal:
-            maternal[code] += 1
+        if code:
+            for key, _, prefixes in SERVICE_LINES:
+                if code.startswith(prefixes):  # str.startswith accepts a tuple of prefixes
+                    service[key] += 1
 
     doses: dict[tuple[str, int], int] = {}
     for s in shots:
@@ -118,5 +120,5 @@ def compute_report(patients: list[dict], visits: list[dict], shots: list[dict], 
             for name, dose, label in VACCINES
             if (name, dose) in doses
         ],
-        "maternalChild": [{"label": label, "value": maternal[code]} for code, label in MATERNAL],
+        "maternalChild": [{"label": label, "value": service[key]} for key, label, _ in SERVICE_LINES],
     }

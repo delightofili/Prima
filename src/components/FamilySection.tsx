@@ -7,11 +7,12 @@ import { useGuardians } from "../hooks/useGuardians";
 import { usePatients } from "../hooks/usePatients";
 import { useToast } from "../hooks/useToast";
 import { calculateAge } from "../lib/age";
-import { ANC_CODE, detachGuardian, setGuardianOf } from "../lib/guardians";
+import { detachGuardian, setGuardianOf } from "../lib/guardians";
 import { formatDate } from "../lib/utils";
 import type { Patient } from "../types";
 import { GuardianCard } from "./GuardianCard";
 import { GuardianDialog, GuardianEditDialog } from "./GuardianDialog";
+import { isAncCode } from "../lib/serviceCodes";
 
 export function FamilySection({ patient }: { patient: Patient }) {
   const toast = useToast();
@@ -31,7 +32,7 @@ export function FamilySection({ patient }: { patient: Patient }) {
     const rows = await db.visits
       .where("patientId")
       .equals(mother.id)
-      .filter((v) => !v.deletedAt && v.diagnosisCode === ANC_CODE)
+      .filter((v) => !v.deletedAt && isAncCode(v.diagnosisCode))
       .toArray();
     const latest = rows.reduce<string | null>(
       (best, v) => (best === null || v.visitDate > best ? v.visitDate : best),

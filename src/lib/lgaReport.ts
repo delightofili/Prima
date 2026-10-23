@@ -4,6 +4,7 @@ import type { Cell } from "./csv";
 import { fromISO, monthLabel, monthOf } from "./utils";
 import { VACCINES } from "./vaccines";
 import type { ImmunizationRecord, Patient, Visit } from "../types";
+import { SERVICE_LINES, inService } from "./serviceCodes";
 
 export interface AgeSexRow {
   label: string;
@@ -27,13 +28,6 @@ export interface LgaReport {
   maternalChild: { label: string; value: number }[];
 }
 
-const MATERNAL = [
-  { code: "Z34.9", label: "Antenatal visits" },
-  { code: "Z39.2", label: "Postnatal visits" },
-  { code: "Z00.1", label: "Child welfare visits" },
-  { code: "Z30.9", label: "Family planning visits" },
-];
-
 export function computeLgaReport(
   patients: Patient[],
   visits: Visit[],
@@ -48,8 +42,8 @@ export function computeLgaReport(
     ]),
   );
   const dx = new Map<string, DxRow>();
-  const maternal = new Map<string, number>(
-    MATERNAL.map((m): [string, number] => [m.code, 0]),
+  const service = new Map<string, number>(
+    SERVICE_LINES.map((l): [string, number] => [l.key, 0]),
   );
   const seen = new Set<string>();
   let totalVisits = 0;
@@ -78,8 +72,9 @@ export function computeLgaReport(
       row[side]++;
       dx.set(key, row);
     }
-    if (v.diagnosisCode && maternal.has(v.diagnosisCode)) {
-      maternal.set(v.diagnosisCode, (maternal.get(v.diagnosisCode) ?? 0) + 1);
+    for (const l of SERVICE_LINES) {
+      if (inService(v.diagnosisCode, l))
+        service.set(l.key, (service.get(l.key) ?? 0) + 1);
     }
   }
 
@@ -117,9 +112,9 @@ export function computeLgaReport(
       label: v.label,
       doses: doses.get(`${v.vaccineName}|${v.doseNumber}`) ?? 0,
     })),
-    maternalChild: MATERNAL.map((m) => ({
-      label: m.label,
-      value: maternal.get(m.code) ?? 0,
+    maternalChild: SERVICE_LINES.map((l) => ({
+      label: l.label,
+      value: service.get(l.key) ?? 0,
     })),
   };
 }

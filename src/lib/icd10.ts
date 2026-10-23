@@ -1,154 +1,78 @@
+import { ICD10_DATA, type Icd10 } from "./icd10Data";
 import { normalize } from "./utils";
 
-export interface Icd10 {
-  code: string;
+export type { Icd10 };
+export const ICD10 = ICD10_DATA;
+
+const BY_CODE = new Map(ICD10.map((d) => [d.code, d] as const));
+export const findCode = (code: string) => BY_CODE.get(code);
+export const labelForCode = (code: string) => BY_CODE.get(code)?.label;
+
+// HIV, sexually transmitted infections, mental health and pregnancy loss.
+// Exports leave these out unless the admin chooses to include them.
+const SENSITIVE = /^(B2[0-4]|Z21|A5\d|A6[0-4]|F\d\d|O0[0-8])/;
+export const isSensitiveCode = (code?: string) =>
+  !!code && SENSITIVE.test(code.toUpperCase());
+
+interface Row {
+  d: Icd10;
+  order: number; // position in the data file: the common conditions come first, so they win ties
+  code: string; // "b50.9"
+  bare: string; // "b509": nurses often type codes without the dot
   label: string;
-  aka?: string;
+  words: string[];
+  text: string;
 }
 
-export const ICD10: Icd10[] = [
-  { code: "B54", label: "Malaria, unspecified", aka: "malaria fever chills" },
-  {
-    code: "B50.9",
-    label: "Plasmodium falciparum malaria, unspecified",
-    aka: "malaria falciparum",
-  },
-  { code: "R50.9", label: "Fever, unspecified", aka: "high temperature" },
-  {
-    code: "J06.9",
-    label: "Acute upper respiratory infection, unspecified",
-    aka: "cold catarrh cough",
-  },
-  {
-    code: "J03.9",
-    label: "Acute tonsillitis, unspecified",
-    aka: "sore throat",
-  },
-  { code: "J20.9", label: "Acute bronchitis, unspecified", aka: "chest cough" },
-  {
-    code: "J18.9",
-    label: "Pneumonia, unspecified organism",
-    aka: "chest infection",
-  },
-  { code: "J45.9", label: "Asthma, unspecified", aka: "wheeze breathless" },
-  {
-    code: "A09",
-    label: "Diarrhoea and gastroenteritis, presumed infectious",
-    aka: "loose stool stooling",
-  },
-  { code: "E86", label: "Volume depletion", aka: "dehydration" },
-  { code: "A01.0", label: "Typhoid fever", aka: "typhoid" },
-  { code: "B82.9", label: "Intestinal parasitism, unspecified", aka: "worms" },
-  { code: "K29.7", label: "Gastritis, unspecified", aka: "ulcer stomach pain" },
-  { code: "K30", label: "Dyspepsia", aka: "indigestion heartburn" },
-  { code: "K59.0", label: "Constipation", aka: "hard stool" },
-  {
-    code: "R10.4",
-    label: "Other and unspecified abdominal pain",
-    aka: "stomach ache belly pain",
-  },
-  { code: "R11", label: "Nausea and vomiting", aka: "vomiting" },
-  {
-    code: "N39.0",
-    label: "Urinary tract infection, site not specified",
-    aka: "uti painful urine",
-  },
-  { code: "N76.0", label: "Acute vaginitis", aka: "vaginal discharge" },
-  {
-    code: "I10",
-    label: "Essential (primary) hypertension",
-    aka: "high blood pressure bp",
-  },
-  {
-    code: "E11.9",
-    label: "Type 2 diabetes mellitus without complications",
-    aka: "diabetes sugar",
-  },
-  { code: "D64.9", label: "Anaemia, unspecified", aka: "anemia low blood" },
-  {
-    code: "E46",
-    label: "Unspecified protein-energy malnutrition",
-    aka: "malnutrition underweight",
-  },
-  {
-    code: "E43",
-    label: "Unspecified severe protein-energy malnutrition",
-    aka: "severe malnutrition kwashiorkor marasmus",
-  },
-  { code: "H10.9", label: "Conjunctivitis, unspecified", aka: "red eye" },
-  {
-    code: "H66.9",
-    label: "Otitis media, unspecified",
-    aka: "ear infection ear pain",
-  },
-  {
-    code: "L08.9",
-    label: "Local infection of skin and subcutaneous tissue, unspecified",
-    aka: "boil abscess wound infection",
-  },
-  {
-    code: "L30.9",
-    label: "Dermatitis, unspecified",
-    aka: "rash eczema itching",
-  },
-  {
-    code: "B35.9",
-    label: "Dermatophytosis, unspecified",
-    aka: "ringworm fungal",
-  },
-  { code: "B86", label: "Scabies", aka: "itch" },
-  { code: "B37.9", label: "Candidiasis, unspecified", aka: "thrush yeast" },
-  { code: "M54.5", label: "Low back pain", aka: "waist pain" },
-  { code: "M25.5", label: "Pain in joint", aka: "joint pain arthritis" },
-  { code: "R51", label: "Headache", aka: "head pain" },
-  { code: "R05", label: "Cough" },
-  { code: "R42", label: "Dizziness and giddiness", aka: "dizzy" },
-  { code: "R53", label: "Malaise and fatigue", aka: "weakness tired" },
-  {
-    code: "K02.9",
-    label: "Dental caries, unspecified",
-    aka: "tooth toothache",
-  },
-  { code: "B05.9", label: "Measles without complication", aka: "measles" },
-  { code: "B01.9", label: "Varicella without complication", aka: "chickenpox" },
-  {
-    code: "Z34.9",
-    label: "Supervision of normal pregnancy, unspecified",
-    aka: "antenatal anc pregnancy",
-  },
-  {
-    code: "Z39.2",
-    label: "Routine postpartum follow-up",
-    aka: "postnatal after delivery",
-  },
-  {
-    code: "Z00.1",
-    label: "Routine child health examination",
-    aka: "child welfare growth monitoring",
-  },
-  {
-    code: "Z30.9",
-    label: "Contraceptive management, unspecified",
-    aka: "family planning",
-  },
-  { code: "T14.9", label: "Injury, unspecified", aka: "wound cut trauma" },
-];
+const words = (s: string) => s.split(/[^a-z0-9]+/).filter(Boolean);
 
-const INDEX = ICD10.map((d) => ({
-  d,
-  text: normalize(`${d.label} ${d.aka ?? ""}`),
-  label: normalize(d.label),
-  code: d.code.toLowerCase(),
-}));
+const INDEX: Row[] = ICD10.map((d, order) => {
+  const code = d.code.toLowerCase();
+  const own = normalize(`${d.label} ${d.aka ?? ""}`);
+  // The group name ("Malaria and parasites") only counts as a last resort, never as a real match
+  const text = normalize(`${d.label} ${d.aka ?? ""} ${d.group}`);
+  return {
+    d,
+    order,
+    code,
+    bare: code.replace(".", ""),
+    label: normalize(d.label),
+    words: words(own),
+    text,
+  };
+});
 
-export function searchDiagnoses(query: string, limit = 6): Icd10[] {
-  const t = normalize(query);
-  if (t.length < 2) return [];
-  const starts: Icd10[] = [];
-  const contains: Icd10[] = [];
+// Lower is better. null means "not a match".
+function score(
+  row: Row,
+  q: string,
+  bare: string,
+  tokens: string[],
+): number | null {
+  if (row.code === q || row.bare === bare) return 0;
+  if (
+    /\d/.test(bare) &&
+    bare.length >= 2 &&
+    (row.code.startsWith(q) || row.bare.startsWith(bare))
+  )
+    return 1;
+  if (row.label.startsWith(q)) return 2;
+  if (tokens.every((t) => row.words.includes(t))) return 3; // every typed word is a whole word ("bp")
+  if (tokens.every((t) => row.words.some((w) => w.startsWith(t)))) return 4; // or the start of one ("mala")
+  if (tokens.every((t) => row.text.includes(t))) return 5;
+  return null;
+}
+
+export function searchDiagnoses(query: string, limit = 8): Icd10[] {
+  const q = normalize(query);
+  if (q.length < 2) return [];
+  const bare = q.replace(/[.\s]/g, "");
+  const tokens = words(q);
+  const hits: { row: Row; s: number }[] = [];
   for (const row of INDEX) {
-    if (row.label.startsWith(t) || row.code.startsWith(t)) starts.push(row.d);
-    else if (row.text.includes(t)) contains.push(row.d);
+    const s = score(row, q, bare, tokens);
+    if (s !== null) hits.push({ row, s });
   }
-  return [...starts, ...contains].slice(0, limit);
+  hits.sort((a, b) => a.s - b.s || a.row.order - b.row.order);
+  return hits.slice(0, limit).map((h) => h.row.d);
 }

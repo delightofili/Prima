@@ -4,7 +4,7 @@
 
 A nurse registers patients, records visits, tracks vaccines, links children to their guardians, sees who is due for follow-up, queues appointment reminders, cleans up duplicate records and produces the monthly LGA summary, on an Android phone, tablet or laptop, with or without network. Everything is saved on the device first and syncs both ways with the cloud in the background. Each facility's records are private to its own staff, and every sensitive action is logged.
 
-> Status: built in public. Days 1-15 complete, Day 16 (installable app, offline shell, update prompt, real-phone test) in progress. The roadmap runs to Day 25, then continues with feedback from real PHCs.
+> Status: built in public. Days 1-16 complete, Day 17 (FHIR and DHIS2 export, bigger ICD-10 list) in progress. The roadmap runs to Day 25, then continues with feedback from real PHCs.
 
 ---
 
@@ -13,6 +13,14 @@ A nurse registers patients, records visits, tracks vaccines, links children to t
 Paper registers at PHCs lose patients, create duplicates (the same woman registered three times under different spellings), make the monthly LGA report a slow manual count, and give nobody a way to see who is due for a follow-up or the next vaccine. Children are usually registered under their mother's phone, so the card of a baby and the antenatal card of the mother are never connected. Many PHCs also have unreliable network, so an app that needs the internet to save a record does not work for them. Prima is **offline-first** for that reason.
 
 ## What Prima does today
+
+**Standards and a bigger diagnosis list (Day 17)**
+
+- Pro: a standard health-record file (FHIR R4). Patients, visits, diagnoses (ICD-10), vital signs, vaccines (with international vaccine codes), allergies and pregnancy details. A child's parent or guardian is exported as a related person, and a mother who is also a patient is linked to that role. Deleted, merged and erased patients are never included. Choose one Bundle file or one record per line.
+- Pro: a monthly DHIS2 data file from the same figures as the LGA report. A mapping step (which DHIS2 data element each Prima figure belongs to) is filled in once from a template, checked for valid codes, and kept on the phone. Prima creates the file; a person imports it. Nothing is sent automatically.
+- HIV, STI, mental health and pregnancy-loss diagnoses are left out of the FHIR file by default (the visit itself is still exported, without diagnosis, complaint and treatment). The admin can include them for a specific, agreed purpose. Both exports are written to the audit log.
+- The diagnosis picker now covers about 330 common primary-care conditions in 20 groups, understands plain words ("sugar", "piles", "miscarriage"), accepts codes typed with or without the dot, and offers the conditions this facility records most before anything is typed.
+- Monthly service lines (antenatal, postnatal, child welfare, family planning) now count by code prefix, so the finer codes in the bigger list are counted. The app and the Python service use the same rule.
 
 **Installable, offline-first app (Day 16)**
 
@@ -88,7 +96,7 @@ Paper registers at PHCs lose patients, create duplicates (the same woman registe
 
 **Python service (built, hosted later)**
 
-- `GET /api/lga-report`, `POST /api/fuzzy-check/batch` and `POST /api/fuzzy-check`. Every call checks the caller's sign-in and facility membership. 23 automated tests. Every feature has an on-device fallback.
+- `GET /api/lga-report`, `POST /api/fuzzy-check/batch` and `POST /api/fuzzy-check`. Every call checks the caller's sign-in and facility membership. 28 automated tests. Every feature has an on-device fallback.
 
 **Comfort and polish**
 
@@ -179,7 +187,7 @@ Email and password sign-in, facility creation and invite codes, row level securi
 - **Backup and restore.** AES-GCM encryption with a PBKDF2 key from the admin's password, strict validation of the file, merge-never-delete restore, facility check, erased patients stay erased, restore uses the normal sync queue so the cloud is repopulated, and a single audit line instead of thousands.
 - **Keep-alive.** A `keepalive()` database function and a GitHub Actions workflow every 3 days, with an optional second ping from a monitoring service.
 
-### Day 16: the phone (in progress)
+### Day 16: the phone
 
 - **Installable.** A web app manifest (name, teal theme, cream background, full-bleed icon so Android can shape it, shortcuts) and a service worker that stores Prima's own files. Chrome offers installation once both exist and the page is served over HTTPS.
 - **Offline shell.** Navigations fall back to the stored page, so every route opens offline. Nothing from the cloud is cached by the worker; the database in the phone is the only home for patient data.
@@ -187,6 +195,13 @@ Email and password sign-in, facility creation and invite codes, row level securi
 - **Phone-first CSS.** No pull-to-refresh (it would reload the app and lose a form), no double-tap zoom delay, a brand-tinted tap highlight, and a stable chunk layout so an update downloads only what changed.
 - **Testing on a real phone.** USB port forwarding (the phone treats `localhost` as safe) or a private test deploy to Cloudflare Pages. A plain local-network address cannot be used: without HTTPS there is no PIN hashing, no install and no offline worker.
 - **Phone check page and device test sheet**, so the first real-phone test produces numbers, not impressions.
+
+### Day 17: standards (in progress)
+
+- **FHIR.** A pure function turns the register into FHIR R4 resources: Organization, Patient (card and NHIS numbers as identifiers, next of kin as a contact), RelatedPerson for guardians, Encounter, Condition (ICD-10), Observation (blood pressure, temperature, weight with LOINC and UCUM codes; pregnancy, gravida and para), Immunization (CVX codes, birth doses as text), AllergyIntolerance. Each resource gets a stable id, so loading a file twice updates instead of duplicating. The output was validated against an independent FHIR R4B library, with every reference resolving inside the file.
+- **DHIS2.** Monthly `dataValueSets` JSON. Prima's 23 figures are mapped by the district officer's template; only mapped, valid figures are exported, and the rest are listed. A mapped vaccine with no doses in the month is exported as a real zero.
+- **ICD-10 list.** From 45 to about 330 entries. Every code was checked to exist in a WHO ICD-10 dataset, labels were compared against it for mix-ups, and the 45 original entries kept their codes and labels so saved visits do not change. The list is plain-language summaries, not the official classification, and still needs a clinician's review before real use.
+- **Prefix matching for service lines**, because exact matching would have silently undercounted antenatal visits coded Z34.0 or Z34.8. Changed in both the app and the Python service, with five new tests.
 
 ## Feedback queue
 
@@ -224,6 +239,11 @@ Email and password sign-in, facility creation and invite codes, row level securi
 | One calm banner at a time, always saying the records are safe                     | Frightened nurses stop trusting the app; most failures here are not their fault                                                                 |
 | Uploads in dependency order and in batches, with one-by-one fallback              | Hundreds of queued items must not mean hundreds of requests, and one bad record must not hide the good ones                                     |
 | Idle devices ask one cheap question before pulling                                | At 1,500 devices, five queries each every few minutes is the real load                                                                          |
+| Exports are files a person imports, never automatic sends                         | Patient data leaves the clinic only through a decision and a channel someone chose                                                              |
+| Sensitive diagnoses are left out of FHIR by default                               | HIV, STI, mental health and pregnancy loss carry stigma and, in some cases, legal risk                                                          |
+| The DHIS2 mapping is filled in once, from a template, by the district officer     | Prima cannot know a district's data element codes, and guessing them would put figures in the wrong place                                       |
+| Stable ids derived from the visit, not random ones                                | Re-exporting must update the receiving system, not create duplicates                                                                            |
+| Service lines count by code prefix                                                | A bigger diagnosis list must never reduce the antenatal count                                                                                   |
 | Updates wait for a tap, never reload by themselves                                | A nurse mid-registration must never lose her form to a version change                                                                           |
 | The offline worker caches Prima's own files and nothing else                      | Patient data belongs in the phone's database under the PIN, not in a browser cache                                                              |
 | Test on a real phone over HTTPS, with the gloves staff actually wear              | Targets that pass on a desk fail in a glove, and a plain local-network address disables the security features                                   |
@@ -289,8 +309,8 @@ Nigeria is moving toward FHIR and DHIS2: the National Digital Health Architectur
 | Trust               | 13    | Accounts, facilities, row level security, staff accounts                                     | Done        |
 |                     | 14    | PIN lock, roles, audit log, consent and privacy notice, data requests                        | Done        |
 |                     | 15    | Server-side plan limits, calm degraded mode, scale hardening, backup and restore, keep-alive | Done        |
-| Phone-ready         | 16    | PWA, install on Android, real-device test including gloves                                   | In progress |
-| Standards and money | 17    | FHIR and DHIS2 export, larger ICD-10 list                                                    | Planned     |
+| Phone-ready         | 16    | PWA, install on Android, real-device test including gloves                                   | Done        |
+| Standards and money | 17    | FHIR and DHIS2 export, larger ICD-10 list                                                    | In progress |
 |                     | 18    | Chief-complaint term check, print card with QR, sticky save bar, vitals steppers             | Planned     |
 |                     | 19    | Paystack, Edge Function payment check, subscriptions, annual plans                           | Planned     |
 | Launch              | 20    | Polish, accessibility, onboarding, demo mode, NDPA and clinical-safety gate                  | Planned     |
@@ -341,6 +361,8 @@ Free Supabase projects pause after about a week without activity. Prima calls `k
 - A facility's plan comes from the database. The browser-storage testing switch works only in `npm run dev`. Only the patient cap and staff seats are enforced by the server; export, report and follow-up gates run on the device and can be bypassed by a technical user, so treat them as a product boundary, not a security one.
 - Backups contain the full patient register. They are encrypted with the admin's password, and a forgotten password cannot be recovered by anyone. A backup taken before an erasure still contains that person, so delete old backups and do not keep them indefinitely. Restore never brings an erased patient back, but backups remain the facility's responsibility.
 - Browsers can clear a site's storage if the phone runs low on space unless the site is granted persistent storage. Prima asks for it, but the browser decides; regular backups are the safety net.
+- FHIR and DHIS2 files contain, or are derived from, identifiable health records. They are made on the phone and handed to a person; where they go next is the facility's responsibility. Prima's FHIR identifiers use `urn:prima:` names until the project has a web address of its own, and the vaccine codes use "unspecified formulation" entries where Prima records only a vaccine name, so a receiving system's owner should confirm the mapping.
+- The ICD-10 list was checked for existence against a WHO ICD-10 dataset, but editions differ (for example dengue and haemorrhoids moved between editions) and a few three-character codes have finer sub-codes in the newest edition. Nigeria's national reporting rules decide what is required; confirm with a health worker or the state records officer before real use.
 - Immunization intervals, vitals thresholds, follow-up rules, the ICD-10 list and the report groupings are simplified starting points. Confirm them with a health worker before real use.
 - Before real PHC data, complete the Nigeria Data Protection Act and NDPC check planned for Day 20.
 
@@ -349,8 +371,9 @@ Free Supabase projects pause after about a week without activity. Prima calls `k
 - Problem: paper registers lose and duplicate patients; the LGA report is counted by hand; follow-ups depend on a nurse's memory; nobody can say who looked at a record.
 - Origin: a public health graduate learning software engineering, building for PHCs.
 - Pivot: started server-first, then rebuilt offline-first after seeing that network drops break clinic workflow.
-- Numbers: 2 repos (1 reference, 1 product); 23 automated Python tests; about 45 ICD-10 conditions searchable in plain language; a 25-day roadmap.
+- Numbers: 2 repos (1 reference, 1 product); 28 automated Python tests; about 330 ICD-10 conditions searchable in plain language; a 25-day roadmap.
 - Day 14 headline: a PIN that works with no signal, an audit log that nobody can edit (not even an admin), and a "right to be forgotten" button that really reaches every phone. The log records which fields changed and which card, never a name or a diagnosis.
+- Day 17 headline: Prima can now speak the standards health systems use. A Pro facility can export its records as FHIR, with a mother's baby linked to her as a related person, and a monthly DHIS2 file. HIV and mental-health diagnoses stay out by default. The diagnosis list grew from 45 to about 330 conditions, and a test caught that a bigger list would have quietly undercounted antenatal visits.
 - Day 16 headline: Prima now installs on an Android home screen and opens with no signal at all, straight to the PIN screen. Updates ask first instead of reloading under a nurse's thumb, and the app has a built-in tap test so gloves get measured, not guessed.
 - Day 15 headline: the database now says no to the 201st free patient, but a nurse's patient is never lost: the record waits on the phone and uploads when the plan changes. Uploads travel in batches in dependency order, idle phones skip the server entirely, and backups are encrypted so a full register never sits in a chat as plain text.
 - Lesson: security features should not live in each screen. The audit log is written by the same database hooks that already queue sync, so a change cannot happen without a record. And a PIN is a lock, not a vault, so say so.

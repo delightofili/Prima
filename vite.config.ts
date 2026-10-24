@@ -62,6 +62,12 @@ export default defineConfig({
             url: "/patients",
             icons: [{ src: "/icon-192.png", sizes: "192x192" }],
           },
+          {
+            name: "Scan a patient card",
+            short_name: "Scan",
+            url: "/scan",
+            icons: [{ src: "/icon-192.png", sizes: "192x192" }],
+          },
         ],
       },
       workbox: {

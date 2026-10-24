@@ -5,7 +5,7 @@ import { calculateAge, isUnder5 } from "../lib/age";
 import { config } from "../lib/config";
 import { todayISO } from "../lib/utils";
 import { Logo } from "../components/Logo";
-import { PatientCard } from "../components/PatientCard";
+import { PatientListCard } from "../components/PatientListCard";
 import { StatTile } from "../components/StatTile";
 import { usePageTitle } from "../hooks/common";
 import { CalendarClock, ChevronRight } from "lucide-react";
@@ -122,7 +122,7 @@ export function HomePage() {
           <ul className="grid gap-3 md:grid-cols-2">
             {patients.slice(0, 6).map((p) => (
               <li key={p.id}>
-                <PatientCard p={p} />
+                <PatientListCard patient={p} />
               </li>
             ))}
           </ul>

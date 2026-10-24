@@ -1,0 +1,2881 @@
+[
+  {
+    "text": "fever and cough for 3 days",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Fever", "Cough"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "feaver and cogh",
+    "expected": {
+      "status": "suggest",
+      "recognized": [],
+      "suggestions": [
+        {
+          "from": "feaver",
+          "to": "fever",
+          "term": "Fever"
+        },
+        {
+          "from": "cogh",
+          "to": "cough",
+          "term": "Cough"
+        }
+      ],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "running stomach since yesterday",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Diarrhoea"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "hot body, catarrh",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Fever", "Runny or blocked nose"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "belle pain",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Abdominal pain"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "ok",
+    "expected": {
+      "status": "unclear",
+      "recognized": [],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "asdfgh",
+    "expected": {
+      "status": "unclear",
+      "recognized": [],
+      "suggestions": [],
+      "unknown": ["asdfgh"],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "sick",
+    "expected": {
+      "status": "unclear",
+      "recognized": [],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": true
+    }
+  },
+  {
+    "text": "I am not well",
+    "expected": {
+      "status": "unclear",
+      "recognized": [],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": true
+    }
+  },
+  {
+    "text": "pain",
+    "expected": {
+      "status": "unclear",
+      "recognized": [],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": true
+    }
+  },
+  {
+    "text": "call 0803 123 4567",
+    "expected": {
+      "status": "unclear",
+      "recognized": [],
+      "suggestions": [],
+      "unknown": ["call"],
+      "flags": ["contains_number"],
+      "vague": false
+    }
+  },
+  {
+    "text": "+234 803 123 4567 please",
+    "expected": {
+      "status": "unclear",
+      "recognized": [],
+      "suggestions": [],
+      "unknown": [],
+      "flags": ["contains_number"],
+      "vague": false
+    }
+  },
+  {
+    "text": "email me at a@b.com",
+    "expected": {
+      "status": "unclear",
+      "recognized": [],
+      "suggestions": [],
+      "unknown": ["email"],
+      "flags": ["contains_email"],
+      "vague": false
+    }
+  },
+  {
+    "text": "lower abdominal pain and vomiting",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Lower abdominal pain", "Vomiting"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "dizzy and weak",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Dizziness", "Weakness or tiredness"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "h/a and n/v",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Headache", "Nausea and vomiting"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "SOB",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Difficulty breathing"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "waist pain",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Low back pain"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "head dey pain me",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Headache"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "hot body and body pain",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Fever", "Body pain"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "chest pain",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Chest pain"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "stomac pain",
+    "expected": {
+      "status": "suggest",
+      "recognized": [],
+      "suggestions": [
+        {
+          "from": "stomac",
+          "to": "stomach",
+          "term": "Abdominal pain"
+        }
+      ],
+      "unknown": [],
+      "flags": [],
+      "vague": true
+    }
+  },
+  {
+    "text": "vomitting",
+    "expected": {
+      "status": "suggest",
+      "recognized": [],
+      "suggestions": [
+        {
+          "from": "vomitting",
+          "to": "vomiting",
+          "term": "Vomiting"
+        }
+      ],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "diarhoea",
+    "expected": {
+      "status": "suggest",
+      "recognized": [],
+      "suggestions": [
+        {
+          "from": "diarhoea",
+          "to": "diarrhoea",
+          "term": "Diarrhoea"
+        }
+      ],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "headake",
+    "expected": {
+      "status": "unclear",
+      "recognized": [],
+      "suggestions": [],
+      "unknown": ["headake"],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "ọkụ",
+    "expected": {
+      "status": "unclear",
+      "recognized": [],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "fever",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Fever"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "",
+    "expected": {
+      "status": "empty",
+      "recognized": [],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "x",
+    "expected": {
+      "status": "empty",
+      "recognized": [],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "  ",
+    "expected": {
+      "status": "empty",
+      "recognized": [],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "FEVER!!!",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Fever"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "Fever, Cough; Headache.",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Fever", "Cough", "Headache"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "feverr",
+    "expected": {
+      "status": "suggest",
+      "recognized": [],
+      "suggestions": [
+        {
+          "from": "feverr",
+          "to": "fever",
+          "term": "Fever"
+        }
+      ],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "coughing blood since morning",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Coughing blood"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "child has been crying all night and not feeding",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Baby not feeding well"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "blood in stool and fever",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Blood in stool", "Fever"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "painful urination and frequent urination",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Painful urination", "Frequent urination"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "missed period 2 months",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Missed period"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "baby cord pus",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Umbilical cord problem"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "antenatal booking",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Pregnancy or antenatal visit"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "follow up for malaria",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Review, check-up or test", "Malaria"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "review",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Review, check-up or test"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "dressing",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Dressing or procedure"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "circumcision",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Dressing or procedure"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "snake bite on the leg",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Bite or sting"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "dog bite",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Bite or sting"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "burnt by fire",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Burn"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "knee pain and swollen feet",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Joint pain", "Swollen feet or legs"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "he fell from a tree",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Injury or fall"],
+      "suggestions": [],
+      "unknown": ["tree"],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "road traffic accident",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Injury or fall"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "swollen glands in neck",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Neck swelling"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "vaginal discharge with itching",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Vaginal discharge", "Itching"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "private part pain",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Genital problem"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": true
+    }
+  },
+  {
+    "text": "no blood",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Paleness or anaemia"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "looking pale and weak",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Paleness or anaemia", "Weakness or tiredness"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "cannot sleep",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Sleeping problem"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "feeling sad and anxious",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Low mood or anxiety"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "one side weak",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Weakness on one side"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "cannot move arm",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Weakness on one side"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "mouth ulcers",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Mouth sores"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "toothache and swollen gum",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Toothache"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "red eye with discharge",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Red or painful eye"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "blurry vision",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Blurred vision"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "ear discharge",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Ear pain or discharge"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "ringing in ear",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Hearing problem"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "high blood pressure",
+    "expected": {
+      "status": "ok",
+      "recognized": ["High blood pressure"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "bp check",
+    "expected": {
+      "status": "ok",
+      "recognized": ["High blood pressure"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "diabetes",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Diabetes or high sugar"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "sugar test",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Diabetes or high sugar", "Review, check-up or test"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "asthma attack",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Asthma"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "she is pregnant and has bleeding",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Pregnancy or antenatal visit"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "labour pains since morning",
+    "expected": {
+      "status": "ok",
+      "recognized": ["In labour"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "postnatal check",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Postnatal visit"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "immunization",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Immunization or child welfare"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "vaccine for baby",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Immunization or child welfare"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "growth monitoring",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Immunization or child welfare"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "weighing",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Immunization or child welfare"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "under five clinic",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Immunization or child welfare"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "very very sick child",
+    "expected": {
+      "status": "unclear",
+      "recognized": [],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": true
+    }
+  },
+  {
+    "text": "problem",
+    "expected": {
+      "status": "unclear",
+      "recognized": [],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": true
+    }
+  },
+  {
+    "text": "complaint",
+    "expected": {
+      "status": "unclear",
+      "recognized": [],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": true
+    }
+  },
+  {
+    "text": "trouble breathing",
+    "expected": {
+      "status": "unclear",
+      "recognized": [],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": true
+    }
+  },
+  {
+    "text": "difficulty in breathing",
+    "expected": {
+      "status": "unclear",
+      "recognized": [],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "wheezing at night",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Difficulty breathing"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "chest tightness",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Chest pain"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "heart pain",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Chest pain"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "palpitations",
+    "expected": {
+      "status": "unclear",
+      "recognized": [],
+      "suggestions": [],
+      "unknown": ["palpitations"],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "lump in breast",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Breast pain or lump"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "a lump on the neck",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Lump"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "skin rash and itching",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Skin rash", "Itching"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "scabies",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Skin infection or infestation"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "ringworm",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Skin infection or infestation"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "pimples",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Skin infection or infestation"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "boils on the back",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Boil or abscess"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "pus from ear",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Ear pain or discharge"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "swelling with pus",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Boil or abscess"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "wound dressing",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Dressing or procedure"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "remove stitches",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Dressing or procedure"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "suture removal",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Dressing or procedure"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "injection only",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Dressing or procedure"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "drug refill",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Review, check-up or test"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "medical certificate",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Review, check-up or test"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "fitness certificate",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Review, check-up or test"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "hiv test",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Review, check-up or test"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "pregnancy test",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Pregnancy or antenatal visit"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "malaria test",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Review, check-up or test"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "tb test",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Review, check-up or test"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "blood test",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Review, check-up or test"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "screening",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Review, check-up or test"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "referred from health post",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Referral"],
+      "suggestions": [],
+      "unknown": ["health"],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "kwashiorkor",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Malnutrition or poor growth"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "marasmus",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Malnutrition or poor growth"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "underweight child",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Malnutrition or poor growth"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "poor weight gain",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Malnutrition or poor growth"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "wasting",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Malnutrition or poor growth"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "loss of appetite",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Loss of appetite"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "not eating",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Loss of appetite"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "refusing food",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Loss of appetite"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "weight loss",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Weight loss"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "losing weight",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Weight loss"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "thirsty and dry mouth",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Thirst or dehydration"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "sunken eyes",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Thirst or dehydration"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "yellow eyes",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Jaundice"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "jaundice",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Jaundice"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "paralysis",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Weakness on one side"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "convulsion in a child",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Convulsions"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "fits",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Convulsions"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "seizure",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Convulsions"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "fainted",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Fainting"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "collapsed",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Fainting"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "blackout",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Fainting"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "giddiness",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Dizziness"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "head spinning",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Dizziness"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "body weakness",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Weakness or tiredness"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "tired",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Weakness or tiredness"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "fatigue",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Weakness or tiredness"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "neck pain",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Neck pain"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "stiff neck",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Neck pain"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "back pain",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Low back pain"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "lbp",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Low back pain"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "joint pain",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Joint pain"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "body aches",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Body pain"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "muscle pain",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Body pain"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "stomach cramps",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Abdominal pain"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "tummy pain",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Abdominal pain"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "epigastric pain",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Abdominal pain"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "pelvic pain",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Lower abdominal pain"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "constipation",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Constipation"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "hard stool",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Constipation"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "dysentery",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Blood in stool"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "loose motion",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Diarrhoea"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "watery stool",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Diarrhoea"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "purging",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Diarrhoea"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "stooling",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Diarrhoea"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "throwing up",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Vomiting"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "puking",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Vomiting"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "nausea",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Nausea"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "feel like vomiting",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Nausea"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "nose bleed",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Nosebleed"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "blocked nose",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Runny or blocked nose"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "sneezing",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Runny or blocked nose"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "common cold",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Runny or blocked nose"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "cold",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Runny or blocked nose"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "sore throat",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Sore throat"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "pain swallowing",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Sore throat"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "hoarse voice",
+    "expected": {
+      "status": "unclear",
+      "recognized": [],
+      "suggestions": [],
+      "unknown": ["hoarse", "voice"],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "a b c d",
+    "expected": {
+      "status": "unclear",
+      "recognized": [],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "1234567890",
+    "expected": {
+      "status": "unclear",
+      "recognized": [],
+      "suggestions": [],
+      "unknown": [],
+      "flags": ["contains_number"],
+      "vague": false
+    }
+  },
+  {
+    "text": "hot body 08031234567",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Fever"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": ["contains_number"],
+      "vague": false
+    }
+  },
+  {
+    "text": "naira",
+    "expected": {
+      "status": "unclear",
+      "recognized": [],
+      "suggestions": [],
+      "unknown": ["naira"],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "xx",
+    "expected": {
+      "status": "unclear",
+      "recognized": [],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "catarh",
+    "expected": {
+      "status": "suggest",
+      "recognized": [],
+      "suggestions": [
+        {
+          "from": "catarh",
+          "to": "catarrh",
+          "term": "Runny or blocked nose"
+        }
+      ],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "tring to conceive",
+    "expected": {
+      "status": "suggest",
+      "recognized": [],
+      "suggestions": [
+        {
+          "from": "tring",
+          "to": "trying",
+          "term": "Difficulty conceiving"
+        }
+      ],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "loking pale",
+    "expected": {
+      "status": "suggest",
+      "recognized": ["Paleness or anaemia"],
+      "suggestions": [
+        {
+          "from": "loking",
+          "to": "looking",
+          "term": "Paleness or anaemia"
+        }
+      ],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "malria test",
+    "expected": {
+      "status": "suggest",
+      "recognized": ["Review, check-up or test"],
+      "suggestions": [
+        {
+          "from": "malria",
+          "to": "malaria",
+          "term": "Malaria"
+        }
+      ],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "feeling nausous",
+    "expected": {
+      "status": "suggest",
+      "recognized": [],
+      "suggestions": [
+        {
+          "from": "nausous",
+          "to": "nauseous",
+          "term": "Nausea"
+        }
+      ],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "difficulty conceivin",
+    "expected": {
+      "status": "suggest",
+      "recognized": [],
+      "suggestions": [
+        {
+          "from": "conceivin",
+          "to": "conceiving",
+          "term": "Difficulty conceiving"
+        }
+      ],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "amenorrea",
+    "expected": {
+      "status": "suggest",
+      "recognized": [],
+      "suggestions": [
+        {
+          "from": "amenorrea",
+          "to": "amenorrhea",
+          "term": "Missed period"
+        }
+      ],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "irreguar period",
+    "expected": {
+      "status": "suggest",
+      "recognized": [],
+      "suggestions": [
+        {
+          "from": "irreguar",
+          "to": "irregular",
+          "term": "Irregular periods"
+        }
+      ],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "hmorrhoids",
+    "expected": {
+      "status": "suggest",
+      "recognized": [],
+      "suggestions": [
+        {
+          "from": "hmorrhoids",
+          "to": "hemorrhoids",
+          "term": "Piles"
+        }
+      ],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "swllen glands",
+    "expected": {
+      "status": "suggest",
+      "recognized": [],
+      "suggestions": [
+        {
+          "from": "swllen",
+          "to": "swollen",
+          "term": "Swelling"
+        }
+      ],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "paralyze",
+    "expected": {
+      "status": "suggest",
+      "recognized": [],
+      "suggestions": [
+        {
+          "from": "paralyze",
+          "to": "paralyzed",
+          "term": "Weakness on one side"
+        }
+      ],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "pregnat",
+    "expected": {
+      "status": "suggest",
+      "recognized": [],
+      "suggestions": [
+        {
+          "from": "pregnat",
+          "to": "pregnant",
+          "term": "Pregnancy or antenatal visit"
+        }
+      ],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "refusing breat",
+    "expected": {
+      "status": "suggest",
+      "recognized": [],
+      "suggestions": [
+        {
+          "from": "breat",
+          "to": "breast",
+          "term": "Breast pain or lump"
+        }
+      ],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "insec bite",
+    "expected": {
+      "status": "suggest",
+      "recognized": ["Bite or sting"],
+      "suggestions": [
+        {
+          "from": "insec",
+          "to": "insect",
+          "term": "Bite or sting"
+        }
+      ],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "rutine check",
+    "expected": {
+      "status": "suggest",
+      "recognized": [],
+      "suggestions": [
+        {
+          "from": "rutine",
+          "to": "routine",
+          "term": "Immunization or child welfare"
+        }
+      ],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "brest lump",
+    "expected": {
+      "status": "suggest",
+      "recognized": ["Lump"],
+      "suggestions": [
+        {
+          "from": "brest",
+          "to": "breast",
+          "term": "Breast pain or lump"
+        }
+      ],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "cannt sleep",
+    "expected": {
+      "status": "suggest",
+      "recognized": [],
+      "suggestions": [
+        {
+          "from": "cannt",
+          "to": "cannot",
+          "term": "Difficulty breathing"
+        }
+      ],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "frequnt micturition",
+    "expected": {
+      "status": "suggest",
+      "recognized": [],
+      "suggestions": [
+        {
+          "from": "frequnt",
+          "to": "frequent",
+          "term": "Diarrhoea"
+        }
+      ],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "irregular perods",
+    "expected": {
+      "status": "suggest",
+      "recognized": [],
+      "suggestions": [
+        {
+          "from": "perods",
+          "to": "periods",
+          "term": "Vaginal bleeding"
+        }
+      ],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "itching in vgina",
+    "expected": {
+      "status": "suggest",
+      "recognized": ["Itching"],
+      "suggestions": [
+        {
+          "from": "vgina",
+          "to": "vagina",
+          "term": "Vaginal discharge"
+        }
+      ],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "eye probem",
+    "expected": {
+      "status": "suggest",
+      "recognized": [],
+      "suggestions": [
+        {
+          "from": "probem",
+          "to": "problem",
+          "term": "Red or painful eye"
+        }
+      ],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "malria symptoms",
+    "expected": {
+      "status": "suggest",
+      "recognized": [],
+      "suggestions": [
+        {
+          "from": "malria",
+          "to": "malaria",
+          "term": "Malaria"
+        }
+      ],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "not seeing perid",
+    "expected": {
+      "status": "suggest",
+      "recognized": [],
+      "suggestions": [
+        {
+          "from": "perid",
+          "to": "period",
+          "term": "Vaginal bleeding"
+        }
+      ],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "poor hearng",
+    "expected": {
+      "status": "suggest",
+      "recognized": [],
+      "suggestions": [
+        {
+          "from": "hearng",
+          "to": "hearing",
+          "term": "Hearing problem"
+        }
+      ],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "swolle gum",
+    "expected": {
+      "status": "suggest",
+      "recognized": [],
+      "suggestions": [
+        {
+          "from": "swolle",
+          "to": "swollen",
+          "term": "Swelling"
+        }
+      ],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "rngworm",
+    "expected": {
+      "status": "suggest",
+      "recognized": [],
+      "suggestions": [
+        {
+          "from": "rngworm",
+          "to": "ringworm",
+          "term": "Skin infection or infestation"
+        }
+      ],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "foot sweling",
+    "expected": {
+      "status": "suggest",
+      "recognized": [],
+      "suggestions": [
+        {
+          "from": "sweling",
+          "to": "swelling",
+          "term": "Swelling"
+        }
+      ],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "irregular mestruation",
+    "expected": {
+      "status": "suggest",
+      "recognized": [],
+      "suggestions": [
+        {
+          "from": "mestruation",
+          "to": "menstruation",
+          "term": "Irregular periods"
+        }
+      ],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "loose motons",
+    "expected": {
+      "status": "suggest",
+      "recognized": [],
+      "suggestions": [
+        {
+          "from": "motons",
+          "to": "motions",
+          "term": "Diarrhoea"
+        }
+      ],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "mucle ache",
+    "expected": {
+      "status": "suggest",
+      "recognized": [],
+      "suggestions": [
+        {
+          "from": "mucle",
+          "to": "muscle",
+          "term": "Body pain"
+        }
+      ],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "weaknes on one side",
+    "expected": {
+      "status": "suggest",
+      "recognized": [],
+      "suggestions": [
+        {
+          "from": "weaknes",
+          "to": "weakness",
+          "term": "Weakness or tiredness"
+        }
+      ],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "urinatng often",
+    "expected": {
+      "status": "suggest",
+      "recognized": [],
+      "suggestions": [
+        {
+          "from": "urinatng",
+          "to": "urinating",
+          "term": "Painful urination"
+        }
+      ],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "wouns",
+    "expected": {
+      "status": "suggest",
+      "recognized": [],
+      "suggestions": [
+        {
+          "from": "wouns",
+          "to": "wound",
+          "term": "Wound or cut"
+        }
+      ],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "perio pain",
+    "expected": {
+      "status": "suggest",
+      "recognized": [],
+      "suggestions": [
+        {
+          "from": "perio",
+          "to": "period",
+          "term": "Vaginal bleeding"
+        }
+      ],
+      "unknown": [],
+      "flags": [],
+      "vague": true
+    }
+  },
+  {
+    "text": "body itchng",
+    "expected": {
+      "status": "suggest",
+      "recognized": [],
+      "suggestions": [
+        {
+          "from": "itchng",
+          "to": "itching",
+          "term": "Itching"
+        }
+      ],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "no strengh",
+    "expected": {
+      "status": "suggest",
+      "recognized": [],
+      "suggestions": [
+        {
+          "from": "strengh",
+          "to": "strength",
+          "term": "Weakness or tiredness"
+        }
+      ],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "loose mtion",
+    "expected": {
+      "status": "suggest",
+      "recognized": [],
+      "suggestions": [
+        {
+          "from": "mtion",
+          "to": "motion",
+          "term": "Diarrhoea"
+        }
+      ],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "hematuria",
+    "expected": {
+      "status": "ok",
+      "recognized": ["Blood in urine"],
+      "suggestions": [],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "perio irregular",
+    "expected": {
+      "status": "suggest",
+      "recognized": [],
+      "suggestions": [
+        {
+          "from": "perio",
+          "to": "period",
+          "term": "Vaginal bleeding"
+        }
+      ],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "nauseos",
+    "expected": {
+      "status": "suggest",
+      "recognized": [],
+      "suggestions": [
+        {
+          "from": "nauseos",
+          "to": "nauseous",
+          "term": "Nausea"
+        }
+      ],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "chest tightess",
+    "expected": {
+      "status": "suggest",
+      "recognized": [],
+      "suggestions": [
+        {
+          "from": "tightess",
+          "to": "tightness",
+          "term": "Chest pain"
+        }
+      ],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "injectale",
+    "expected": {
+      "status": "suggest",
+      "recognized": [],
+      "suggestions": [
+        {
+          "from": "injectale",
+          "to": "injectable",
+          "term": "Family planning"
+        }
+      ],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "ankle swellin",
+    "expected": {
+      "status": "suggest",
+      "recognized": [],
+      "suggestions": [
+        {
+          "from": "swellin",
+          "to": "swelling",
+          "term": "Swelling"
+        }
+      ],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "scabie",
+    "expected": {
+      "status": "suggest",
+      "recognized": [],
+      "suggestions": [
+        {
+          "from": "scabie",
+          "to": "scabies",
+          "term": "Skin infection or infestation"
+        }
+      ],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "body wakness",
+    "expected": {
+      "status": "suggest",
+      "recognized": [],
+      "suggestions": [
+        {
+          "from": "wakness",
+          "to": "weakness",
+          "term": "Weakness or tiredness"
+        }
+      ],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "couhing up blood",
+    "expected": {
+      "status": "suggest",
+      "recognized": [],
+      "suggestions": [
+        {
+          "from": "couhing",
+          "to": "coughing",
+          "term": "Cough"
+        }
+      ],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "hemopysis",
+    "expected": {
+      "status": "suggest",
+      "recognized": [],
+      "suggestions": [
+        {
+          "from": "hemopysis",
+          "to": "hemoptysis",
+          "term": "Coughing blood"
+        }
+      ],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "deafnss",
+    "expected": {
+      "status": "suggest",
+      "recognized": [],
+      "suggestions": [
+        {
+          "from": "deafnss",
+          "to": "deafness",
+          "term": "Hearing problem"
+        }
+      ],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "urinating frequentl",
+    "expected": {
+      "status": "suggest",
+      "recognized": [],
+      "suggestions": [
+        {
+          "from": "frequentl",
+          "to": "frequent",
+          "term": "Diarrhoea"
+        }
+      ],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "post delivey",
+    "expected": {
+      "status": "suggest",
+      "recognized": [],
+      "suggestions": [
+        {
+          "from": "delivey",
+          "to": "delivery",
+          "term": "Vaginal bleeding"
+        }
+      ],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "pllor",
+    "expected": {
+      "status": "suggest",
+      "recognized": [],
+      "suggestions": [
+        {
+          "from": "pllor",
+          "to": "pallor",
+          "term": "Paleness or anaemia"
+        }
+      ],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "sadnss",
+    "expected": {
+      "status": "suggest",
+      "recognized": [],
+      "suggestions": [
+        {
+          "from": "sadnss",
+          "to": "sadness",
+          "term": "Low mood or anxiety"
+        }
+      ],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "fitnss certificate",
+    "expected": {
+      "status": "suggest",
+      "recognized": [],
+      "suggestions": [
+        {
+          "from": "fitnss",
+          "to": "fitness",
+          "term": "Review, check-up or test"
+        }
+      ],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "tinitus",
+    "expected": {
+      "status": "suggest",
+      "recognized": [],
+      "suggestions": [
+        {
+          "from": "tinitus",
+          "to": "tinnitus",
+          "term": "Hearing problem"
+        }
+      ],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "not feedig",
+    "expected": {
+      "status": "suggest",
+      "recognized": [],
+      "suggestions": [
+        {
+          "from": "feedig",
+          "to": "feeding",
+          "term": "Baby not feeding well"
+        }
+      ],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "contracions",
+    "expected": {
+      "status": "suggest",
+      "recognized": [],
+      "suggestions": [
+        {
+          "from": "contracions",
+          "to": "contractions",
+          "term": "In labour"
+        }
+      ],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  },
+  {
+    "text": "privte parts",
+    "expected": {
+      "status": "suggest",
+      "recognized": [],
+      "suggestions": [
+        {
+          "from": "privte",
+          "to": "private",
+          "term": "Genital problem"
+        }
+      ],
+      "unknown": [],
+      "flags": [],
+      "vague": false
+    }
+  }
+]

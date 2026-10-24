@@ -14,6 +14,7 @@ import {
   Trash2,
   User,
   Users,
+  CreditCard,
   type LucideIcon,
 } from "lucide-react";
 import { db } from "../db";
@@ -253,6 +254,9 @@ export function PatientDetailPage() {
               <Trash2 size={20} className="mr-2" /> Delete
             </button>
           )}
+          <Link to={`/patients/${p.id}/card`} className="btn btn-secondary">
+            <CreditCard size={20} className="mr-2" /> Print card
+          </Link>
         </div>
       </section>
       <FamilySection patient={p} />

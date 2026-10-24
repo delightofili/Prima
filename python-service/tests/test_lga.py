@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date 
 
 from lga import age_group, compute_report, month_bounds
 

@@ -1,9 +1,4 @@
-import {
-  useEffect,
-  useState,
-  type ChangeEvent,
-  type ReactNode,
-} from "react";
+import { useEffect, useState, type ChangeEvent, type ReactNode } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { db } from "../db";
@@ -30,6 +25,10 @@ import { BLOOD_GROUPS, type Patient } from "../types";
 import { useDebounce } from "../hooks/common";
 import { ImmunizationChecklist } from "./ImmunizationChecklist";
 import { toE164 } from "../lib/utils";
+import { useUnsavedWarning } from "../hooks/useUnsavedWarning";
+import { ComplaintHint } from "./ComplaintHint";
+import { StickyActions } from "./StickyActions";
+import { Link } from "react-router-dom";
 
 type Hint =
   | { kind: "exact"; patient: Patient }
@@ -71,7 +70,7 @@ export function PatientForm({
     handleSubmit,
     control,
     setValue,
-    formState: { errors, isSubmitting },
+    formState: { errors, isSubmitting, isDirty, isSubmitSuccessful },
   } = useForm<PatientFormValues>({
     resolver: zodResolver(patientFormSchema),
     defaultValues: patient
@@ -85,6 +84,8 @@ export function PatientForm({
           noticeGiven: false,
         },
   });
+
+  useUnsavedWarning(isDirty && !isSubmitSuccessful);
 
   const [picked, setPicked] = useState<Record<string, string>>({});
   const [hint, setHint] = useState<Hint>(null);
@@ -221,7 +222,11 @@ export function PatientForm({
   });
 
   return (
-    <form onSubmit={onSubmit} className="grid gap-5 md:grid-cols-2" noValidate>
+    <form
+      onSubmit={onSubmit}
+      className="grid gap-5 pb-24 md:pb-0 md:grid-cols-2"
+      noValidate
+    >
       {/* 1. NEW ADMISSION */}
       <section className="card space-y-3 md:col-span-2">
         <label className="flex min-h-12 items-center justify-between gap-3 text-base font-semibold">
@@ -243,6 +248,15 @@ export function PatientForm({
               className="input h-auto py-2"
               placeholder="e.g. fever and cough for 3 days"
               {...register("initialChiefComplaint")}
+            />
+            <ComplaintHint
+              value={complaint}
+              onReplace={(v) =>
+                setValue("initialChiefComplaint", v, {
+                  shouldDirty: true,
+                  shouldValidate: true,
+                })
+              }
             />
             <span className="block text-right text-sm text-subtext">
               {complaint.length}/200
@@ -542,17 +556,36 @@ export function PatientForm({
         </p>
       )}
 
-      <button
-        type="submit"
-        className="btn btn-primary md:col-span-2 md:w-72 md:justify-self-end"
-        disabled={isSubmitting || (hint !== null && !confirmed)}
+      <StickyActions
+        className="md:col-span-2"
+        note={isDirty ? "Unsaved changes" : undefined}
       >
-        {isSubmitting
-          ? "Saving…"
-          : editing
-            ? "Save changes"
-            : "Register patient"}
-      </button>
+        <Link
+          to={`/patients`}
+          className="btn btn-secondary"
+          onClick={(e) => {
+            if (
+              isDirty &&
+              !isSubmitSuccessful &&
+              !window.confirm("Leave without registering this patient?")
+            )
+              e.preventDefault();
+          }}
+        >
+          Cancel
+        </Link>
+        <button
+          type="submit"
+          className="btn btn-primary md:col-span-2 md:w-72 md:justify-self-end"
+          disabled={isSubmitting || (hint !== null && !confirmed)}
+        >
+          {isSubmitting
+            ? "Saving…"
+            : editing
+              ? "Save changes"
+              : "Register patient"}
+        </button>
+      </StickyActions>
     </form>
   );
 }

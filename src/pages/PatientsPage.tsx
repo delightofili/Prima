@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Download, GitMerge, UserPlus } from "lucide-react";
+import { Download, GitMerge, ScanLine, UserPlus } from "lucide-react";
 import { PageHeader } from "../components/PageHeader";
 import { PatientList } from "../components/PatientList";
 import { UpgradeDialog } from "../components/UpgradeDialog";
@@ -60,6 +60,9 @@ export function PatientsPage() {
             )}
             <Link to="/register" className="btn btn-primary sm:w-44">
               <UserPlus size={20} className="mr-2" /> Register
+            </Link>
+            <Link to="/scan" className="btn btn-secondary sm:w-48">
+              <ScanLine size={20} className="mr-2" /> Scan card
             </Link>
           </div>
         }

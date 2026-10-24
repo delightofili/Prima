@@ -14,6 +14,8 @@ import { AccountPage } from "./pages/AccountPage";
 import { AdminPage } from "./pages/AdminPage";
 import { PrivacyPage } from "./pages/PrivacyPage";
 import { PhoneCheckPage } from "./pages/PhoneCheckPage";
+import { ScanPage } from "./pages/ScanPage";
+import { PatientCardPage } from "./pages/PatientCardPage";
 
 function NotFound() {
   return (
@@ -47,6 +49,8 @@ export default function App() {
         <Route path="privacy" element={<PrivacyPage />} />
         <Route path="admin" element={<AdminPage />} />
         <Route path="phone-check" element={<PhoneCheckPage />} />
+        <Route path="scan" element={<ScanPage />} />
+        <Route path="patients/:id/card" element={<PatientCardPage />} />
         <Route path="*" element={<NotFound />} />
       </Route>
     </Routes>

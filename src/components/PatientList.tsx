@@ -5,7 +5,7 @@ import { useGuardians } from "../hooks/useGuardians";
 import { usePatients } from "../hooks/usePatients";
 import { searchGuardians } from "../lib/guardians";
 import { GuardianCard } from "./GuardianCard";
-import { PatientCard } from "./PatientCard";
+import { PatientListCard } from "./PatientListCard";
 
 export function PatientList() {
   const [search, setSearch] = useState("");
@@ -67,7 +67,7 @@ export function PatientList() {
               <ul className="grid gap-3 md:grid-cols-2">
                 {shown.map((p) => (
                   <li key={p.id}>
-                    <PatientCard p={p} />
+                    <PatientListCard patient={p} />
                   </li>
                 ))}
               </ul>

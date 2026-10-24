@@ -100,3 +100,63 @@ html[data-glove="on"] nav.fixed a {
     padding-bottom: 8rem;
   }
 }
+
+/* Day 18: where the bottom tab bar ends, so the sticky save bar can sit above it */
+:root {
+  --tabbar-h: calc(4rem + 2px);
+}
+html[data-glove="on"] {
+  --tabbar-h: calc(5rem + 2px);
+}
+
+/* Day 18: vitals stepper buttons, bigger in glove mode */
+.stepper-btn {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 3.5rem;
+  height: 3.5rem;
+  border: 2px solid var(--color-prima-500, #0f766e);
+  border-radius: 0.75rem;
+  background: #fff;
+  color: var(--color-prima-500, #0f766e);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.stepper-btn:active {
+  background: var(--color-prima-50, #ccfbf1);
+}
+html[data-glove="on"] .stepper-btn {
+  width: 4.5rem;
+  height: 4.5rem;
+}
+
+/* Day 18: printing a patient card prints only the card */
+@media print {
+  @page {
+    size: A4;
+    margin: 12mm;
+  }
+  header,
+  nav,
+  aside,
+  .no-print,
+  .fixed {
+    display: none !important;
+  }
+  main {
+    padding: 0 !important;
+    max-width: none !important;
+  }
+  html,
+  body {
+    background: #fff !important;
+  }
+  .id-card {
+    break-inside: avoid;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}

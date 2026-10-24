@@ -1,5 +1,9 @@
 from pydantic import BaseModel, Field
 
+from typing import Literal
+
+from pydantic import BaseModel, Field
+
 
 class Candidate(BaseModel):
     id: str
@@ -79,3 +83,16 @@ class LgaReport(BaseModel):
     diagnoses: list[DiagnosisRow]
     vaccines: list[VaccineRow]
     maternalChild: list[ServiceRow]
+
+
+class ClinicalCheckRequest(BaseModel):
+    text: str = Field(min_length=1, max_length=300)
+
+
+class ClinicalCheckResponse(BaseModel):
+    status: Literal["empty", "ok", "suggest", "unclear"]
+    recognized: list[str]
+    suggestions: list[dict[str, str]]
+    unknown: list[str]
+    flags: list[str]
+    vague: bool

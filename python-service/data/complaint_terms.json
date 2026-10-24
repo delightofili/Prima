@@ -1,0 +1,1219 @@
+{
+  "version": 1,
+  "terms": [
+    {
+      "term": "Fever",
+      "say": [
+        "fever",
+        "fevers",
+        "feverish",
+        "hot body",
+        "body hot",
+        "high temperature",
+        "high fever",
+        "pyrexia",
+        "temperature",
+        "body temperature"
+      ]
+    },
+    {
+      "term": "Chills",
+      "say": ["chills", "chill", "shivering", "rigors", "rigor"]
+    },
+    {
+      "term": "Cough",
+      "say": [
+        "cough",
+        "coughing",
+        "coughs",
+        "dry cough",
+        "productive cough",
+        "cough with phlegm"
+      ]
+    },
+    {
+      "term": "Coughing blood",
+      "say": [
+        "coughing blood",
+        "cough blood",
+        "blood in sputum",
+        "blood in cough",
+        "haemoptysis",
+        "hemoptysis",
+        "coughing up blood"
+      ]
+    },
+    {
+      "term": "Runny or blocked nose",
+      "say": [
+        "catarrh",
+        "runny nose",
+        "running nose",
+        "nasal discharge",
+        "blocked nose",
+        "stuffy nose",
+        "nose block",
+        "sneezing",
+        "sneeze",
+        "common cold",
+        "cold"
+      ]
+    },
+    {
+      "term": "Sore throat",
+      "say": [
+        "sore throat",
+        "throat pain",
+        "painful throat",
+        "pain swallowing",
+        "throat ache"
+      ]
+    },
+    {
+      "term": "Headache",
+      "say": [
+        "headache",
+        "headaches",
+        "head pain",
+        "pain in head",
+        "head ache",
+        "head dey pain",
+        "h a"
+      ]
+    },
+    {
+      "term": "Dizziness",
+      "say": [
+        "dizziness",
+        "dizzy",
+        "giddiness",
+        "giddy",
+        "feeling dizzy",
+        "head spinning",
+        "spinning"
+      ]
+    },
+    {
+      "term": "Fainting",
+      "say": [
+        "fainting",
+        "fainted",
+        "faint",
+        "passed out",
+        "collapse",
+        "collapsed",
+        "blackout",
+        "black out"
+      ]
+    },
+    {
+      "term": "Convulsions",
+      "say": [
+        "convulsion",
+        "convulsions",
+        "convulsing",
+        "fits",
+        "fit",
+        "seizure",
+        "seizures",
+        "febrile convulsion"
+      ]
+    },
+    {
+      "term": "Weakness or tiredness",
+      "say": [
+        "weakness",
+        "weak",
+        "body weakness",
+        "tired",
+        "tiredness",
+        "fatigue",
+        "no strength",
+        "feeling weak",
+        "lethargy",
+        "lethargic"
+      ]
+    },
+    {
+      "term": "Body pain",
+      "say": [
+        "body pain",
+        "body aches",
+        "body ache",
+        "general body pain",
+        "pain all over",
+        "myalgia",
+        "muscle pain",
+        "muscle ache"
+      ]
+    },
+    {
+      "term": "Joint pain",
+      "say": [
+        "joint pain",
+        "joint pains",
+        "knee pain",
+        "pain in joints",
+        "arthralgia",
+        "elbow pain",
+        "ankle pain"
+      ]
+    },
+    {
+      "term": "Low back pain",
+      "say": [
+        "back pain",
+        "low back pain",
+        "waist pain",
+        "lower back pain",
+        "lbp",
+        "backache",
+        "pain in the waist",
+        "waist ache"
+      ]
+    },
+    {
+      "term": "Neck pain",
+      "say": ["neck pain", "stiff neck", "neck stiffness", "painful neck"]
+    },
+    {
+      "term": "Chest pain",
+      "say": [
+        "chest pain",
+        "pain in chest",
+        "chest ache",
+        "chest tightness",
+        "tight chest",
+        "heart pain"
+      ]
+    },
+    {
+      "term": "Difficulty breathing",
+      "say": [
+        "difficulty breathing",
+        "breathlessness",
+        "short of breath",
+        "shortness of breath",
+        "sob",
+        "fast breathing",
+        "breathing difficulty",
+        "cannot breathe",
+        "wheezing",
+        "wheeze",
+        "wheezes"
+      ]
+    },
+    {
+      "term": "Lower abdominal pain",
+      "say": [
+        "lower abdominal pain",
+        "pain in lower abdomen",
+        "lower belly pain",
+        "pelvic pain",
+        "suprapubic pain"
+      ]
+    },
+    {
+      "term": "Abdominal pain",
+      "say": [
+        "abdominal pain",
+        "stomach pain",
+        "stomach ache",
+        "stomachache",
+        "belly pain",
+        "belle pain",
+        "belly ache",
+        "pain in stomach",
+        "tummy pain",
+        "abd pain",
+        "abdominal cramps",
+        "stomach cramps",
+        "epigastric pain"
+      ]
+    },
+    {
+      "term": "Vomiting",
+      "say": [
+        "vomiting",
+        "vomit",
+        "vomits",
+        "vomited",
+        "throwing up",
+        "threw up",
+        "puking",
+        "puke"
+      ]
+    },
+    {
+      "term": "Nausea",
+      "say": [
+        "nausea",
+        "nauseous",
+        "feeling nauseous",
+        "feel like vomiting",
+        "want to vomit"
+      ]
+    },
+    {
+      "term": "Nausea and vomiting",
+      "say": ["nausea and vomiting", "n v"]
+    },
+    {
+      "term": "Diarrhoea",
+      "say": [
+        "diarrhoea",
+        "diarrhea",
+        "running stomach",
+        "running belly",
+        "purging",
+        "stooling",
+        "loose stool",
+        "loose stools",
+        "watery stool",
+        "watery stools",
+        "frequent stooling",
+        "loose motion",
+        "loose motions",
+        "runny stool"
+      ]
+    },
+    {
+      "term": "Blood in stool",
+      "say": [
+        "blood in stool",
+        "bloody stool",
+        "bloody diarrhoea",
+        "bloody diarrhea",
+        "blood in faeces",
+        "dysentery"
+      ]
+    },
+    {
+      "term": "Constipation",
+      "say": [
+        "constipation",
+        "constipated",
+        "hard stool",
+        "no stool",
+        "not stooling",
+        "cannot pass stool"
+      ]
+    },
+    {
+      "term": "Loss of appetite",
+      "say": [
+        "loss of appetite",
+        "poor appetite",
+        "not eating",
+        "refusing food",
+        "refusing to eat",
+        "no appetite",
+        "cannot eat"
+      ]
+    },
+    {
+      "term": "Weight loss",
+      "say": [
+        "weight loss",
+        "losing weight",
+        "loss of weight",
+        "getting thin",
+        "thinning"
+      ]
+    },
+    {
+      "term": "Swelling",
+      "say": ["swelling", "swollen", "body swelling", "swollen body"]
+    },
+    {
+      "term": "Swollen feet or legs",
+      "say": [
+        "swollen feet",
+        "swollen legs",
+        "swollen leg",
+        "leg swelling",
+        "feet swelling",
+        "foot swelling",
+        "ankle swelling",
+        "swollen ankles",
+        "oedema",
+        "edema"
+      ]
+    },
+    {
+      "term": "Skin rash",
+      "say": [
+        "rash",
+        "rashes",
+        "skin rash",
+        "body rash",
+        "skin eruption",
+        "red spots",
+        "spots on body"
+      ]
+    },
+    {
+      "term": "Itching",
+      "say": [
+        "itching",
+        "itch",
+        "itchy",
+        "body itching",
+        "skin itching",
+        "scratching"
+      ]
+    },
+    {
+      "term": "Wound or cut",
+      "say": [
+        "wound",
+        "wounds",
+        "cut",
+        "deep cut",
+        "laceration",
+        "open wound",
+        "bleeding wound",
+        "knife cut"
+      ]
+    },
+    {
+      "term": "Injury or fall",
+      "say": [
+        "injury",
+        "injured",
+        "fall",
+        "fell",
+        "fallen",
+        "accident",
+        "road traffic accident",
+        "rta",
+        "motor accident"
+      ]
+    },
+    {
+      "term": "Burn",
+      "say": [
+        "burn",
+        "burns",
+        "burnt",
+        "scald",
+        "scalded",
+        "burnt by fire",
+        "hot water burn"
+      ]
+    },
+    {
+      "term": "Bite or sting",
+      "say": [
+        "snake bite",
+        "dog bite",
+        "bite",
+        "bitten",
+        "sting",
+        "stung",
+        "scorpion sting",
+        "insect bite",
+        "bee sting"
+      ]
+    },
+    {
+      "term": "Boil or abscess",
+      "say": [
+        "boil",
+        "boils",
+        "abscess",
+        "pus",
+        "swelling with pus",
+        "pus discharge"
+      ]
+    },
+    {
+      "term": "Red or painful eye",
+      "say": [
+        "red eye",
+        "red eyes",
+        "eye pain",
+        "painful eye",
+        "eye discharge",
+        "itchy eye",
+        "watery eyes",
+        "eye problem",
+        "eye swelling"
+      ]
+    },
+    {
+      "term": "Blurred vision",
+      "say": ["blurred vision", "blurry vision", "poor vision", "cannot see"]
+    },
+    {
+      "term": "Ear pain or discharge",
+      "say": [
+        "ear pain",
+        "earache",
+        "ear ache",
+        "ear discharge",
+        "pus from ear",
+        "discharge from ear",
+        "blocked ear"
+      ]
+    },
+    {
+      "term": "Hearing problem",
+      "say": [
+        "hearing loss",
+        "cannot hear",
+        "poor hearing",
+        "ringing in ear",
+        "tinnitus",
+        "deafness"
+      ]
+    },
+    {
+      "term": "Toothache",
+      "say": [
+        "toothache",
+        "tooth pain",
+        "tooth ache",
+        "pain in tooth",
+        "teeth pain",
+        "swollen gum",
+        "gum pain",
+        "bleeding gum",
+        "bleeding gums"
+      ]
+    },
+    {
+      "term": "Mouth sores",
+      "say": [
+        "mouth sores",
+        "mouth ulcer",
+        "mouth ulcers",
+        "sore mouth",
+        "mouth pain",
+        "tongue sore"
+      ]
+    },
+    {
+      "term": "Painful urination",
+      "say": [
+        "painful urination",
+        "burning urine",
+        "burning micturition",
+        "pain when urinating",
+        "pain passing urine",
+        "dysuria",
+        "urine burning",
+        "scalding urine"
+      ]
+    },
+    {
+      "term": "Frequent urination",
+      "say": [
+        "frequent urination",
+        "passing urine often",
+        "frequent micturition",
+        "urinating often",
+        "polyuria",
+        "passing urine frequently",
+        "urinating frequently"
+      ]
+    },
+    {
+      "term": "Blood in urine",
+      "say": [
+        "blood in urine",
+        "bloody urine",
+        "haematuria",
+        "hematuria",
+        "red urine"
+      ]
+    },
+    {
+      "term": "Difficulty passing urine",
+      "say": [
+        "difficulty passing urine",
+        "cannot pass urine",
+        "no urine",
+        "weak urine stream",
+        "urine retention",
+        "slow urine"
+      ]
+    },
+    {
+      "term": "Vaginal discharge",
+      "say": [
+        "vaginal discharge",
+        "white discharge",
+        "discharge from vagina",
+        "foul discharge",
+        "smelly discharge"
+      ]
+    },
+    {
+      "term": "Vaginal itching",
+      "say": ["vaginal itching", "itching in vagina"]
+    },
+    {
+      "term": "Vaginal bleeding",
+      "say": [
+        "vaginal bleeding",
+        "bleeding from vagina",
+        "heavy bleeding",
+        "heavy period",
+        "heavy periods",
+        "bleeding in pregnancy",
+        "bleeding after delivery"
+      ]
+    },
+    {
+      "term": "Painful periods",
+      "say": [
+        "painful period",
+        "painful periods",
+        "period pain",
+        "menstrual pain",
+        "dysmenorrhoea",
+        "dysmenorrhea",
+        "menstrual cramps"
+      ]
+    },
+    {
+      "term": "Missed period",
+      "say": [
+        "missed period",
+        "missed periods",
+        "late period",
+        "no period",
+        "period delay",
+        "delayed period",
+        "not seeing period",
+        "amenorrhoea",
+        "amenorrhea",
+        "missed my period"
+      ]
+    },
+    {
+      "term": "Irregular periods",
+      "say": [
+        "irregular period",
+        "irregular periods",
+        "irregular menstruation",
+        "period irregular"
+      ]
+    },
+    {
+      "term": "Pregnancy or antenatal visit",
+      "say": [
+        "antenatal",
+        "anc",
+        "antenatal visit",
+        "antenatal booking",
+        "booking",
+        "pregnant",
+        "pregnancy",
+        "pregnancy check",
+        "pregnancy test"
+      ]
+    },
+    {
+      "term": "In labour",
+      "say": [
+        "labour",
+        "in labour",
+        "labour pains",
+        "labor",
+        "labor pains",
+        "contractions",
+        "water broke",
+        "waters broke",
+        "broken water"
+      ]
+    },
+    {
+      "term": "Postnatal visit",
+      "say": [
+        "postnatal",
+        "after delivery",
+        "post delivery",
+        "postpartum",
+        "postnatal check"
+      ]
+    },
+    {
+      "term": "Breast pain or lump",
+      "say": [
+        "breast pain",
+        "breast lump",
+        "lump in breast",
+        "breast swelling",
+        "painful breast",
+        "breast engorgement"
+      ]
+    },
+    {
+      "term": "Family planning",
+      "say": [
+        "family planning",
+        "contraception",
+        "contraceptive",
+        "birth control",
+        "implant",
+        "injectable",
+        "iud",
+        "coil"
+      ]
+    },
+    {
+      "term": "Difficulty conceiving",
+      "say": [
+        "cannot conceive",
+        "not getting pregnant",
+        "infertility",
+        "no child",
+        "trying to conceive",
+        "difficulty conceiving"
+      ]
+    },
+    {
+      "term": "Immunization or child welfare",
+      "say": [
+        "immunization",
+        "immunisation",
+        "vaccination",
+        "vaccine",
+        "child welfare",
+        "growth monitoring",
+        "weighing",
+        "under five clinic",
+        "well baby",
+        "baby check",
+        "routine immunization"
+      ]
+    },
+    {
+      "term": "Malaria",
+      "say": ["malaria", "malaria symptoms", "suspected malaria"]
+    },
+    {
+      "term": "Typhoid",
+      "say": ["typhoid"]
+    },
+    {
+      "term": "High blood pressure",
+      "say": [
+        "high blood pressure",
+        "hypertension",
+        "bp",
+        "high bp",
+        "pressure"
+      ]
+    },
+    {
+      "term": "Diabetes or high sugar",
+      "say": ["diabetes", "sugar", "high sugar", "blood sugar"]
+    },
+    {
+      "term": "Asthma",
+      "say": ["asthma", "asthma attack"]
+    },
+    {
+      "term": "Worms",
+      "say": ["worms", "worm infection", "passing worms"]
+    },
+    {
+      "term": "Piles",
+      "say": ["piles", "haemorrhoids", "hemorrhoids"]
+    },
+    {
+      "term": "Stomach ulcer",
+      "say": ["stomach ulcer", "ulcer"]
+    },
+    {
+      "term": "Groin swelling",
+      "say": ["groin swelling", "hernia", "swelling in groin"]
+    },
+    {
+      "term": "Testicular pain or swelling",
+      "say": [
+        "testicular pain",
+        "testicle swelling",
+        "swollen testicle",
+        "scrotal swelling",
+        "swollen scrotum",
+        "pain in testicle"
+      ]
+    },
+    {
+      "term": "Penile discharge",
+      "say": [
+        "penile discharge",
+        "discharge from penis",
+        "urethral discharge",
+        "penis discharge",
+        "pus from penis"
+      ]
+    },
+    {
+      "term": "Genital problem",
+      "say": [
+        "private part",
+        "private parts",
+        "genital pain",
+        "genital itching",
+        "genital sore",
+        "genital ulcer"
+      ]
+    },
+    {
+      "term": "Jaundice",
+      "say": [
+        "jaundice",
+        "yellow eyes",
+        "yellow eye",
+        "yellow skin",
+        "yellowish eyes"
+      ]
+    },
+    {
+      "term": "Paleness or anaemia",
+      "say": [
+        "pale",
+        "pallor",
+        "looking pale",
+        "pale eyes",
+        "pale palms",
+        "low blood",
+        "anaemia",
+        "anemia",
+        "blood level low",
+        "no blood"
+      ]
+    },
+    {
+      "term": "Sleeping problem",
+      "say": [
+        "insomnia",
+        "cannot sleep",
+        "sleeplessness",
+        "poor sleep",
+        "difficulty sleeping"
+      ]
+    },
+    {
+      "term": "Low mood or anxiety",
+      "say": [
+        "anxiety",
+        "anxious",
+        "worried",
+        "feeling sad",
+        "sadness",
+        "depressed",
+        "depression",
+        "low mood",
+        "feeling low"
+      ]
+    },
+    {
+      "term": "Confusion or memory loss",
+      "say": ["confusion", "confused", "memory loss", "forgetful", "forgetting"]
+    },
+    {
+      "term": "Numbness or tingling",
+      "say": [
+        "numbness",
+        "numb",
+        "tingling",
+        "pins and needles",
+        "hand numbness",
+        "feet numbness",
+        "burning feet",
+        "burning sensation in feet"
+      ]
+    },
+    {
+      "term": "Weakness on one side",
+      "say": [
+        "paralysis",
+        "paralyzed",
+        "paralysed",
+        "one side weak",
+        "weakness on one side",
+        "cannot move arm",
+        "cannot move leg",
+        "weak one side"
+      ]
+    },
+    {
+      "term": "Nosebleed",
+      "say": [
+        "nosebleed",
+        "nose bleed",
+        "bleeding from nose",
+        "epistaxis",
+        "nose bleeding"
+      ]
+    },
+    {
+      "term": "Thirst or dehydration",
+      "say": [
+        "dry mouth",
+        "thirsty",
+        "very thirsty",
+        "dehydrated",
+        "dehydration",
+        "sunken eyes"
+      ]
+    },
+    {
+      "term": "Neck swelling",
+      "say": [
+        "neck swelling",
+        "goitre",
+        "goiter",
+        "swelling in neck",
+        "swollen neck",
+        "swollen glands"
+      ]
+    },
+    {
+      "term": "Lump",
+      "say": ["lump", "lumps", "a lump", "growth", "mass"]
+    },
+    {
+      "term": "Malnutrition or poor growth",
+      "say": [
+        "underweight",
+        "not gaining weight",
+        "poor weight gain",
+        "failure to thrive",
+        "malnutrition",
+        "malnourished",
+        "wasting",
+        "thin child",
+        "kwashiorkor",
+        "marasmus"
+      ]
+    },
+    {
+      "term": "Baby not feeding well",
+      "say": [
+        "not feeding",
+        "poor feeding",
+        "refusing breast",
+        "not breastfeeding",
+        "baby not feeding",
+        "excessive crying",
+        "crying all night",
+        "irritable",
+        "irritability",
+        "baby crying"
+      ]
+    },
+    {
+      "term": "Umbilical cord problem",
+      "say": [
+        "cord infection",
+        "cord pus",
+        "umbilical cord",
+        "belly button discharge",
+        "navel discharge",
+        "cord bleeding",
+        "umbilicus"
+      ]
+    },
+    {
+      "term": "Skin infection or infestation",
+      "say": [
+        "sores",
+        "skin sores",
+        "skin infection",
+        "leg ulcer",
+        "leg sore",
+        "foot ulcer",
+        "scabies",
+        "lice",
+        "ringworm",
+        "fungal infection",
+        "tinea",
+        "athlete foot",
+        "body lice",
+        "head lice",
+        "pimples",
+        "acne"
+      ]
+    },
+    {
+      "term": "Review, check-up or test",
+      "say": [
+        "follow up",
+        "review",
+        "refill",
+        "drug refill",
+        "repeat prescription",
+        "medication refill",
+        "collect drugs",
+        "check up",
+        "checkup",
+        "routine check",
+        "medical check",
+        "medical certificate",
+        "fitness certificate",
+        "screening",
+        "test",
+        "hiv test",
+        "malaria test",
+        "blood test",
+        "tb test"
+      ]
+    },
+    {
+      "term": "Dressing or procedure",
+      "say": [
+        "dressing",
+        "wound dressing",
+        "change dressing",
+        "stitches",
+        "suture removal",
+        "remove stitches",
+        "injection",
+        "injection only",
+        "circumcision"
+      ]
+    },
+    {
+      "term": "Referral",
+      "say": ["referred", "referral", "referral from", "referred from"]
+    }
+  ],
+  "vague": [
+    "sick",
+    "ill",
+    "unwell",
+    "not well",
+    "problem",
+    "problems",
+    "complaint",
+    "complaints",
+    "trouble",
+    "sickness",
+    "feeling bad",
+    "not fine",
+    "pain",
+    "pains",
+    "discomfort"
+  ],
+  "stopwords": [
+    "a",
+    "about",
+    "address",
+    "adult",
+    "after",
+    "again",
+    "ago",
+    "also",
+    "always",
+    "an",
+    "and",
+    "are",
+    "arms",
+    "artery",
+    "at",
+    "aunty",
+    "baby",
+    "bad",
+    "bandage",
+    "because",
+    "been",
+    "before",
+    "better",
+    "bladder",
+    "bone",
+    "brain",
+    "brother",
+    "brought",
+    "by",
+    "c",
+    "can",
+    "cannot",
+    "cheek",
+    "child",
+    "come",
+    "comes",
+    "coming",
+    "complained",
+    "complaining",
+    "complains",
+    "constant",
+    "cream",
+    "crutches",
+    "daily",
+    "daughter",
+    "day",
+    "days",
+    "dey",
+    "doctor",
+    "drink",
+    "drinking",
+    "driver",
+    "drops",
+    "dull",
+    "during",
+    "each",
+    "earlier",
+    "ears",
+    "evening",
+    "every",
+    "face",
+    "farm",
+    "farmer",
+    "father",
+    "feel",
+    "feeling",
+    "feels",
+    "felt",
+    "few",
+    "five",
+    "for",
+    "forehead",
+    "four",
+    "from",
+    "get",
+    "getting",
+    "good",
+    "got",
+    "grandmother",
+    "had",
+    "hair",
+    "has",
+    "have",
+    "he",
+    "her",
+    "him",
+    "hip",
+    "his",
+    "hospital",
+    "husband",
+    "i",
+    "improving",
+    "in",
+    "intestine",
+    "is",
+    "it",
+    "kidney",
+    "last",
+    "later",
+    "lips",
+    "liver",
+    "lung",
+    "mama",
+    "many",
+    "market",
+    "me",
+    "medicine",
+    "mild",
+    "month",
+    "months",
+    "morning",
+    "mother",
+    "much",
+    "my",
+    "nail",
+    "nails",
+    "name",
+    "nerve",
+    "never",
+    "night",
+    "nightly",
+    "no",
+    "not",
+    "now",
+    "number",
+    "nurse",
+    "o",
+    "of",
+    "ointment",
+    "on",
+    "one",
+    "over",
+    "papa",
+    "patient",
+    "phone",
+    "pills",
+    "plaster",
+    "please",
+    "plus",
+    "quickly",
+    "recently",
+    "scalp",
+    "school",
+    "seven",
+    "severe",
+    "sharp",
+    "she",
+    "shoulder",
+    "since",
+    "sister",
+    "sit",
+    "sitting",
+    "six",
+    "slowly",
+    "some",
+    "sometimes",
+    "stand",
+    "standing",
+    "started",
+    "still",
+    "stopped",
+    "student",
+    "suddenly",
+    "syrup",
+    "tablet",
+    "tablets",
+    "thank",
+    "thanks",
+    "that",
+    "the",
+    "them",
+    "then",
+    "they",
+    "thigh",
+    "this",
+    "three",
+    "thrice",
+    "throbbing",
+    "times",
+    "to",
+    "today",
+    "too",
+    "trader",
+    "twice",
+    "two",
+    "uncle",
+    "until",
+    "vein",
+    "very",
+    "village",
+    "walk",
+    "walking",
+    "was",
+    "we",
+    "week",
+    "weekly",
+    "weeks",
+    "wheelchair",
+    "when",
+    "whenever",
+    "while",
+    "wife",
+    "with",
+    "work",
+    "working",
+    "worse",
+    "worsening",
+    "wrist",
+    "x",
+    "year",
+    "years",
+    "yesterday"
+  ]
+}

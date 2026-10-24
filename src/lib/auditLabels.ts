@@ -38,4 +38,5 @@ export const ACTION_LABELS: Record<string, string> = {
   "backup.restore": "Restored a backup",
   "export.fhir": "Exported records as FHIR",
   "export.dhis2": "Exported the DHIS2 monthly file",
+  "card.print": "Printed a patient card",
 };

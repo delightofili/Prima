@@ -1,6 +1,7 @@
 from fastapi import Depends, FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
+from complaint_terms import check_complaint
 
 import data
 from config import Settings, get_settings
@@ -12,6 +13,8 @@ from models import (
     FuzzyCheckRequest,
     FuzzyCheckResponse,
     LgaReport,
+    ClinicalCheckRequest,
+    ClinicalCheckResponse,
 )
 
 settings = get_settings()
@@ -113,3 +116,7 @@ def lga_report(
     ensure_member(user, facility_id, role_of)
     patients, visits, shots = load(facility_id, month)
     return compute_report(patients, visits, shots, month)
+
+@app.post("/api/clinical-validate", response_model=ClinicalCheckResponse)
+def clinical_validate(body: ClinicalCheckRequest, _user: str | None = Depends(current_user)):
+    return check_complaint(body.text)

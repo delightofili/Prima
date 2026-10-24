@@ -1,7 +1,8 @@
 import { useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useForm, useWatch } from "react-hook-form";
+import { useForm, useWatch, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+
 import {
   Activity,
   CalendarClock,
@@ -15,12 +16,17 @@ import { calculateAge } from "../lib/age";
 import { makeVisitSchema, type VisitFormValues } from "../lib/visitSchema";
 import { saveVisit, updateVisit, type Diagnosis } from "../lib/visits";
 import { bpReading, tempReading } from "../lib/vitals";
-import { addDays, fromISO, toNumber, todayISO } from "../lib/utils";
+import { addDays, fromISO, todayISO } from "../lib/utils";
 import type { Patient, Visit } from "../types";
 import { DiagnosisPicker } from "./DiagnosisPicker";
 import { Field, SectionTitle } from "./FormBits";
 import { useToast } from "../hooks/useToast";
 import { VitalChip } from "./VitalChip";
+
+import { ComplaintHint } from "./ComplaintHint";
+import { Stepper } from "./Stepper";
+import { StickyActions } from "./StickyActions";
+import { useUnsavedWarning } from "../hooks/useUnsavedWarning";
 
 const QUICK = [
   { label: "3 days", days: 3 },
@@ -43,9 +49,10 @@ export function VisitForm({
   const {
     register,
     handleSubmit,
-    control,
+    watch,
     setValue,
-    formState: { errors, isSubmitting },
+    control,
+    formState: { errors, isSubmitting, isDirty, isSubmitSuccessful },
   } = useForm<VisitFormValues>({
     resolver: zodResolver(schema),
     defaultValues: visit
@@ -80,6 +87,11 @@ export function VisitForm({
   const temp = useWatch({ control, name: "temperature" });
 
   const age = calculateAge(patient.dob, fromISO(visitDate || todayISO()));
+  const complaintsText = watch("complaints") ?? "";
+  // Where the first tap on the weight stepper begins, by age. It is a starting point, never a saved value.
+  const weightStart =
+    age.unit !== "years" ? 6 : age.value < 5 ? 12 : age.value < 13 ? 30 : 60;
+  useUnsavedWarning(isDirty && !isSubmitSuccessful);
   const adult = age.unit === "years" && age.value >= 13;
 
   const bp =
@@ -103,7 +115,11 @@ export function VisitForm({
   });
 
   return (
-    <form onSubmit={onSubmit} noValidate className="grid gap-5 md:grid-cols-2">
+    <form
+      onSubmit={onSubmit}
+      noValidate
+      className="grid gap-5 pb-24 md:grid-cols-2 md:pb-0"
+    >
       <section className="card space-y-4 md:col-span-2">
         <SectionTitle icon={ClipboardList} title="Visit" />
         <Field label="Visit date" error={errors.visitDate?.message}>
@@ -130,27 +146,58 @@ export function VisitForm({
             {...register("complaints")}
           />
         </Field>
+        <ComplaintHint
+          value={complaintsText}
+          onReplace={(v) =>
+            setValue("complaints", v, {
+              shouldDirty: true,
+              shouldValidate: true,
+            })
+          }
+        />
       </section>
 
       <section className="card space-y-4">
         <SectionTitle icon={Activity} title="Vitals" />
-        <div className="grid grid-cols-2 gap-3">
-          <Field label="BP systolic" error={errors.systolic?.message}>
-            <input
-              inputMode="numeric"
-              className="input"
-              placeholder="120"
-              {...register("systolic", { setValueAs: toNumber })}
-            />
-          </Field>
-          <Field label="BP diastolic" error={errors.diastolic?.message}>
-            <input
-              inputMode="numeric"
-              className="input"
-              placeholder="80"
-              {...register("diastolic", { setValueAs: toNumber })}
-            />
-          </Field>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <Controller
+            control={control}
+            name="systolic"
+            render={({ field }) => (
+              <Stepper
+                label="BP top number (systolic)"
+                unit="mmHg"
+                inputMode="numeric"
+                min={50}
+                max={300}
+                step={1}
+                start={120}
+                decimals={0}
+                value={field.value}
+                onChange={field.onChange}
+                error={errors.systolic?.message}
+              />
+            )}
+          />
+          <Controller
+            control={control}
+            name="diastolic"
+            render={({ field }) => (
+              <Stepper
+                label="BP bottom number (diastolic)"
+                unit="mmHg"
+                inputMode="numeric"
+                min={30}
+                max={200}
+                step={1}
+                start={80}
+                decimals={0}
+                value={field.value}
+                onChange={field.onChange}
+                error={errors.diastolic?.message}
+              />
+            )}
+          />
         </div>
         {bp?.note && (
           <VitalChip
@@ -161,23 +208,43 @@ export function VisitForm({
           />
         )}
 
-        <div className="grid grid-cols-2 gap-3">
-          <Field label="Temperature (°C)" error={errors.temperature?.message}>
-            <input
-              inputMode="decimal"
-              className="input"
-              placeholder="36.8"
-              {...register("temperature", { setValueAs: toNumber })}
-            />
-          </Field>
-          <Field label="Weight (kg)" error={errors.weightKg?.message}>
-            <input
-              inputMode="decimal"
-              className="input"
-              placeholder="62"
-              {...register("weightKg", { setValueAs: toNumber })}
-            />
-          </Field>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <Controller
+            control={control}
+            name="temperature"
+            render={({ field }) => (
+              <Stepper
+                label="Temperature"
+                unit="°C"
+                min={30}
+                max={45}
+                step={0.1}
+                start={36.8}
+                decimals={1}
+                value={field.value}
+                onChange={field.onChange}
+                error={errors.temperature?.message}
+              />
+            )}
+          />
+          <Controller
+            control={control}
+            name="weightKg"
+            render={({ field }) => (
+              <Stepper
+                label="Weight"
+                unit="kg"
+                min={0.5}
+                max={300}
+                step={0.1}
+                start={weightStart}
+                decimals={1}
+                value={field.value}
+                onChange={field.onChange}
+                error={errors.weightKg?.message}
+              />
+            )}
+          />
         </div>
         {tr?.note && (
           <VitalChip
@@ -253,22 +320,33 @@ export function VisitForm({
         </p>
       )}
 
-      <div className="flex flex-col-reverse gap-3 md:col-span-2 md:flex-row md:justify-end">
+      <StickyActions
+        className="md:col-span-2"
+        note={isDirty ? "Unsaved changes" : undefined}
+      >
         <Link
           to={`/patients/${patient.id}`}
-          className="btn btn-secondary md:w-40"
+          className="btn btn-secondary"
+          onClick={(e) => {
+            if (
+              isDirty &&
+              !isSubmitSuccessful &&
+              !window.confirm("Leave without saving this visit?")
+            )
+              e.preventDefault();
+          }}
         >
           Cancel
         </Link>
         <button
           type="submit"
-          className="btn btn-primary md:w-56"
+          className="btn btn-primary"
           disabled={isSubmitting}
         >
           <Save size={20} className="mr-2" />
-          {isSubmitting ? "Saving…" : visit ? "Save changes" : "Save visit"}
+          {isSubmitting ? "Saving…" : "Save visit"}
         </button>
-      </div>
+      </StickyActions>
     </form>
   );
 }

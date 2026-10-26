@@ -4,7 +4,7 @@
 
 A nurse registers patients, records visits, tracks vaccines, links children to their guardians, sees who is due for follow-up, queues appointment reminders, cleans up duplicate records and produces the monthly LGA summary, on an Android phone, tablet or laptop, with or without network. Everything is saved on the device first and syncs both ways with the cloud in the background. Each facility's records are private to its own staff, and every sensitive action is logged.
 
-> Status: built in public. Days 1-17 complete, Day 18 (complaint check, printed card with QR, sticky save bar, vitals steppers) in progress. The roadmap now runs to Day 34, then continues with feedback from real PHCs.
+> Status: built in public. Days 1-18 complete, Day 19 (quick register for CHEWs, Low Battery Mode) in progress. The roadmap now runs to Day 34, then continues with feedback from real PHCs.
 
 ---
 
@@ -13,6 +13,14 @@ A nurse registers patients, records visits, tracks vaccines, links children to t
 Paper registers at PHCs lose patients, create duplicates (the same woman registered three times under different spellings), make the monthly LGA report a slow manual count, and give nobody a way to see who is due for a follow-up or the next vaccine. Children are usually registered under their mother's phone, so the card of a baby and the antenatal card of the mother are never connected. Many PHCs also have unreliable network, so an app that needs the internet to save a record does not work for them. Prima is **offline-first** for that reason.
 
 ## What Prima does today
+
+**Quick register and Low Battery Mode (Day 19)**
+
+- A one-screen quick registration is now the default Register form: name, sex, age (or birth date), village, reason for visit, and an optional phone. Villages and common reasons the clinic actually uses appear as tap-to-fill chips. Next of kin is left for later; the profile shows a "Finish this record" card for anything missing. The full form is one tap away.
+- "Register and add visit" goes straight to the visit form. Duplicate checking works the same as before, and also covers estimated ages.
+- When nobody knows a birth date, the age is saved as an estimate, marked as an estimate on the profile and the printed card, and flagged in the FHIR export.
+- Low Battery Mode: on at 20% battery (off again at 30% or when charging), or switched on by hand. It pauses background syncing (a "Sync now" button stays available), skips optional network calls, slows the camera scanner, removes animations and switches to dark colours. Registering and saving still go straight to the phone's database, so nothing is lost.
+- Registration speed measuring, for usability sessions only: off by default, records time and taps (no names), and stays on the phone.
 
 **Faster, safer data entry (Day 18)**
 
@@ -210,28 +218,36 @@ Email and password sign-in, facility creation and invite codes, row level securi
 - **ICD-10 list.** From 45 to about 330 entries. Every code was checked to exist in a WHO ICD-10 dataset, labels were compared against it for mix-ups, and the 45 original entries kept their codes and labels so saved visits do not change. The list is plain-language summaries, not the official classification, and still needs a clinician's review before real use.
 - **Prefix matching for service lines**, because exact matching would have silently undercounted antenatal visits coded Z34.0 or Z34.8. Changed in both the app and the Python service, with five new tests.
 
-### Day 18: faster entry (in progress)
+### Day 18: faster entry
 
 - **Complaint check.** About 90 plain-language complaint names with roughly 600 ways people say them, a rule that corrects only likely typos of those words (same first letter, one edit up to 8 letters), a list of everyday words that must never be "corrected", and checks for phone numbers and emails. Tested against 228 recorded cases that give identical answers in TypeScript and Python.
 - **Card and scan.** The QR holds `PRIMA:` plus the card number. Drawn as an SVG on the phone, and read back with an independent QR decoder in testing, including at small size and with blur.
 - **Sticky save bar.** Fixed above the tab bar on phones using the keyboard-aware visual viewport, sticky on larger screens.
 - **Steppers.** Pure step logic (no rounding drift: 36.8 plus ten presses of 0.1 is exactly 37.8), accessible buttons, hold-to-repeat that speeds up.
 
+### Day 19: quick register and low battery (in progress)
+
+- **Quick form.** Pure logic for validation, converting to the existing registration function, and estimating a birth date (tested over every day of ten years: the estimate always shows the same age today, including 29 February and month ends). The full form stays for people who want it, and editing a patient still uses it.
+- **What a quick registration leaves empty.** Next of kin is stored as empty text (the database already accepts it), and a profile card lists what is missing. One new database column, `dob_estimated`.
+- **Duplicates with an estimated age.** The check also looks two years either side of the estimate, but only among patients of the same sex from the same village.
+- **Low Battery Mode.** A small shared store, with hysteresis so it does not flicker at 20%. The sync engine asks it before every automatic upload and download; the Sync now buttons override it.
+- **A usability session guide** in `docs/USABILITY_TEST.md` for testing the quick form with real CHEWs and nurses, with made-up patients only.
+
 ## Feedback queue
 
-| Feedback                                                                                     | Decision                                                                                      | Status  |
-| -------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- | ------- |
-| Guardian link                                                                                | Day 11                                                                                        | Done    |
-| SMS base (consent, reminders table, dashboard count, no sending)                             | Day 12                                                                                        | Done    |
-| Offline IDs like `ANK-{device}-{counter}` with a mapping table                               | Not added: device UUIDs and random card numbers already solve it without ever rewriting an ID | Closed  |
-| A read-only supervisor role for LGA officers                                                 | Considered for Day 14, not built; needs careful read-only handling across the app             | Open    |
-| Simplify the register flow, too many taps (LinkedIn comments, CHEW usability)                | Day 19: quick register, fewer taps, timed test with real nurses                               | Planned |
-| Hausa, Igbo and Yoruba language switch                                                       | Days 22 and 23: translations drafted, then reviewed by native speakers before release         | Planned |
-| Low Battery Mode: stop background sync, dim, save at once                                    | Day 19                                                                                        | Planned |
-| Sync with no internet over the clinic's Wi-Fi (3 tablets, power and a router, no data)       | Days 25 and 26: pairing by QR code, plus a shared changes file as a fallback                  | Planned |
-| Sync status dashboard: which tablet last synced, how many records are waiting, who is behind | Day 24                                                                                        | Planned |
-| A landing page that explains Prima before anyone installs it                                 | Day 20                                                                                        | Planned |
-| A waitlist with a launch countdown, then a week of marketing                                 | Day 21 for the waitlist; marketing plan in `docs/MARKETING_PLAN.md`                           | Planned |
+| Feedback                                                                                     | Decision                                                                                                | Status              |
+| -------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- | ------------------- |
+| Guardian link                                                                                | Day 11                                                                                                  | Done                |
+| SMS base (consent, reminders table, dashboard count, no sending)                             | Day 12                                                                                                  | Done                |
+| Offline IDs like `ANK-{device}-{counter}` with a mapping table                               | Not added: device UUIDs and random card numbers already solve it without ever rewriting an ID           | Closed              |
+| A read-only supervisor role for LGA officers                                                 | Considered for Day 14, not built; needs careful read-only handling across the app                       | Open                |
+| Simplify the register flow, too many taps (LinkedIn comments, CHEW usability)                | Day 19: quick register built; the timed test with real nurses is still to do (`docs/USABILITY_TEST.md`) | Built, test pending |
+| Hausa, Igbo and Yoruba language switch                                                       | Days 22 and 23: translations drafted, then reviewed by native speakers before release                   | Planned             |
+| Low Battery Mode: stop background sync, dim, save at once                                    | Day 19: built; needs a test on a real phone with a low battery                                          | Built, test pending |
+| Sync with no internet over the clinic's Wi-Fi (3 tablets, power and a router, no data)       | Days 25 and 26: pairing by QR code, plus a shared changes file as a fallback                            | Planned             |
+| Sync status dashboard: which tablet last synced, how many records are waiting, who is behind | Day 24                                                                                                  | Planned             |
+| A landing page that explains Prima before anyone installs it                                 | Day 20                                                                                                  | Planned             |
+| A waitlist with a launch countdown, then a week of marketing                                 | Day 21 for the waitlist; marketing plan in `docs/MARKETING_PLAN.md`                                     | Planned             |
 
 ## Decisions and why
 
@@ -265,6 +281,12 @@ Email and password sign-in, facility creation and invite codes, row level securi
 | The DHIS2 mapping is filled in once, from a template, by the district officer                 | Prima cannot know a district's data element codes, and guessing them would put figures in the wrong place                                       |
 | Stable ids derived from the visit, not random ones                                            | Re-exporting must update the receiving system, not create duplicates                                                                            |
 | Service lines count by code prefix                                                            | A bigger diagnosis list must never reduce the antenatal count                                                                                   |
+| The quick form is the default, the full form stays one tap away                               | Most registrations need five things; the rest can be asked at the next visit without holding up the queue                                       |
+| An age with no birth date is saved as an estimate and labelled as one                         | An honest "about 34" is better than an invented date of birth, and reports only need the age                                                    |
+| Next of kin can be added later, and the profile says it is missing                            | A queue at the door should not be held up by a question the patient may not be able to answer yet                                               |
+| Low Battery Mode pauses the network, never the saving                                         | A nurse must never lose a record because the battery is low                                                                                     |
+| Low Battery Mode turns on at 20% and off at 30%                                               | A single threshold flickers on and off as the battery hovers                                                                                    |
+| Measuring registration speed is off unless someone switches it on                             | Timing staff can feel like monitoring them; it is meant for a usability session, with their knowledge                                           |
 | The complaint check suggests, it never blocks or auto-corrects                                | An emergency must always be savable, and a wrong silent fix is worse than a typo                                                                |
 | A QR on the patient card holds only the card number                                           | A lost card must tell a stranger nothing                                                                                                        |
 | Save and Cancel stay in view                                                                  | A nurse should never have to scroll to find Save, or lose a form by tapping away                                                                |
@@ -336,8 +358,8 @@ Nigeria is moving toward FHIR and DHIS2: the National Digital Health Architectur
 | Trust               | 13-14 | Accounts, facilities, row level security; PIN lock, roles, audit log, privacy notice, data requests   | Done        |
 | Phone-ready         | 15-16 | Plan limits, degraded mode, scale, backup; PWA and real-phone test                                    | Done        |
 | Standards           | 17    | FHIR and DHIS2 export, larger ICD-10 list                                                             | Done        |
-| Fast and frugal     | 18    | Complaint check, printed card with QR and scan, sticky save bar, vitals steppers                      | In progress |
-|                     | 19    | Quick register for CHEWs (fewer taps), Low Battery Mode                                               | Planned     |
+| Fast and frugal     | 18    | Complaint check, printed card with QR and scan, sticky save bar, vitals steppers                      | Done        |
+|                     | 19    | Quick register for CHEWs (fewer taps), Low Battery Mode                                               | In progress |
 | Be found            | 20    | Landing page: story, pictures, icons, animation, speed; domain bought                                 | Planned     |
 |                     | 21    | Waitlist, launch countdown, referral position, admin export; marketing starts                         | Planned     |
 | Everyone can use it | 22    | Languages I: translation framework, English baseline, Igbo                                            | Planned     |
@@ -411,6 +433,7 @@ Free Supabase projects pause after about a week without activity. Prima calls `k
 - Pivot: started server-first, then rebuilt offline-first after seeing that network drops break clinic workflow.
 - Numbers: 2 repos (1 reference, 1 product); 28 automated Python tests; about 330 ICD-10 conditions searchable in plain language; a 25-day roadmap.
 - Day 14 headline: a PIN that works with no signal, an audit log that nobody can edit (not even an admin), and a "right to be forgotten" button that really reaches every phone. The log records which fields changed and which card, never a name or a diagnosis.
+- Day 19 headline: a nurse can now register a patient from one screen with a handful of taps: sex, age, a village chip, a reason chip, Register. No one knows the birthday? It saves the age as an honest estimate and says so. And when the battery drops to 20%, Prima stops syncing in the background and goes dark and quiet, while every record is still saved at once.
 - Day 18 headline: Prima now checks a nurse's complaint as she types ("hot body" is understood, "feaver" becomes a suggestion, a phone number typed by mistake gets a warning), prints a bank-card patient card with a QR, and keeps Save in reach on a small screen. The tap test from Day 16 now guides the button sizes.
 - Day 17 headline: Prima can now speak the standards health systems use. A Pro facility can export its records as FHIR, with a mother's baby linked to her as a related person, and a monthly DHIS2 file. HIV and mental-health diagnoses stay out by default. The diagnosis list grew from 45 to about 330 conditions, and a test caught that a bigger list would have quietly undercounted antenatal visits.
 - Day 16 headline: Prima now installs on an Android home screen and opens with no signal at all, straight to the PIN screen. Updates ask first instead of reloading under a nurse's thumb, and the app has a built-in tap test so gloves get measured, not guessed.

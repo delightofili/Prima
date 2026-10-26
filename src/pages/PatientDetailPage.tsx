@@ -34,6 +34,7 @@ import { FamilySection } from "../components/FamilySection";
 import { SmsSection } from "../components/SmsSection";
 import { PrivacyCard } from "../components/PrivacyCard";
 import { useCan } from "../hooks/useCan";
+import { CompleteRecordCard } from "../components/CompleteRecordCard";
 
 type Pending =
   | { kind: "patient" }
@@ -198,6 +199,7 @@ export function PatientDetailPage() {
             </h1>
             <p className="flex items-center gap-1.5 text-subtext">
               <MapPin size={16} /> {age.label} ·{" "}
+              {p.dobEstimated && " (estimated)"}
               {p.gender === "FEMALE" ? "Female" : "Male"} · {p.village}
             </p>
           </div>
@@ -205,6 +207,7 @@ export function PatientDetailPage() {
             {p.cardNumber}
           </span>
         </div>
+        <CompleteRecordCard patient={p} />
 
         <div className="flex flex-wrap gap-2">
           {p.isPregnant && <PregnantBadge />}
@@ -262,6 +265,7 @@ export function PatientDetailPage() {
       <FamilySection patient={p} />
       <SmsSection patient={p} />
       <PrivacyCard patient={p} />
+      <CompleteRecordCard patient={p} />
       <section className="space-y-3">
         <h2 className="flex items-center gap-2 text-lg font-bold">
           <Stethoscope size={20} className="text-prima-500" /> Visits (

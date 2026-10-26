@@ -12,7 +12,7 @@ import {
 import { db } from "../db";
 import { useOnline } from "../hooks/common";
 import { useToast } from "../hooks/useToast";
-import { retryFailed } from "../lib/syncService";
+import { syncNow } from "../lib/syncService";
 import type { SyncItem } from "../types";
 import { KeyRound } from "lucide-react";
 import { useAuth } from "../hooks/useAuth";
@@ -77,7 +77,8 @@ function SyncPanel({
           className="btn btn-primary"
           onClick={async () => {
             toast("Retrying sync…");
-            await retryFailed();
+            await syncNow(true);
+            /* await retryFailed(); */
           }}
         >
           <RefreshCw size={20} className="mr-2" /> Retry now

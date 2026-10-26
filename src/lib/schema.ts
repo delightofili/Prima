@@ -60,6 +60,7 @@ export const patientFormSchema = z
       .max(20)
       .optional(),
     isPregnant: z.boolean(),
+    dobEstimated: z.boolean().optional(),
     noticeGiven: z.boolean(),
     smsConsent: z.boolean(),
   })
@@ -67,10 +68,10 @@ export const patientFormSchema = z
     const issue = (path: string, message: string) =>
       ctx.addIssue({ code: z.ZodIssueCode.custom, path: [path], message });
 
-    if (d.isNewAdmission && (d.initialChiefComplaint?.length ?? 0) < 5) {
+    if (d.isNewAdmission && (d.initialChiefComplaint?.length ?? 0) < 3) {
       issue(
         "initialChiefComplaint",
-        "Describe the reason for the visit (at least 5 characters)",
+        "Describe the reason for the visit (at least 3 characters)",
       );
     }
 

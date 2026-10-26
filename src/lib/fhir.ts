@@ -51,6 +51,7 @@ const SYS = {
   condClin: "http://terminology.hl7.org/CodeSystem/condition-clinical",
   allergyClin:
     "http://terminology.hl7.org/CodeSystem/allergyintolerance-clinical",
+  dobEstimated: "urn:prima:ext:birth-date-estimated",
 } as const;
 
 // Prima records the vaccine by name only, so "unspecified formulation" codes are used where they exist.
@@ -176,6 +177,8 @@ export async function buildFhir(input: FhirInput): Promise<FhirResult> {
       ],
       managingOrganization: ref("Organization", facility.id),
     };
+    if (p.dobEstimated)
+      r.extension = [{ url: SYS.dobEstimated, valueBoolean: true }]; // the birth date is a guess from the age
     if (p.phone) r.telecom = [phone(p.phone)];
     if (p.nextOfKinName || p.nextOfKinPhone) {
       r.contact = [

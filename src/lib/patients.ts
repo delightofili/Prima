@@ -52,6 +52,7 @@ function fieldsFrom(values: PatientFormValues) {
     initialChiefComplaint: values.isNewAdmission
       ? clean(values.initialChiefComplaint)
       : undefined,
+    dobEstimated: values.dobEstimated ? true : undefined,
   };
 }
 
@@ -76,6 +77,7 @@ export function valuesFromPatient(p: Patient): Partial<PatientFormValues> {
     isPregnant: p.isPregnant,
     smsConsent: !!p.smsConsent,
     noticeGiven: !!p.noticeAt,
+    dobEstimated: p.dobEstimated ?? false,
   };
 }
 

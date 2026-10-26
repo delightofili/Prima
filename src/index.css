@@ -160,3 +160,54 @@ html[data-glove="on"] .stepper-btn {
     print-color-adjust: exact;
   }
 }
+
+/* Day 19: Low Battery Mode. Dark colours and no animation. Screen only, so printed cards stay white. */
+@media screen {
+  html[data-power="low"] {
+    color-scheme: dark;
+    --color-page: #0b0f14;
+    --color-ink: #e5e7eb;
+    --color-subtext: #9ca3af;
+    --color-line: #2b3440;
+    --color-prima-50: #0f2a27;
+    --color-accent-50: #3a2a05;
+  }
+  html[data-power="low"] body {
+    background: #0b0f14;
+    color: #e5e7eb;
+  }
+  html[data-power="low"] .card,
+  html[data-power="low"] .bg-white,
+  html[data-power="low"] .btn-secondary,
+  html[data-power="low"] .stepper-btn {
+    background-color: #121820;
+  }
+  html[data-power="low"] .input {
+    background-color: #0b0f14;
+    color: #e5e7eb;
+    border-color: #374151;
+  }
+  html[data-power="low"] .btn-secondary,
+  html[data-power="low"] .stepper-btn {
+    color: #5eead4;
+    border-color: #2dd4bf;
+  }
+  html[data-power="low"] .text-prima-500,
+  html[data-power="low"] .text-prima-900 {
+    color: #5eead4;
+  }
+  html[data-power="low"] .text-danger {
+    color: #f87171;
+  }
+  html[data-power="low"] .id-card,
+  html[data-power="low"] .id-card .bg-white {
+    background-color: #fff; /* a card preview stays paper-white */
+  }
+  html[data-power="low"] *,
+  html[data-power="low"] *::before,
+  html[data-power="low"] *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}

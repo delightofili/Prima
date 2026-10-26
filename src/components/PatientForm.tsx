@@ -203,6 +203,10 @@ export function PatientForm({
     }
 
     try {
+      if (editing && patient) {
+        values.dobEstimated =
+          values.dob === patient.dob ? !!patient.dobEstimated : false;
+      }
       const saved = editing
         ? await updatePatient(patient!, values)
         : await registerPatient(

@@ -14,6 +14,7 @@ import { SyncBadge } from "./SyncBadge";
 import { config } from "../lib/config";
 import { useLock } from "../hooks/useLock";
 import { StatusBanner } from "./StatusBanner";
+import { PowerBanner } from "./PowerBanner";
 
 const NAV = [
   { to: "/", label: "Home", icon: House, end: true },
@@ -94,6 +95,7 @@ export function AppShell() {
         <main className="mx-auto w-full max-w-5xl flex-1 px-4 pb-28 pt-5 md:px-8 md:pb-10 md:pt-8">
           <SessionBanner />
           <StatusBanner />
+          <PowerBanner />
           <Outlet />
         </main>
       </div>

@@ -13,6 +13,7 @@ import type {
   AuditEntry,
 } from "../types";
 import { LIMIT_TAG, markNetworkFail, markOk } from "./syncHealth";
+import { isPowerSaving, onPowerSavingEnd } from "./power";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Row = Record<string, any>;
@@ -67,6 +68,7 @@ const patientRow = (p: Patient) => ({
   notice_given_at: isoOrNull(p.noticeAt),
   notice_version: p.noticeVersion ?? null,
   erased_at: isoOrNull(p.erasedAt),
+  dob_estimated: p.dobEstimated ?? false,
 });
 
 const immunizationRow = (r: ImmunizationRecord) => ({
@@ -137,6 +139,7 @@ const patientFromRow = (r: Row): Patient => ({
   noticeAt: toMs(r.notice_given_at),
   noticeVersion: r.notice_version ?? undefined,
   erasedAt: toMs(r.erased_at),
+  dobEstimated: r.dob_estimated ? true : undefined,
 });
 
 const immunizationFromRow = (r: Row): ImmunizationRecord => ({
@@ -256,6 +259,9 @@ const isAuthError = (e: unknown) => {
 /* ---------- push ----------*/
 
 let pushedThisRun = new Set<string>();
+
+let manualSync = false; // a person tapped "Sync now": that overrides Low Battery Mode once
+const paused = () => isPowerSaving() && !manualSync;
 
 const errMessage = (e: unknown) =>
   (e as { message?: string })?.message ?? String(e);
@@ -549,6 +555,7 @@ export async function pushPending() {
   if (!(await hasCloudSession())) return; // signed out of the cloud: wait quietly, records stay safe
   running = true;
   pushedThisRun = new Set();
+  if (running || !navigator.onLine || paused()) return;
   try {
     await runWaves();
   } catch (e) {
@@ -638,6 +645,7 @@ async function remotePulse(): Promise<string | null> {
 
 export async function pullChanges(force = false) {
   if (pulling || !navigator.onLine) return;
+  if (pulling || !navigator.onLine || paused()) return;
   if (!(await hasCloudSession())) return;
   pulling = true;
   try {
@@ -670,9 +678,14 @@ export async function pullChanges(force = false) {
 
 /* ---------- public ---------- */
 
-export async function syncNow() {
-  await pushPending();
-  await pullChanges();
+export async function syncNow(manual = false) {
+  if (manual) manualSync = true;
+  try {
+    await pushPending();
+    await pullChanges();
+  } finally {
+    if (manual) manualSync = false;
+  }
 }
 
 export async function retryFailed() {
@@ -682,7 +695,7 @@ export async function retryFailed() {
       item.attempts = 0;
     }
   });
-  await syncNow();
+  await syncNow(true);
 }
 
 /* ---------- when to sync ---------- */
@@ -736,6 +749,7 @@ export function startSync() {
     lastPullTry = Date.now();
     void syncNow();
   });
+  onPowerSavingEnd(() => void syncNow());
   document.addEventListener("visibilitychange", () => void pullIfDue());
   lastPullTry = Date.now();
   void syncNow();

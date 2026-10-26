@@ -37,6 +37,7 @@ import { useCan } from "../hooks/useCan";
 import { BackupCard } from "../components/BackupCard";
 import { PlanCard } from "../components/PlanCard";
 import { InstallCard } from "../components/InstallCard";
+import { PowerCard } from "../components/PowerCard";
 
 function EditFacilityDialog({ onClose }: { onClose: () => void }) {
   const { facility, refreshFacility } = useAuth();
@@ -249,6 +250,7 @@ export function AccountPage() {
         <SecurityCard />
         <PlanCard />
         <InstallCard />
+        <PowerCard />
         {can("backup") && <BackupCard />}
 
         <section className="card space-y-3 md:col-span-2">

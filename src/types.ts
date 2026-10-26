@@ -54,6 +54,7 @@ export interface Patient {
   noticeAt?: number; // when the privacy notice was explained
   noticeVersion?: string;
   erasedAt?: number; // set only by the server's erase function
+  dobEstimated?: boolean; // the birth date is a guess made from the age
 }
 
 export interface ImmunizationRecord {

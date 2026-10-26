@@ -8,9 +8,11 @@ import { ToastProvider } from "./components/Toast";
 import { UpdatePrompt } from "./components/UpdatePrompt";
 import { applyGlove, readGlove } from "./hooks/useGloveMode";
 import { initInstall } from "./lib/install";
+import { initPower } from "./lib/power";
 
 applyGlove(readGlove());
 initInstall(); // must listen before React starts: the browser fires its install event early
+initPower();
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>

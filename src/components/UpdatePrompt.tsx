@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useRegisterSW } from "virtual:pwa-register/react";
 import { Check, RefreshCw } from "lucide-react";
+import { isPowerSaving } from "../lib/power";
 
 const HOUR = 60 * 60 * 1000;
 
@@ -14,7 +15,11 @@ export function UpdatePrompt() {
       if (!registration) return;
       // Look for a new version hourly, and whenever the app comes back to the front
       const check = () => {
-        if (navigator.onLine && document.visibilityState === "visible")
+        if (
+          navigator.onLine &&
+          document.visibilityState === "visible" &&
+          !isPowerSaving()
+        )
           void registration.update();
       };
       setInterval(check, HOUR);

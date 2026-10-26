@@ -41,6 +41,7 @@ import { encodeCard } from "../lib/cardCode";
 import type { Patient } from "../types";
 import { Logo } from "./Logo";
 import { QrSvg } from "./QrSvg";
+import { calculateAge } from "../lib/age";
 
 const BIRTH = new Intl.DateTimeFormat("en-NG", {
   day: "numeric",
@@ -64,7 +65,9 @@ export function PatientCard({
   patient: Patient;
   facilityName: string;
 }) {
-  const born = BIRTH.format(new Date(`${patient.dob}T00:00:00`));
+  const born = patient.dobEstimated
+    ? `About ${calculateAge(patient.dob).label}`
+    : `Born ${BIRTH.format(new Date(`${patient.dob}T00:00:00`))}`;
 
   return (
     <div className="id-card relative flex h-[54mm] w-[85.6mm] flex-col justify-between overflow-hidden rounded-[3mm] border-[0.4mm] border-prima-500 bg-white p-[3.5mm] text-black">
@@ -83,7 +86,7 @@ export function PatientCard({
             {patient.fullName}
           </p>
           <p className="text-[2.8mm] leading-tight">
-            {patient.gender === "FEMALE" ? "Female" : "Male"} · Born {born}
+            {patient.gender === "FEMALE" ? "Female" : "Male"} · {born}
           </p>
           <p className="text-[2.2mm] uppercase tracking-wide text-black/60">
             Card number

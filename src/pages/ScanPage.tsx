@@ -6,11 +6,14 @@ import { Field } from "../components/FormBits";
 import { PageHeader } from "../components/PageHeader";
 import { QrScanner } from "../components/QrScanner";
 import { usePageTitle } from "../hooks/common";
+
 import { parseCard } from "../lib/cardCode";
+import { usePower } from "../lib/power";
 
 export function ScanPage() {
   usePageTitle("Scan card");
   const navigate = useNavigate();
+  const power = usePower();
   const [message, setMessage] = useState<string | null>(null);
   const [typed, setTyped] = useState("");
 
@@ -40,7 +43,10 @@ export function ScanPage() {
         subtitle="Point the camera at the QR code on a patient card."
       />
       <div className="mx-auto max-w-lg space-y-4">
-        <QrScanner onResult={(text) => void open(text)} />
+        <QrScanner
+          everyMs={power.active ? 700 : 200}
+          onResult={(text) => void open(text)}
+        />
         {message && (
           <p role="alert" className="rounded-xl bg-accent-50 p-3 font-medium">
             {message}

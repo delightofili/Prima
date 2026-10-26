@@ -1,6 +1,7 @@
 import { config } from "./config";
 import { nameSimilarity } from "./duplicates";
 import { supabase } from "./supabase";
+import { isPowerSaving } from "./power";
 
 export interface SimilarMatch {
   id: string;
@@ -56,7 +57,7 @@ export async function findSimilar(
   candidates: { id: string; name: string }[],
 ): Promise<SimilarMatch[]> {
   if (candidates.length === 0) return [];
-  if (config.pythonApiUrl && navigator.onLine) {
+  if (config.pythonApiUrl && navigator.onLine && !isPowerSaving()) {
     const remote = await findSimilarRemote(name, candidates);
     if (remote) return remote;
   }

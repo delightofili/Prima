@@ -60,7 +60,7 @@ export function StatusBanner() {
         <button
           type="button"
           className="btn btn-secondary sm:w-40"
-          onClick={() => void syncNow()}
+          onClick={() => void syncNow(true)}
         >
           Try again
         </button>

@@ -5,9 +5,11 @@ import { saveTiming, timingEnabled } from "../lib/timingStore";
 export function useRegistrationTiming(kind: "quick" | "full") {
   const startedAt = useRef<number | null>(null);
   const taps = useRef(0);
-  const on = useRef(timingEnabled());
+  const on = useRef(false);
 
   useEffect(() => {
+    startedAt.current = Date.now(); // read when the form opens, not while it is being drawn
+    on.current = timingEnabled();
     if (!on.current) return;
     const count = () => {
       taps.current += 1;

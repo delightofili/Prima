@@ -1,138 +1,121 @@
-import { useEffect, useState } from "react";
-import { createPortal } from "react-dom";
-import { useLiveQuery } from "dexie-react-hooks";
-import {
-  Check,
-  CloudOff,
-  RefreshCw,
-  TriangleAlert,
-  X,
-  type LucideIcon,
-} from "lucide-react";
-import { db } from "../db";
-import { useOnline } from "../hooks/common";
-import { useToast } from "../hooks/useToast";
-import { syncNow } from "../lib/syncService";
-import type { SyncItem } from "../types";
-import { KeyRound } from "lucide-react";
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import { Check, CloudOff, Pause, RefreshCw, TriangleAlert } from "lucide-react";
 import { useAuth } from "../hooks/useAuth";
+import { useSyncState } from "../hooks/useSyncState";
 import { friendlySyncError } from "../lib/syncHealth";
+import { retryFailed, syncNow } from "../lib/syncService";
+import { Modal } from "./Modal";
 
-function SyncPanel({
-  items,
-  onClose,
-}: {
-  items: SyncItem[];
-  onClose: () => void;
-}) {
-  const toast = useToast();
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [onClose]);
+const ICON = {
+  synced: Check,
+  offline: CloudOff,
+  signin: TriangleAlert,
+  schema: TriangleAlert,
+  working: RefreshCw,
+  paused: Pause,
+  attention: TriangleAlert,
+  upgrade: Pause,
+  "cloud-down": CloudOff,
+  retrying: RefreshCw,
+  waiting: RefreshCw,
+} as const;
+
+const TONE = {
+  ok: "bg-white/20 text-white",
+  busy: "bg-accent-50 text-ink",
+  calm: "bg-accent-50 text-ink",
+  attention: "bg-accent-500 text-ink",
+} as const;
+
+function SyncPanel({ onClose }: { onClose: () => void }) {
+  const { state, items, counts } = useSyncState();
+  const { role } = useAuth();
+
   return (
-    <div
-      role="dialog"
-      aria-modal="true"
-      aria-label="Sync details"
-      className="fixed inset-0 z-50 flex items-end justify-center bg-ink/40 p-4 md:items-center"
-      onClick={onClose}
-    >
-      <div
-        className="card max-h-[80vh] w-full max-w-lg space-y-3 overflow-y-auto"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="flex items-center justify-between">
-          <h2 className="text-lg font-bold">Sync details</h2>
+    <Modal title="Sync details" onClose={onClose}>
+      <div className="space-y-4">
+        <p className="font-semibold">{state.label}</p>
+        <p className="text-subtext">{state.detail}</p>
+
+        <p className="text-sm text-subtext">
+          {counts.waiting} waiting to upload, {counts.failed} that need
+          attention. Everything stays safe on this phone.
+        </p>
+
+        {items.length > 0 && (
+          <ul className="max-h-64 space-y-2 overflow-y-auto">
+            {items.slice(0, 30).map((i) => (
+              <li key={i.id} className="rounded-xl bg-page p-3 text-sm">
+                <p className="font-semibold">
+                  {i.table} ·{" "}
+                  {i.status === "failed" ? "needs attention" : "waiting"}
+                  {i.attempts > 0 &&
+                    ` · ${i.attempts} ${i.attempts === 1 ? "try" : "tries"}`}
+                </p>
+                {i.lastError && (
+                  <p className="break-words text-subtext">
+                    {friendlySyncError(i.lastError)}
+                  </p>
+                )}
+              </li>
+            ))}
+          </ul>
+        )}
+
+        <div className="flex flex-col gap-3 sm:flex-row">
           <button
             type="button"
-            aria-label="Close"
-            className="p-2"
-            onClick={onClose}
+            className="btn btn-primary"
+            onClick={() => void syncNow(true)}
           >
-            <X size={20} />
+            Sync now
           </button>
+          {counts.failed > 0 && (
+            <button
+              type="button"
+              className="btn btn-secondary"
+              onClick={() => void retryFailed()}
+            >
+              Retry the ones that need attention
+            </button>
+          )}
         </div>
-        <ul className="space-y-2">
-          {items.map((i) => (
-            <li key={i.id} className="rounded-xl border-2 border-line p-3">
-              <p className="font-semibold">
-                {i.table} ·{" "}
-                {i.status === "failed" ? "needs attention" : "waiting"} · tries{" "}
-                {i.attempts}
-              </p>
-              {i.lastError && (
-                <p className="mt-1 break-words text-sm text-danger">
-                  {friendlySyncError(i.lastError)}
-                </p>
-              )}
-            </li>
-          ))}
-        </ul>
-        <button
-          type="button"
-          className="btn btn-primary"
-          onClick={async () => {
-            toast("Retrying sync…");
-            await syncNow(true);
-            /* await retryFailed(); */
-          }}
-        >
-          <RefreshCw size={20} className="mr-2" /> Retry now
-        </button>
+
+        {role === "admin" && (
+          <Link
+            to="/sync-doctor"
+            onClick={onClose}
+            className="inline-block min-h-12 font-semibold text-prima-500 underline"
+          >
+            Open Sync Doctor (for admins)
+          </Link>
+        )}
       </div>
-    </div>
+    </Modal>
   );
 }
 
 export function SyncBadge() {
-  const online = useOnline();
-  const queue = useLiveQuery(() => db.syncQueue.toArray(), []);
   const [open, setOpen] = useState(false);
-  const items = queue ?? [];
-  const waiting = items.filter((i) => i.status !== "failed").length;
-  const failed = items.filter((i) => i.status === "failed").length;
-  const { cloudOk } = useAuth();
+  const { state } = useSyncState();
+  const Icon = ICON[state.id];
 
-  let Icon: LucideIcon = Check;
-  let text = "Synced";
-  if (failed > 0) {
-    Icon = TriangleAlert;
-    text = `${failed} need attention`;
-  } else if (!online) {
-    Icon = CloudOff;
-    text = waiting > 0 ? `Offline · ${waiting} saved` : "Offline";
-  } else if (!cloudOk) {
-    Icon = KeyRound;
-    text = "Sign in to sync";
-  } else if (waiting > 0) {
-    Icon = RefreshCw;
-    text = `Syncing ${waiting}…`;
-  }
-
-  const attention = !online || waiting > 0 || failed > 0;
   return (
     <>
       <button
         type="button"
-        disabled={items.length === 0}
+        aria-label={`Sync status: ${state.label}. Tap for details.`}
         onClick={() => setOpen(true)}
-        className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-sm font-semibold disabled:cursor-default ${
-          attention ? "bg-accent-50 text-ink" : "bg-prima-50 text-prima-900"
-        }`}
+        className={`inline-flex min-h-10 max-w-[12rem] items-center gap-2 rounded-full px-3 text-sm font-semibold ${TONE[state.tone]}`}
       >
-        <Icon size={16} className={Icon === RefreshCw ? "animate-spin" : ""} />
-        {text}
+        <Icon
+          size={16}
+          className={`shrink-0 ${state.id === "working" ? "animate-spin" : ""}`}
+        />
+        <span className="truncate">{state.label}</span>
       </button>
-      {open &&
-        items.length > 0 &&
-        createPortal(
-          <SyncPanel items={items} onClose={() => setOpen(false)} />,
-          document.body,
-        )}
+      {open && <SyncPanel onClose={() => setOpen(false)} />}
     </>
   );
 }

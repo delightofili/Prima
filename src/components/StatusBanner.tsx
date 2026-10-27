@@ -1,43 +1,41 @@
 import { Link } from "react-router-dom";
-import { useLiveQuery } from "dexie-react-hooks";
-import { CloudOff, Lock } from "lucide-react";
-import { db } from "../db";
-import { useOnline } from "../hooks/common";
+import { CloudOff, DatabaseZap, Lock, TriangleAlert } from "lucide-react";
 import { useAuth } from "../hooks/useAuth";
-import { LIMIT_TAG, useSyncHealth } from "../lib/syncHealth";
 import { syncNow } from "../lib/syncService";
+import { useSyncState } from "../hooks/useSyncState";
 
 const BOX =
   "mb-4 flex flex-wrap items-center justify-between gap-3 rounded-2xl border-2 border-accent-500 bg-accent-50 p-4";
 
+// One calm message at a time, always saying the records are safe
 export function StatusBanner() {
   const { cloudOk, account, role } = useAuth();
-  const online = useOnline();
-  const health = useSyncHealth();
-  const parked = useLiveQuery(
-    () =>
-      db.syncQueue
-        .filter(
-          (i) =>
-            i.table === "patients" &&
-            i.status === "failed" &&
-            !!i.lastError?.startsWith(LIMIT_TAG),
-        )
-        .count(),
-    [],
-    0,
-  );
+  const { state } = useSyncState();
 
   if (!account || !cloudOk) return null; // the sign-in banner speaks first
 
-  if (parked > 0) {
+  if (state.id === "schema") {
+    return (
+      <div className={BOX}>
+        <p className="flex items-center gap-2 font-semibold">
+          <DatabaseZap size={20} className="shrink-0" />
+          {state.detail}
+        </p>
+        {role === "admin" && (
+          <Link to="/sync-doctor" className="btn btn-accent sm:w-48">
+            Open Sync Doctor
+          </Link>
+        )}
+      </div>
+    );
+  }
+
+  if (state.id === "upgrade") {
     return (
       <div className={BOX}>
         <p className="flex items-center gap-2 font-semibold">
           <Lock size={20} className="shrink-0" />
-          {parked} {parked === 1 ? "patient is" : "patients are"} saved on this
-          phone but not uploaded yet, because the Free plan holds 200 patients.
-          Nothing is lost.
+          {state.detail} Nothing is lost.
           {role !== "admin" && " Ask your facility admin to upgrade."}
         </p>
         {role === "admin" && (
@@ -49,13 +47,28 @@ export function StatusBanner() {
     );
   }
 
-  if (online && health.failures >= 3) {
+  if (state.id === "attention") {
+    return (
+      <div className={BOX}>
+        <p className="flex items-center gap-2 font-semibold">
+          <TriangleAlert size={20} className="shrink-0" />
+          {state.detail}
+        </p>
+        {role === "admin" && (
+          <Link to="/sync-doctor" className="btn btn-accent sm:w-48">
+            Open Sync Doctor
+          </Link>
+        )}
+      </div>
+    );
+  }
+
+  if (state.id === "cloud-down") {
     return (
       <div className={BOX}>
         <p className="flex items-center gap-2 font-semibold">
           <CloudOff size={20} className="shrink-0" />
-          Prima can't reach the cloud right now. Everything is saved on this
-          phone and will upload by itself.
+          {state.detail}
         </p>
         <button
           type="button"

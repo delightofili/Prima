@@ -1,18 +1,52 @@
-import { defineConfig } from "vite";
+import { defineConfig, type Plugin } from "vite";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
 import { VitePWA } from "vite-plugin-pwa";
 
+// One build time, used both inside the app (__BUILD__) and in version.json, so the two can be compared
+const BUILD = new Date().toISOString().slice(0, 16).replace("T", " ") + " UTC";
+
+// Writes dist/version.json, so a phone can ask the server which build is live
+const versionFile = (): Plugin => ({
+  name: "prima-version-file",
+  generateBundle() {
+    this.emitFile({
+      type: "asset",
+      fileName: "version.json",
+      source: JSON.stringify({ build: BUILD }),
+    });
+  },
+});
+
+// Which npm package a file belongs to, e.g. "recharts" or "@supabase/supabase-js"
+const packageOf = (id: string) => {
+  const parts = (id.split("node_modules/").pop() ?? "").split("/");
+  return parts[0].startsWith("@") ? `${parts[0]}/${parts[1]}` : parts[0];
+};
+
+const CHUNKS: Record<string, string[]> = {
+  react: [
+    "react",
+    "react-dom",
+    "react-router",
+    "react-router-dom",
+    "scheduler",
+  ],
+  charts: ["recharts", "d3-*", "victory-vendor", "recharts-scale"],
+  data: ["dexie", "dexie-react-hooks"],
+  supabase: ["@supabase/*"],
+  forms: ["react-hook-form", "zod", "@hookform/resolvers"],
+};
+
 export default defineConfig({
-  // Shown on the Phone check page, so you can see which version a phone is really running
+  // Shown on the Phone check page and the App version card, so you can see which version a phone is really running
   define: {
-    __BUILD__: JSON.stringify(
-      new Date().toISOString().slice(0, 16).replace("T", " ") + " UTC",
-    ),
+    __BUILD__: JSON.stringify(BUILD),
   },
   plugins: [
     react(),
     tailwindcss(),
+    versionFile(),
     VitePWA({
       registerType: "prompt", // a new version waits until the person taps "Update now"
       includeAssets: ["favicon.svg", "apple-touch-icon.png"],
@@ -83,26 +117,20 @@ export default defineConfig({
   build: {
     rollupOptions: {
       output: {
-        // Big libraries get their own files with stable names, so an update downloads only what changed
-        manualChunks(id) {
-          const normalizedId = id.replace(/\\/g, "/");
-          const chunks = {
-            react: ["react", "react-dom", "react-router-dom"],
-            charts: ["recharts"],
-            data: ["dexie", "dexie-react-hooks"],
-            supabase: ["@supabase/supabase-js"],
-            forms: ["react-hook-form", "zod", "@hookform/resolvers"],
-          };
-
-          for (const [chunk, packages] of Object.entries(chunks)) {
+        // Big libraries get their own files with stable names, so an update downloads only what changed.
+        // (A function, because it works with every recent Vite. The object form fails on Vite 8.)
+        manualChunks(id: string) {
+          if (!id.includes("node_modules")) return undefined;
+          const name = packageOf(id);
+          for (const [chunk, packages] of Object.entries(CHUNKS)) {
             if (
-              packages.some((name) =>
-                normalizedId.includes(`/node_modules/${name}/`),
+              packages.some((p) =>
+                p.endsWith("*") ? name.startsWith(p.slice(0, -1)) : name === p,
               )
-            ) {
+            )
               return chunk;
-            }
           }
+          return undefined;
         },
       },
     },

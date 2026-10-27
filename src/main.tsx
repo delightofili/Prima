@@ -20,9 +20,9 @@ createRoot(document.getElementById("root")!).render(
       <ToastProvider>
         <AuthProvider>
           <App />
+          <UpdatePrompt />
         </AuthProvider>
       </ToastProvider>
     </BrowserRouter>
-    <UpdatePrompt />
   </StrictMode>,
 );

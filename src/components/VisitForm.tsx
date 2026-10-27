@@ -49,7 +49,6 @@ export function VisitForm({
   const {
     register,
     handleSubmit,
-    watch,
     setValue,
     control,
     formState: { errors, isSubmitting, isDirty, isSubmitSuccessful },
@@ -87,7 +86,7 @@ export function VisitForm({
   const temp = useWatch({ control, name: "temperature" });
 
   const age = calculateAge(patient.dob, fromISO(visitDate || todayISO()));
-  const complaintsText = watch("complaints") ?? "";
+  const complaintsText = useWatch({ control, name: "complaints" }) ?? "";
   // Where the first tap on the weight stepper begins, by age. It is a starting point, never a saved value.
   const weightStart =
     age.unit !== "years" ? 6 : age.value < 5 ? 12 : age.value < 13 ? 30 : 60;

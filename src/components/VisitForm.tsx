@@ -8,7 +8,7 @@ import {
   CalendarClock,
   ClipboardList,
   Save,
-  Stethoscope,
+  Stethoscope, 
   Thermometer,
   Weight,
 } from "lucide-react";

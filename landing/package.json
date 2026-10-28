@@ -1,0 +1,13 @@
+{
+  "name": "prima-landing",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node build.mjs",
+    "check": "node check.mjs",
+    "preview": "node build.mjs && npx serve dist"
+  },
+  "devDependencies": {
+    "sharp": "^0.35.5"
+  }
+}

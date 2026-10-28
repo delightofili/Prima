@@ -29,3 +29,11 @@ __pycache__/
 *.pyc
 
 python-service/.env
+
+landing/distlanding/node_modules
+
+landing/node_modules
+
+landing/dist
+landing/node_modules
+.wrangler

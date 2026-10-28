@@ -1,0 +1,1009 @@
+<!doctype html>
+<html lang="en-NG">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <title>Prima: a patient register that works with no internet</title>
+    <meta
+      name="description"
+      content="Prima is a patient register for primary health centres in Nigeria. Register patients, record visits and prepare the LGA report, even when there is no internet."
+    />
+    <link rel="canonical" href="{{domain}}/" />
+    <meta name="theme-color" content="#0F766E" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Prima" />
+    <meta
+      property="og:title"
+      content="Prima: a patient register that works with no internet"
+    />
+    <meta
+      property="og:description"
+      content="Register patients, record visits and prepare the monthly LGA report on a phone, even when the network is down. Built in Enugu, Nigeria for primary health centres."
+    />
+    <meta property="og:url" content="{{domain}}/" />
+    <meta property="og:image" content="{{domain}}/og.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content="Prima: a patient register that works with no internet"
+    />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      name="twitter:title"
+      content="Prima: a patient register that works with no internet"
+    />
+    <meta
+      name="twitter:description"
+      content="Register patients, record visits and prepare the monthly LGA report, even when the network is down."
+    />
+    <meta name="twitter:image" content="{{domain}}/og.png" />
+    <script>
+      document.documentElement.classList.add("js");
+    </script>
+    <link rel="stylesheet" href="/assets/styles.css?v={{build}}" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "Prima",
+        "applicationCategory": "HealthApplication",
+        "operatingSystem": "Android, iOS, Web",
+        "description": "An offline-first patient register and visit record for primary health centres in Nigeria.",
+        "url": "{{domain}}/",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "NGN",
+          "description": "Free plan for small clinics"
+        }
+      }
+    </script>
+  </head>
+  <body data-launch="{{launchAt}}">
+    {{SPRITE}}
+    <a class="skip" href="#main">Skip to the content</a>
+
+    <header class="header">
+      <div class="container">
+        <a class="brand" href="#top" aria-label="Prima, back to the top">
+          <span class="logo"
+            ><svg viewBox="0 0 40 40" aria-hidden="true">
+              <path d="M17 9h6v8h8v6h-8v8h-6v-8H9v-6h8z" /></svg></span
+          >Prima
+        </a>
+        <nav class="nav" aria-label="Main">
+          <a href="#how">How it works</a>
+          <a href="#features">Features</a>
+          <a href="#pricing">Pricing</a>
+          <a href="#story">Story</a>
+          <a href="#faq">Questions</a>
+        </nav>
+        <a class="btn btn-primary" href="#waitlist">Join the waitlist</a>
+        <details class="menu">
+          <summary aria-label="Open the menu">
+            <svg class="icon icon-open"><use href="#i-menu" /></svg
+            ><svg class="icon icon-close"><use href="#i-x" /></svg>
+          </summary>
+          <div class="panel">
+            <a href="#how">How it works</a>
+            <a href="#features">Features</a>
+            <a href="#pricing">Pricing</a>
+            <a href="#story">Story</a>
+            <a href="#faq">Questions</a>
+            <a href="#waitlist"><strong>Join the waitlist</strong></a>
+          </div>
+        </details>
+      </div>
+    </header>
+
+    <main id="main">
+      <section class="hero" id="top">
+        <div class="container">
+          <div>
+            <span class="eyebrow"
+              ><svg class="icon"><use href="#i-heart-pulse" /></svg>For primary
+              health centres in Nigeria</span
+            >
+            <h1 class="mt-md">
+              A patient register that works with no internet.
+            </h1>
+            <p class="lead">
+              Prima lets nurses and community health workers register patients,
+              record visits and prepare the monthly LGA report on a phone. When
+              the network drops, nothing stops. Everything is saved on the phone
+              and uploads by itself later.
+            </p>
+            <div class="row">
+              <a class="btn btn-light" href="#waitlist"
+                >Join the waitlist
+                <svg class="icon"><use href="#i-arrow-right" /></svg
+              ></a>
+              <a class="btn btn-outline" href="#how">See how it works</a>
+            </div>
+            {{#launchAt}}
+            <div
+              class="countdown"
+              id="countdown"
+              role="timer"
+              aria-label="Time until the pilot opens"
+            >
+              <span class="countdown-label">The pilot opens in</span>
+              <div><b data-u="d">0</b><small>days</small></div>
+              <div><b data-u="h">0</b><small>hours</small></div>
+              <div><b data-u="m">0</b><small>minutes</small></div>
+              <div><b data-u="s">0</b><small>seconds</small></div>
+            </div>
+            {{/launchAt}}
+            <p class="hero-note">
+              <span
+                ><svg class="icon"><use href="#i-check" /></svg>Free for small
+                clinics</span
+              >
+              <span
+                ><svg class="icon"><use href="#i-check" /></svg>Built in public
+                in Enugu, Nigeria</span
+              >
+              <span
+                ><svg class="icon"><use href="#i-check" /></svg>Pilot clinics
+                starting soon</span
+              >
+            </p>
+          </div>
+
+          <div class="phone-wrap">
+            <div class="phone-wrap-inner">
+              <div
+                class="phone"
+                id="phone"
+                data-step="2"
+                data-wifi="off"
+                aria-hidden="true"
+              >
+                <div class="ph-status">
+                  <span>9:41</span
+                  ><span
+                    ><svg class="icon s-on"><use href="#i-wifi" /></svg
+                    ><svg class="icon s-off"><use href="#i-wifi-off" /></svg
+                  ></span>
+                </div>
+                <div class="ph-head">
+                  <span class="brand"
+                    ><span class="logo"
+                      ><svg viewBox="0 0 40 40">
+                        <path
+                          d="M17 9h6v8h8v6h-8v8h-6v-8H9v-6h8z"
+                        /></svg></span
+                    >Prima</span
+                  >
+                  <span class="pill is-offline" id="ph-pill"
+                    >Offline · 1 saved</span
+                  >
+                </div>
+                <div class="ph-body">
+                  <div class="ph-hero">
+                    <small>Monday</small><b>Good morning</b>
+                    <div class="ph-btn">Register patient</div>
+                  </div>
+                  <div class="ph-stats">
+                    <div class="ph-stat">
+                      <small>Total patients</small><b id="ph-total">129</b>
+                    </div>
+                    <div class="ph-stat">
+                      <small>Registered today</small><b id="ph-today">4</b>
+                    </div>
+                  </div>
+                  <div class="ph-follow">2 follow-ups due</div>
+                  <div class="ph-list">
+                    <div>
+                      <b>Baby Chidera</b><small>8 months · Cough</small>
+                    </div>
+                    <div>
+                      <b>Emeka Obi</b><small>70 years · Body pain</small>
+                    </div>
+                    <div>
+                      <b>Amaka Eze</b><small>26 years · Antenatal</small>
+                    </div>
+                  </div>
+                </div>
+                <div class="ph-toast on" id="ph-toast">Saved on this phone</div>
+                <div class="ph-card on" id="ph-card">
+                  <svg
+                    class="qr"
+                    width="44"
+                    height="44"
+                    viewBox="-1 -1 23 23"
+                    shape-rendering="crispEdges"
+                  >
+                    <rect x="-1" y="-1" width="23" height="23" fill="#fff" />
+                    <path
+                      d="M0 0h7v1h-7zM8 0h1v1h-1zM10 0h2v1h-2zM14 0h7v1h-7zM0 1h1v1h-1zM6 1h1v1h-1zM11 1h2v1h-2zM14 1h1v1h-1zM20 1h1v1h-1zM0 2h1v1h-1zM2 2h3v1h-3zM6 2h1v1h-1zM8 2h1v1h-1zM11 2h1v1h-1zM14 2h1v1h-1zM16 2h3v1h-3zM20 2h1v1h-1zM0 3h1v1h-1zM2 3h3v1h-3zM6 3h1v1h-1zM9 3h1v1h-1zM11 3h2v1h-2zM14 3h1v1h-1zM16 3h3v1h-3zM20 3h1v1h-1zM0 4h1v1h-1zM2 4h3v1h-3zM6 4h1v1h-1zM10 4h1v1h-1zM12 4h1v1h-1zM14 4h1v1h-1zM16 4h3v1h-3zM20 4h1v1h-1zM0 5h1v1h-1zM6 5h1v1h-1zM8 5h1v1h-1zM10 5h1v1h-1zM14 5h1v1h-1zM20 5h1v1h-1zM0 6h7v1h-7zM8 6h1v1h-1zM10 6h1v1h-1zM12 6h1v1h-1zM14 6h7v1h-7zM11 7h1v1h-1zM0 8h1v1h-1zM2 8h1v1h-1zM6 8h2v1h-2zM9 8h4v1h-4zM15 8h1v1h-1zM18 8h1v1h-1zM20 8h1v1h-1zM0 9h1v1h-1zM3 9h2v1h-2zM7 9h1v1h-1zM9 9h1v1h-1zM14 9h1v1h-1zM16 9h2v1h-2zM2 10h2v1h-2zM5 10h6v1h-6zM14 10h4v1h-4zM19 10h2v1h-2zM3 11h3v1h-3zM7 11h1v1h-1zM12 11h4v1h-4zM18 11h1v1h-1zM0 12h2v1h-2zM3 12h1v1h-1zM6 12h3v1h-3zM10 12h1v1h-1zM13 12h1v1h-1zM17 12h3v1h-3zM8 13h3v1h-3zM16 13h1v1h-1zM0 14h7v1h-7zM8 14h6v1h-6zM15 14h1v1h-1zM17 14h2v1h-2zM20 14h1v1h-1zM0 15h1v1h-1zM6 15h1v1h-1zM9 15h2v1h-2zM13 15h1v1h-1zM15 15h3v1h-3zM0 16h1v1h-1zM2 16h3v1h-3zM6 16h1v1h-1zM10 16h3v1h-3zM14 16h2v1h-2zM19 16h1v1h-1zM0 17h1v1h-1zM2 17h3v1h-3zM6 17h1v1h-1zM9 17h2v1h-2zM14 17h1v1h-1zM18 17h1v1h-1zM0 18h1v1h-1zM2 18h3v1h-3zM6 18h1v1h-1zM8 18h1v1h-1zM10 18h2v1h-2zM13 18h2v1h-2zM19 18h2v1h-2zM0 19h1v1h-1zM6 19h1v1h-1zM9 19h1v1h-1zM11 19h4v1h-4zM16 19h1v1h-1zM18 19h1v1h-1zM20 19h1v1h-1zM0 20h7v1h-7zM8 20h1v1h-1zM12 20h1v1h-1zM14 20h1v1h-1zM17 20h4v1h-4z"
+                    />
+                  </svg>
+                  <div><b>Ngozi Okafor</b><code>ANK-7K3F9Q</code></div>
+                </div>
+                <div class="ph-nav">
+                  <b>Home</b><span>Register</span><span>Patients</span
+                  ><span>Dashboard</span>
+                </div>
+              </div>
+              <p class="phone-caption">
+                Example screens with made-up patients.
+              </p>
+              <p class="sr-only">
+                Animation: the phone loses its network, a patient is registered
+                and saved on the phone, then uploads when the network returns.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="container strip">
+          <div class="card reveal">
+            <span class="badge"
+              ><svg class="icon"><use href="#i-wifi-off" /></svg
+            ></span>
+            <h3>No signal, no problem</h3>
+            <p>
+              Register, record and print with the network off. Prima syncs by
+              itself when the connection is back.
+            </p>
+          </div>
+          <div class="card reveal" data-d="1">
+            <span class="badge"
+              ><svg class="icon"><use href="#i-zap" /></svg
+            ></span>
+            <h3>Quick at the door</h3>
+            <p>
+              One screen to register a patient: name, sex, age, village and the
+              reason for the visit.
+            </p>
+          </div>
+          <div class="card reveal" data-d="2">
+            <span class="badge"
+              ><svg class="icon"><use href="#i-chart-column" /></svg
+            ></span>
+            <h3>The monthly report, ready</h3>
+            <p>
+              Prima counts visits by age and sex, antenatal, postnatal, child
+              welfare and vaccines for you.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section--white" id="how">
+        <div class="container">
+          <div class="head head--center reveal">
+            <span class="eyebrow">How it works</span>
+            <h2>Three steps, on one phone</h2>
+            <p class="lead">
+              No server in the clinic and no special equipment. A phone, a
+              browser, and a nurse.
+            </p>
+          </div>
+          <div class="steps">
+            <article class="step reveal">
+              <div class="step-art" aria-hidden="true">
+                <div class="mini-row">
+                  <span class="chip on">Female</span
+                  ><span class="chip">Male</span>
+                </div>
+                <div class="mini-field"><small>Age</small>34 years</div>
+                <div class="mini-row">
+                  <span class="chip on">Ugwu</span><span class="chip">Obi</span
+                  ><span class="chip">Aka</span>
+                </div>
+                <div class="mini-row">
+                  <span class="chip on">Fever</span
+                  ><span class="chip">Cough</span
+                  ><span class="chip">Headache</span>
+                </div>
+              </div>
+              <div class="step-text">
+                <h3>Register in one screen</h3>
+                <p>
+                  Tap the sex, type the age, pick a village and a reason. No
+                  birthday on hand? Prima saves an honest estimate and says so.
+                </p>
+              </div>
+            </article>
+            <article class="step reveal" data-d="1">
+              <div class="step-art" aria-hidden="true">
+                <div class="stepper"><i>−</i><b>120</b><i>+</i></div>
+                <div class="stepper"><i>−</i><b>36.8 °C</b><i>+</i></div>
+                <div class="mini-field">
+                  <small>Diagnosis</small>Malaria, unspecified
+                  <small>B54</small>
+                </div>
+              </div>
+              <div class="step-text">
+                <h3>Record the visit</h3>
+                <p>
+                  Big plus and minus buttons for blood pressure, temperature and
+                  weight. Pick a diagnosis from a list of common conditions, or
+                  type it your own way.
+                </p>
+              </div>
+            </article>
+            <article class="step reveal" data-d="2">
+              <div class="step-art" aria-hidden="true">
+                <table class="mini-table">
+                  <tr>
+                    <td>Antenatal visits</td>
+                    <td>18</td>
+                  </tr>
+                  <tr>
+                    <td>Child welfare visits</td>
+                    <td>24</td>
+                  </tr>
+                  <tr>
+                    <td>Family planning visits</td>
+                    <td>9</td>
+                  </tr>
+                  <tr>
+                    <td>BCG doses</td>
+                    <td>11</td>
+                  </tr>
+                </table>
+                <span class="example">Example figures, not real data.</span>
+              </div>
+              <div class="step-text">
+                <h3>Send the numbers</h3>
+                <p>
+                  At month end Prima counts everything for the LGA report.
+                  Download it as a spreadsheet, or as a DHIS2 file on the Pro
+                  plan.
+                </p>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="features">
+        <div class="container">
+          <div class="head head--center reveal">
+            <span class="eyebrow">Features</span>
+            <h2>Made for the clinic, not the cloud</h2>
+            <p class="lead">
+              What is built today, and what is coming, labelled honestly.
+            </p>
+          </div>
+          <div class="features">
+            <article class="feature reveal">
+              <div class="feature-top">
+                <span class="badge"
+                  ><svg class="icon"><use href="#i-wifi-off" /></svg></span
+                ><span class="tag">Built</span>
+              </div>
+              <h3>Works offline</h3>
+              <p>
+                The phone's own database is the register. The cloud is a copy
+                that fills in when there is signal.
+              </p>
+            </article>
+            <article class="feature reveal" data-d="1">
+              <div class="feature-top">
+                <span class="badge"
+                  ><svg class="icon"><use href="#i-user-plus" /></svg></span
+                ><span class="tag">Built</span>
+              </div>
+              <h3>Quick register</h3>
+              <p>
+                Villages and reasons you use most appear as buttons. A possible
+                duplicate is flagged before it is saved.
+              </p>
+            </article>
+            <article class="feature reveal" data-d="2">
+              <div class="feature-top">
+                <span class="badge"
+                  ><svg class="icon"><use href="#i-qr-code" /></svg></span
+                ><span class="tag">Built</span>
+              </div>
+              <h3>Patient card with QR</h3>
+              <p>
+                Print a bank-card size card. The QR holds only the card number,
+                so a lost card tells a stranger nothing.
+              </p>
+            </article>
+            <article class="feature reveal">
+              <div class="feature-top">
+                <span class="badge"
+                  ><svg class="icon"><use href="#i-chart-column" /></svg></span
+                ><span class="tag">Built</span>
+              </div>
+              <h3>Monthly LGA summary</h3>
+              <p>
+                Visits by age and sex, maternal and child care, and vaccine
+                doses, counted from your own records.
+              </p>
+            </article>
+            <article class="feature reveal" data-d="1">
+              <div class="feature-top">
+                <span class="badge"
+                  ><svg class="icon"><use href="#i-copy" /></svg></span
+                ><span class="tag">Built</span>
+              </div>
+              <h3>Duplicate finder</h3>
+              <p>
+                Finds the same patient registered twice, even with spelling
+                differences, and merges the records safely.
+              </p>
+            </article>
+            <article class="feature reveal" data-d="2">
+              <div class="feature-top">
+                <span class="badge"
+                  ><svg class="icon"><use href="#i-lock" /></svg></span
+                ><span class="tag">Built</span>
+              </div>
+              <h3>PIN lock and audit log</h3>
+              <p>
+                A PIN locks the phone. Every change is recorded, without patient
+                names, so the facility can see who did what.
+              </p>
+            </article>
+            <article class="feature reveal">
+              <div class="feature-top">
+                <span class="badge"
+                  ><svg class="icon"><use href="#i-archive" /></svg></span
+                ><span class="tag">Built</span>
+              </div>
+              <h3>Encrypted backup</h3>
+              <p>
+                One password-protected file with the whole register, that the
+                clinic keeps and controls.
+              </p>
+            </article>
+            <article class="feature reveal" data-d="1">
+              <div class="feature-top">
+                <span class="badge"
+                  ><svg class="icon"><use href="#i-battery-low" /></svg></span
+                ><span class="tag">Built</span>
+              </div>
+              <h3>Low Battery Mode</h3>
+              <p>
+                When the battery runs low, Prima pauses syncing and saves power.
+                Records are still saved at once.
+              </p>
+            </article>
+            <article class="feature reveal" data-d="2">
+              <div class="feature-top">
+                <span class="badge"
+                  ><svg class="icon"><use href="#i-file-output" /></svg></span
+                ><span class="tag">Built</span>
+              </div>
+              <h3>FHIR and DHIS2 files</h3>
+              <p>
+                Standard files for health information systems. You decide what
+                is shared, and nothing is sent automatically.
+              </p>
+            </article>
+            <article class="feature reveal">
+              <div class="feature-top">
+                <span class="badge"
+                  ><svg class="icon"><use href="#i-smartphone" /></svg></span
+                ><span class="tag">Built</span>
+              </div>
+              <h3>Installs from the browser</h3>
+              <p>
+                Add it to the home screen of an Android phone. No app store, and
+                a small download.
+              </p>
+            </article>
+            <article class="feature reveal" data-d="1">
+              <div class="feature-top">
+                <span class="badge badge--accent"
+                  ><svg class="icon"><use href="#i-languages" /></svg></span
+                ><span class="tag tag--soon">Coming</span>
+              </div>
+              <h3>Igbo, Hausa and Yoruba</h3>
+              <p>
+                Each translation will be checked by a native speaker before it
+                goes live.
+              </p>
+            </article>
+            <article class="feature reveal" data-d="2">
+              <div class="feature-top">
+                <span class="badge badge--accent"
+                  ><svg class="icon">
+                    <use href="#i-tablet-smartphone" /></svg></span
+                ><span class="tag tag--soon">Coming</span>
+              </div>
+              <h3>Sync over clinic Wi-Fi</h3>
+              <p>
+                For clinics with power and a router but no internet: tablets
+                sharing records with each other.
+              </p>
+            </article>
+            <article class="feature reveal">
+              <div class="feature-top">
+                <span class="badge badge--accent"
+                  ><svg class="icon"><use href="#i-bell" /></svg></span
+                ><span class="tag tag--soon">Coming</span>
+              </div>
+              <h3>SMS reminders</h3>
+              <p>
+                Reminders for visits and vaccines, only to people who agreed to
+                receive them.
+              </p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section--dark">
+        <div class="container">
+          <div class="head reveal">
+            <span class="eyebrow">What we heard</span>
+            <h2>Questions people asked us</h2>
+            <p class="lead">
+              Prima is being built in public, and the comments shape it.
+            </p>
+          </div>
+          <div class="qa">
+            <div class="card reveal">
+              <h3>"Can CHEWs really use it?"</h3>
+              <p>
+                That is why registering takes one screen, buttons are big enough
+                for gloves, and we test with real nurses and CHEWs before
+                launch.
+              </p>
+            </div>
+            <div class="card reveal" data-d="1">
+              <h3>"What about days with no internet at all?"</h3>
+              <p>
+                Everything already works offline. Tablet-to-tablet sync over the
+                clinic's Wi-Fi is being built for the clinic with power but no
+                data.
+              </p>
+            </div>
+            <div class="card reveal" data-d="2">
+              <h3>"Can it speak our languages?"</h3>
+              <p>
+                Igbo, Hausa and Yoruba are planned. Each will be reviewed by a
+                native speaker, because a wrong word on a clinical screen is a
+                safety problem.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section--wash" id="safe">
+        <div class="container">
+          <div class="head reveal">
+            <span class="eyebrow">Careful with patient records</span>
+            <h2>Privacy first, and honest about what is left to do</h2>
+          </div>
+          <div class="safe">
+            <div class="card reveal">
+              <span class="badge"
+                ><svg class="icon"><use href="#i-shield-check" /></svg
+              ></span>
+              <h3>Records stay on the clinic's phone first</h3>
+              <p>
+                The register lives on the device. The cloud copy keeps every
+                clinic's records walled off from every other clinic's.
+              </p>
+            </div>
+            <div class="card reveal" data-d="1">
+              <span class="badge"
+                ><svg class="icon"><use href="#i-lock" /></svg
+              ></span>
+              <h3>Locks, roles and a change log</h3>
+              <p>
+                A PIN on every phone, admin-only actions for sensitive steps,
+                and an audit log that the app can add to but never edit. It
+                records what happened without recording who the patients are.
+              </p>
+            </div>
+          </div>
+          <p class="note reveal">
+            <strong>Before any real patient data:</strong> Prima goes through a
+            data protection review and a clinical review. Until then it is
+            tested with made-up patients only. We do not claim certification we
+            do not have.
+          </p>
+        </div>
+      </section>
+
+      <section class="section section--white" id="pricing">
+        <div class="container">
+          <div class="head head--center reveal">
+            <span class="eyebrow">Pricing</span>
+            <h2>Simple pricing, planned</h2>
+            <p class="lead">
+              These are the planned prices. Payment is not switched on yet.
+            </p>
+          </div>
+          <div class="plans">
+            <article class="plan reveal">
+              <h3>Free</h3>
+              <div>
+                <div class="price">₦0</div>
+                <div class="per">for small clinics</div>
+              </div>
+              <ul>
+                <li>
+                  <svg class="icon"><use href="#i-check" /></svg>1 facility, up
+                  to 200 patients
+                </li>
+                <li>
+                  <svg class="icon"><use href="#i-check" /></svg>Offline
+                  register and visits
+                </li>
+                <li>
+                  <svg class="icon"><use href="#i-check" /></svg>Patient card
+                  with QR
+                </li>
+                <li>
+                  <svg class="icon"><use href="#i-check" /></svg>1 staff account
+                </li>
+              </ul>
+            </article>
+            <article class="plan reveal" data-d="1">
+              <h3>Basic</h3>
+              <div>
+                <div class="price">₦2,500<small> / month</small></div>
+                <div class="per">or ₦25,000 a year</div>
+              </div>
+              <ul>
+                <li>
+                  <svg class="icon"><use href="#i-check" /></svg>Everything in
+                  Free
+                </li>
+                <li>
+                  <svg class="icon"><use href="#i-check" /></svg>No patient
+                  limit
+                </li>
+                <li>
+                  <svg class="icon"><use href="#i-check" /></svg>Spreadsheet
+                  export
+                </li>
+                <li>
+                  <svg class="icon"><use href="#i-check" /></svg>Monthly LGA
+                  report
+                </li>
+                <li>
+                  <svg class="icon"><use href="#i-check" /></svg>3 staff
+                  accounts
+                </li>
+              </ul>
+            </article>
+            <article class="plan plan--pro reveal" data-d="2">
+              <h3>Pro</h3>
+              <div>
+                <div class="price">₦5,000<small> / month</small></div>
+                <div class="per">or ₦50,000 a year</div>
+              </div>
+              <ul>
+                <li>
+                  <svg class="icon"><use href="#i-check" /></svg>Everything in
+                  Basic
+                </li>
+                <li>
+                  <svg class="icon"><use href="#i-check" /></svg>Follow-up list
+                </li>
+                <li>
+                  <svg class="icon"><use href="#i-check" /></svg>Duplicate merge
+                  tool
+                </li>
+                <li>
+                  <svg class="icon"><use href="#i-check" /></svg>FHIR and DHIS2
+                  files
+                </li>
+                <li>
+                  <svg class="icon"><use href="#i-check" /></svg>10 staff
+                  accounts
+                </li>
+              </ul>
+            </article>
+          </div>
+          <p class="pilot reveal">
+            Pilot offer: the first 5 clinics get the Pro plan free for 3 months,
+            in return for honest feedback.
+          </p>
+        </div>
+      </section>
+
+      <section class="section" id="story">
+        <div class="container story">
+          <div class="story-art reveal" aria-hidden="true">
+            <svg viewBox="0 0 400 300" role="img" focusable="false">
+              <rect width="400" height="300" fill="#ccfbf1" />
+              <rect x="0" y="250" width="400" height="50" fill="#99f6e4" />
+              <rect
+                x="70"
+                y="110"
+                width="260"
+                height="140"
+                fill="#fff"
+                stroke="#0f766e"
+                stroke-width="4"
+              />
+              <path d="M55 112 200 52l145 60z" fill="#0f766e" />
+              <rect x="180" y="190" width="40" height="60" fill="#134e4a" />
+              <rect
+                x="95"
+                y="140"
+                width="50"
+                height="40"
+                fill="#ccfbf1"
+                stroke="#0f766e"
+                stroke-width="3"
+              />
+              <rect
+                x="255"
+                y="140"
+                width="50"
+                height="40"
+                fill="#ccfbf1"
+                stroke="#0f766e"
+                stroke-width="3"
+              />
+              <circle cx="200" cy="92" r="18" fill="#fff" />
+              <path d="M197 82h6v7h7v6h-7v7h-6v-7h-7v-6h7z" fill="#0f766e" />
+              <g
+                transform="translate(300 40)"
+                fill="none"
+                stroke="#134e4a"
+                stroke-width="5"
+                stroke-linecap="round"
+              >
+                <path d="M0 40a30 30 0 0 1 60 0" />
+                <path d="M12 40a18 18 0 0 1 36 0" />
+                <circle cx="30" cy="42" r="3" fill="#134e4a" />
+                <path d="M-6 66 66 4" stroke="#f59e0b" stroke-width="6" />
+              </g>
+              <g transform="translate(40 190)">
+                <rect width="46" height="76" rx="9" fill="#0b1f1d" />
+                <rect
+                  x="5"
+                  y="9"
+                  width="36"
+                  height="58"
+                  rx="4"
+                  fill="#fffbeb"
+                />
+                <rect
+                  x="9"
+                  y="14"
+                  width="28"
+                  height="8"
+                  rx="3"
+                  fill="#0f766e"
+                />
+                <rect
+                  x="9"
+                  y="27"
+                  width="28"
+                  height="6"
+                  rx="3"
+                  fill="#d6d3d1"
+                />
+                <rect
+                  x="9"
+                  y="37"
+                  width="28"
+                  height="6"
+                  rx="3"
+                  fill="#d6d3d1"
+                />
+              </g>
+              <path
+                d="M335 250c0-30 12-52 12-52s12 22 12 52z"
+                fill="#0f766e"
+                opacity=".35"
+              />
+            </svg>
+          </div>
+          <div class="stack reveal" data-d="1">
+            <span class="eyebrow">The story</span>
+            <h2>Why I am building Prima</h2>
+            <p>
+              Hi, I'm Chukwunonso Ofili. I'm a public health student and a
+              self-taught developer in Enugu, Nigeria.
+            </p>
+            <p>
+              Many health tools assume steady internet. Many primary health
+              centres do not have it. In many clinics the register is still on
+              paper, and the monthly report is counted by hand at the end of the
+              month.
+            </p>
+            <p>
+              So I asked a simple question: what would a patient register look
+              like if it was built for the clinic with power on some days and
+              network on fewer? Prima is my answer so far. I speak Igbo as my
+              first language, so I also know how much a tool in English alone
+              leaves out.
+            </p>
+            <p>
+              I'm building it in public, one day at a time. The comments on my
+              posts are where people tell me what is wrong with it, and I fix
+              those things first.
+            </p>
+            <p class="sign">Chukwunonso Ofili, Enugu, Nigeria</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section--dark" id="waitlist">
+        <div class="container waitlist">
+          <span class="eyebrow reveal">Be first to know</span>
+          <h2 class="reveal">Join the waitlist</h2>
+          <p class="lead reveal">
+            Pilot clinics start soon. {{#waitlistOpens}}The waitlist form opens
+            {{waitlistOpens}}.{{/waitlistOpens}}{{^waitlistOpens}}The waitlist
+            form opens in a few days.{{/waitlistOpens}} Until then, you can
+            reach me directly.
+          </p>
+          <div class="row reveal">
+            {{#whatsapp}}<a
+              class="btn btn-light"
+              href="{{whatsappLink}}"
+              rel="noopener"
+              >Message me on WhatsApp
+              <svg class="icon"><use href="#i-message-circle" /></svg></a
+            >{{/whatsapp}} {{#linkedin}}<a
+              class="btn btn-outline"
+              href="{{linkedin}}"
+              rel="noopener"
+              >Follow the build on LinkedIn</a
+            >{{/linkedin}} {{#contactEmail}}<a
+              class="btn btn-outline"
+              href="mailto:{{contactEmail}}"
+              >Email me</a
+            >{{/contactEmail}}
+          </div>
+          <!-- DAY 21: the waitlist form goes here, with its privacy notice and consent box -->
+          <p class="fine reveal">
+            If you message me, I will use your number or email only to tell you
+            about Prima, and I will delete it if you ask. I do not sell or share
+            it.
+          </p>
+        </div>
+      </section>
+
+      <section class="section section--white" id="faq">
+        <div class="container">
+          <div class="head head--center reveal">
+            <span class="eyebrow">Questions</span>
+            <h2>Straight answers</h2>
+          </div>
+          <div class="faq">
+            <details class="reveal">
+              <summary>
+                Does it really work with no internet?<svg class="icon">
+                  <use href="#i-chevron-down" />
+                </svg>
+              </summary>
+              <div class="answer">
+                Yes. You need internet once to install it and sign in. After
+                that, registering patients, recording visits and printing cards
+                all work offline. Records upload by themselves when the
+                connection returns.
+              </div>
+            </details>
+            <details class="reveal">
+              <summary>
+                What if the phone is lost?<svg class="icon">
+                  <use href="#i-chevron-down" />
+                </svg>
+              </summary>
+              <div class="answer">
+                The phone locks with a PIN, and the clinic can make an encrypted
+                backup file. Once records have synced, they are also in the
+                clinic's cloud copy and can be loaded on another phone.
+              </div>
+            </details>
+            <details class="reveal">
+              <summary>
+                Where are the records kept, and who can see them?<svg
+                  class="icon"
+                >
+                  <use href="#i-chevron-down" />
+                </svg>
+              </summary>
+              <div class="answer">
+                On the clinic's phones first, and in a cloud copy where each
+                clinic's records are walled off from every other clinic's. Only
+                that clinic's signed-in staff can open them in the app. Prima
+                does not sell or share patient records, and a full privacy
+                policy will be published before the pilot.
+              </div>
+            </details>
+            <details class="reveal">
+              <summary>
+                Is Prima approved or certified?<svg class="icon">
+                  <use href="#i-chevron-down" />
+                </svg>
+              </summary>
+              <div class="answer">
+                Not yet. It is a pilot. Before it holds any real patient data it
+                goes through a data protection review and a clinical review, and
+                it is tested with made-up patients until then.
+              </div>
+            </details>
+            <details class="reveal">
+              <summary>
+                What does it cost?<svg class="icon">
+                  <use href="#i-chevron-down" />
+                </svg>
+              </summary>
+              <div class="answer">
+                Free for small clinics (up to 200 patients). The planned paid
+                plans are ₦2,500 a month for Basic and ₦5,000 a month for Pro.
+                The first 5 pilot clinics get Pro free for 3 months.
+              </div>
+            </details>
+            <details class="reveal">
+              <summary>
+                Which phones does it work on?<svg class="icon">
+                  <use href="#i-chevron-down" />
+                </svg>
+              </summary>
+              <div class="answer">
+                Android phones with the Chrome browser are the focus, and it
+                also runs on laptops. iPhones can open it, but offline behaviour
+                there has not been tested yet.
+              </div>
+            </details>
+            <details class="reveal">
+              <summary>
+                Can it send our monthly numbers to DHIS2?<svg class="icon">
+                  <use href="#i-chevron-down" />
+                </svg>
+              </summary>
+              <div class="answer">
+                Prima prepares a DHIS2 data file on the Pro plan. A person
+                imports it, so nothing leaves the clinic without a decision.
+              </div>
+            </details>
+            <details class="reveal">
+              <summary>
+                Will it be in Igbo, Hausa or Yoruba?<svg class="icon">
+                  <use href="#i-chevron-down" />
+                </svg>
+              </summary>
+              <div class="answer">
+                That is planned, and each language will be checked by a native
+                speaker before release.
+              </div>
+            </details>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <div>
+          <a class="brand" href="#top"
+            ><span class="logo"
+              ><svg viewBox="0 0 40 40" aria-hidden="true">
+                <path d="M17 9h6v8h8v6h-8v8h-6v-8H9v-6h8z" /></svg></span
+            >Prima</a
+          >
+          <p class="mt-sm">
+            A pilot project built in Enugu, Nigeria. Prima supports health
+            workers and does not replace clinical judgement. © {{year}}
+          </p>
+        </div>
+        <div class="links">
+          <a href="/privacy.html">Privacy</a><a href="#faq">Questions</a
+          ><a href="#top">Back to the top</a>
+        </div>
+      </div>
+    </footer>
+
+    <script src="/assets/app.js?v={{build}}" defer></script>
+  </body>
+</html>

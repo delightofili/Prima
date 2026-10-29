@@ -8,10 +8,10 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "deploy:test": "npm run build && wrangler pages deploy dist --project-name prima-test --branch main",
+    "deploy:test": "npm run build && npx wrangler pages deploy dist --project-name prima-test --branch main",
     "landing:build": "node landing/build.mjs",
     "landing:check": "node landing/check.mjs",
-    "landing:deploy": "node landing/build.mjs && node landing/check.mjs && wrangler pages deploy landing/dist --project-name prima-landing --branch main",
+    "landing:deploy": "node landing/build.mjs && node landing/check.mjs && npx wrangler pages deploy landing/dist --project-name prima-landing --branch main",
     "i18n:check": "npx tsx scripts/i18n-check.ts",
     "i18n:test": "npx tsx scripts/i18n-tests.ts",
     "verify:deploy": "node scripts/verify-deploy.mjs"

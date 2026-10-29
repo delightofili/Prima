@@ -1,13 +1,14 @@
-// src/components/PowerBanner.tsx
 import { useLiveQuery } from "dexie-react-hooks";
 import { BatteryLow } from "lucide-react";
 import { db } from "../db";
+import { useI18n } from "../i18n";
 import { setPowerMode, usePower } from "../lib/power";
 import { syncNow } from "../lib/syncService";
 
 // Shown while Low Battery Mode is on, so nobody wonders why nothing is syncing
 export function PowerBanner() {
   const power = usePower();
+  const { t, tp } = useI18n();
   const waiting = useLiveQuery(
     () => db.syncQueue.filter((i) => i.status !== "failed").count(),
     [],
@@ -20,12 +21,11 @@ export function PowerBanner() {
       <p className="flex items-start gap-2 font-semibold">
         <BatteryLow size={20} className="mt-0.5 shrink-0" />
         <span>
-          Low Battery Mode is on. Everything is saved on this phone.
+          {t("power.bannerOn")}
           <span className="block text-sm font-normal text-subtext">
             {waiting > 0
-              ? `${waiting} ${waiting === 1 ? "record is" : "records are"} waiting to upload.`
-              : "Nothing is waiting to upload."}{" "}
-            Syncing is paused.
+              ? tp("power.waiting", waiting)
+              : t("power.waitingNone")}
           </span>
         </span>
       </p>
@@ -33,16 +33,16 @@ export function PowerBanner() {
         <button
           type="button"
           className="btn btn-secondary"
-          onClick={() => void syncNow()}
+          onClick={() => void syncNow(true)}
         >
-          Sync now
+          {t("common.syncNow")}
         </button>
         <button
           type="button"
           className="min-h-12 px-3 font-semibold text-subtext"
           onClick={() => setPowerMode("off")}
         >
-          Turn off
+          {t("power.turnOff")}
         </button>
       </div>
     </div>

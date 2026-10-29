@@ -211,3 +211,8 @@ html[data-glove="on"] .stepper-btn {
     scroll-behavior: auto !important;
   }
 }
+
+.card {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}

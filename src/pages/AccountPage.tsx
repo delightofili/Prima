@@ -30,7 +30,6 @@ import {
   type Invite,
   type Member,
 } from "../lib/team";
-import { formatDate } from "../lib/utils";
 import { Link } from "react-router-dom";
 import { SecurityCard } from "../components/SecurityCard";
 import { useCan } from "../hooks/useCan";
@@ -38,9 +37,12 @@ import { BackupCard } from "../components/BackupCard";
 import { PlanCard } from "../components/PlanCard";
 import { InstallCard } from "../components/InstallCard";
 import { PowerCard } from "../components/PowerCard";
+import { LanguageCard } from "../components/LanguageCard";
+import { useI18n } from "../i18n";
 
 function EditFacilityDialog({ onClose }: { onClose: () => void }) {
   const { facility, refreshFacility } = useAuth();
+  const { t } = useI18n();
   const toast = useToast();
   const [name, setName] = useState(facility?.name ?? "");
   const [lga, setLga] = useState(facility?.lga ?? "");
@@ -53,7 +55,7 @@ function EditFacilityDialog({ onClose }: { onClose: () => void }) {
     try {
       await updateFacility({ name, lga, state });
       await refreshFacility();
-      toast("Facility updated");
+      toast(t("facility.updated"));
       onClose();
     } catch (err) {
       setError(friendlyError(err));
@@ -61,26 +63,24 @@ function EditFacilityDialog({ onClose }: { onClose: () => void }) {
   };
 
   return (
-    <Modal title="Edit facility" onClose={onClose}>
+    <Modal title={t("facility.editTitle")} onClose={onClose}>
       <form onSubmit={submit} className="space-y-4" noValidate>
-        <p className="text-subtext">
-          The facility code stays the same, because it is printed on cards.
-        </p>
-        <Field label="Facility name">
+        <p className="text-subtext">{t("facility.codeNote")}</p>
+        <Field label={t("facility.name")}>
           <input
             className="input"
             value={name}
             onChange={(e) => setName(e.target.value)}
           />
         </Field>
-        <Field label="LGA">
+        <Field label={t("facility.lga")}>
           <input
             className="input"
             value={lga}
             onChange={(e) => setLga(e.target.value)}
           />
         </Field>
-        <Field label="State">
+        <Field label={t("facility.state")}>
           <input
             className="input"
             value={state}
@@ -93,7 +93,7 @@ function EditFacilityDialog({ onClose }: { onClose: () => void }) {
           </p>
         )}
         <button type="submit" className="btn btn-primary">
-          Save
+          {t("common.save")}
         </button>
       </form>
     </Modal>
@@ -110,16 +110,15 @@ function InviteDialog({
   onClose: () => void;
 }) {
   const toast = useToast();
+  const { t } = useI18n();
   const pretty = formatInvite(code);
   const message =
     `Join ${facilityName} on Prima. Open ${window.location.origin}, tap "Create account", then "Join with a code" and enter ${pretty}. ` +
     "The code works once and expires in 7 days.";
 
   return (
-    <Modal title="Invite code" onClose={onClose}>
-      <p className="text-subtext">
-        Give this code to your colleague. It works once and expires in 7 days.
-      </p>
+    <Modal title={t("invite.title")} onClose={onClose}>
+      <p className="text-subtext">{t("invite.help")}</p>
       <p className="rounded-xl bg-prima-50 p-4 text-center font-mono text-3xl font-bold tracking-widest text-prima-900">
         {pretty}
       </p>
@@ -129,10 +128,10 @@ function InviteDialog({
           className="btn btn-secondary"
           onClick={async () => {
             await navigator.clipboard.writeText(pretty);
-            toast("Code copied");
+            toast(t("invite.codeCopied"));
           }}
         >
-          <Copy size={20} className="mr-2" /> Copy
+          <Copy size={20} className="mr-2" /> {t("invite.copy")}
         </button>
         <a
           className="btn btn-primary"
@@ -140,7 +139,7 @@ function InviteDialog({
           target="_blank"
           rel="noreferrer"
         >
-          <Share2 size={20} className="mr-2" /> Share on WhatsApp
+          <Share2 size={20} className="mr-2" /> {t("invite.whatsapp")}
         </a>
       </div>
     </Modal>
@@ -148,7 +147,8 @@ function InviteDialog({
 }
 
 export function AccountPage() {
-  usePageTitle("Account");
+  const { t, tp, date } = useI18n();
+  usePageTitle(t("account.title"));
   const can = useCan();
   const { account, facility, role, signOut } = useAuth();
   const toast = useToast();
@@ -197,19 +197,17 @@ export function AccountPage() {
 
   return (
     <>
-      <PageHeader
-        title="Account"
-        subtitle="You, your facility and your team."
-      />
+      <PageHeader title={t("account.title")} subtitle={t("account.subtitle")} />
 
-      <div className="grid gap-4 md:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <LanguageCard />
         <section className="card space-y-3">
-          <SectionTitle icon={ShieldCheck} title="You" />
+          <SectionTitle icon={ShieldCheck} title={t("account.you")} />
           <p className="text-lg font-semibold">{account.name}</p>
           <p className="text-subtext">{account.email}</p>
           <p>
             <span className="rounded-full bg-prima-50 px-3 py-1 text-sm font-semibold text-prima-900">
-              {role === "admin" ? "Facility admin" : "Staff"}
+              {t(role === "admin" ? "account.roleAdmin" : "account.roleStaff")}
             </span>
           </p>
           <button
@@ -217,24 +215,25 @@ export function AccountPage() {
             className="btn btn-secondary"
             onClick={() => void signOut()}
           >
-            <LogOut size={20} className="mr-2" /> Sign out
+            <LogOut size={20} className="mr-2" /> {t("account.signOut")}
           </button>
-          <p className="text-sm text-subtext">
-            Signing out needs no internet. Records stay on this phone, hidden
-            until someone from this facility signs in.
-          </p>
+          <p className="text-sm text-subtext">{t("account.signOutNote")}</p>
         </section>
 
         <section className="card space-y-3">
-          <SectionTitle icon={Building2} title="Facility" />
+          <SectionTitle icon={Building2} title={t("account.facility")} />
           <p className="text-lg font-semibold">{facility.name}</p>
           <p className="text-subtext">
-            {facility.lga}, {facility.state} · code {facility.code}
+            {t("account.facilityLine", {
+              lga: facility.lga,
+              state: facility.state,
+              code: facility.code,
+            })}
           </p>
           <p className="text-sm text-subtext">
-            Plan on the server:{" "}
-            <strong className="capitalize">{facility.plan}</strong>. The app's
-            own plan checks still use the testing switch until the plan day.
+            {t("account.planOnServer")}{" "}
+            <strong className="capitalize">{facility.plan}</strong>.{" "}
+            {t("account.planTestingNote")}
           </p>
           {isAdmin && (
             <button
@@ -242,7 +241,7 @@ export function AccountPage() {
               className="btn btn-secondary"
               onClick={() => setEditing(true)}
             >
-              <Pencil size={20} className="mr-2" /> Edit details
+              <Pencil size={20} className="mr-2" /> {t("account.editDetails")}
             </button>
           )}
         </section>
@@ -254,43 +253,41 @@ export function AccountPage() {
         {can("backup") && <BackupCard />}
 
         <section className="card space-y-3 md:col-span-2">
-          <h2 className="text-lg font-bold">Privacy</h2>
+          <h2 className="text-lg font-bold">{t("account.privacy")}</h2>
           <Link
             to="/privacy"
             className="block font-semibold text-prima-500 underline"
           >
-            Read the privacy notice
+            {t("account.readNotice")}
           </Link>
           {can("viewAudit") && (
             <Link to="/admin" className="btn btn-secondary sm:w-64">
-              Audit log and data requests
+              {t("account.auditLink")}
             </Link>
           )}
         </section>
 
         <section className="card space-y-3 md:col-span-2">
-          <SectionTitle icon={Users} title="Team" />
+          <SectionTitle icon={Users} title={t("team.title")} />
 
           {!isAdmin ? (
-            <p className="text-subtext">
-              Ask your facility admin to add or remove staff.
-            </p>
+            <p className="text-subtext">{t("team.askAdmin")}</p>
           ) : !online ? (
-            <p className="text-subtext">
-              You need internet to manage the team.
-            </p>
+            <p className="text-subtext">{t("team.needInternet")}</p>
           ) : error ? (
             <p role="alert" className="font-medium text-danger">
               {error}
             </p>
           ) : !members ? (
-            <p className="text-subtext">Loading the team…</p>
+            <p className="text-subtext">{t("team.loading")}</p>
           ) : (
             <>
               <p className="text-subtext">
-                {members.length} of {limit} staff{" "}
-                {limit === 1 ? "account" : "accounts"} used on the{" "}
-                {facility.plan} plan.
+                {tp("team.count", limit, {
+                  used: members.length,
+                  limit,
+                  plan: facility.plan,
+                })}
               </p>
               <ul className="divide-y divide-line">
                 {members.map((m) => (
@@ -302,21 +299,23 @@ export function AccountPage() {
                       <p className="truncate font-semibold">
                         {m.full_name}{" "}
                         {m.user_id === account.userId && (
-                          <span className="text-subtext">(you)</span>
+                          <span className="text-subtext">{t("team.you")}</span>
                         )}
                       </p>
                       <p className="truncate text-sm text-subtext">
-                        {m.email} · {m.role === "admin" ? "Admin" : "Staff"} ·
-                        joined{" "}
-                        {formatDate(
-                          new Date(m.joined_at).toLocaleDateString("en-CA"),
-                        )}
+                        {t("team.memberLine", {
+                          email: m.email,
+                          role: t(
+                            m.role === "admin" ? "team.admin" : "team.staff",
+                          ),
+                          date: date(new Date(m.joined_at)),
+                        })}
                       </p>
                     </div>
                     {m.user_id !== account.userId && (
                       <button
                         type="button"
-                        aria-label={`Remove ${m.full_name}`}
+                        aria-label={t("team.removeAria", { name: m.full_name })}
                         className="inline-flex size-11 shrink-0 items-center justify-center rounded-xl text-subtext hover:bg-page hover:text-danger"
                         onClick={() => setRemoving(m)}
                       >
@@ -332,12 +331,12 @@ export function AccountPage() {
                 className="btn btn-accent sm:w-64"
                 onClick={invite}
               >
-                <UserPlus size={20} className="mr-2" /> Create invite code
+                <UserPlus size={20} className="mr-2" /> {t("team.createInvite")}
               </button>
 
               {invites.length > 0 && (
                 <div className="space-y-2 border-t border-line pt-3">
-                  <p className="font-semibold">Unused invite codes</p>
+                  <p className="font-semibold">{t("team.unusedInvites")}</p>
                   {invites.map((i) => (
                     <div
                       key={i.code}
@@ -347,10 +346,9 @@ export function AccountPage() {
                         {formatInvite(i.code)}
                       </span>
                       <span className="text-sm text-subtext">
-                        expires{" "}
-                        {formatDate(
-                          new Date(i.expires_at).toLocaleDateString("en-CA"),
-                        )}
+                        {t("team.expires", {
+                          date: date(new Date(i.expires_at)),
+                        })}
                       </span>
                       <button
                         type="button"
@@ -358,10 +356,10 @@ export function AccountPage() {
                         onClick={async () => {
                           await revokeInvite(i.code);
                           setVersion((v) => v + 1);
-                          toast("Invite cancelled");
+                          toast(t("team.inviteCancelled"));
                         }}
                       >
-                        Cancel
+                        {t("common.cancel")}
                       </button>
                     </div>
                   ))}
@@ -374,9 +372,9 @@ export function AccountPage() {
 
       {removing && (
         <ConfirmDialog
-          title={`Remove ${removing.full_name}?`}
-          message="They lose access to this facility's records. Their phone is locked the next time it goes online. You can invite them again later."
-          confirmLabel="Remove"
+          title={t("team.removeTitle", { name: removing.full_name })}
+          message={t("team.removeMessage")}
+          confirmLabel={t("team.remove")}
           onCancel={() => setRemoving(null)}
           onConfirm={async () => {
             const target = removing;
@@ -384,7 +382,7 @@ export function AccountPage() {
             try {
               await removeMember(target.user_id);
               setVersion((v) => v + 1);
-              toast(`${target.full_name} removed`);
+              toast(t("team.removed", { name: target.full_name }));
             } catch (e) {
               toast(friendlyError(e), "error");
             }

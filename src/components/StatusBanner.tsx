@@ -1,8 +1,9 @@
 import { Link } from "react-router-dom";
 import { CloudOff, DatabaseZap, Lock, TriangleAlert } from "lucide-react";
 import { useAuth } from "../hooks/useAuth";
-import { syncNow } from "../lib/syncService";
 import { useSyncState } from "../hooks/useSyncState";
+import { useI18n } from "../i18n";
+import { syncNow } from "../lib/syncService";
 
 const BOX =
   "mb-4 flex flex-wrap items-center justify-between gap-3 rounded-2xl border-2 border-accent-500 bg-accent-50 p-4";
@@ -11,6 +12,7 @@ const BOX =
 export function StatusBanner() {
   const { cloudOk, account, role } = useAuth();
   const { state } = useSyncState();
+  const { t, tm } = useI18n();
 
   if (!account || !cloudOk) return null; // the sign-in banner speaks first
 
@@ -19,11 +21,11 @@ export function StatusBanner() {
       <div className={BOX}>
         <p className="flex items-center gap-2 font-semibold">
           <DatabaseZap size={20} className="shrink-0" />
-          {state.detail}
+          {tm(state.detail)}
         </p>
         {role === "admin" && (
           <Link to="/sync-doctor" className="btn btn-accent sm:w-48">
-            Open Sync Doctor
+            {t("sync.openDoctorShort")}
           </Link>
         )}
       </div>
@@ -35,12 +37,12 @@ export function StatusBanner() {
       <div className={BOX}>
         <p className="flex items-center gap-2 font-semibold">
           <Lock size={20} className="shrink-0" />
-          {state.detail} Nothing is lost.
-          {role !== "admin" && " Ask your facility admin to upgrade."}
+          {tm(state.detail)} {t("banner.nothingLost")}
+          {role !== "admin" && ` ${t("banner.askAdmin")}`}
         </p>
         {role === "admin" && (
           <Link to="/plans" className="btn btn-accent sm:w-40">
-            See plans
+            {t("banner.seePlans")}
           </Link>
         )}
       </div>
@@ -52,11 +54,11 @@ export function StatusBanner() {
       <div className={BOX}>
         <p className="flex items-center gap-2 font-semibold">
           <TriangleAlert size={20} className="shrink-0" />
-          {state.detail}
+          {tm(state.detail)}
         </p>
         {role === "admin" && (
           <Link to="/sync-doctor" className="btn btn-accent sm:w-48">
-            Open Sync Doctor
+            {t("sync.openDoctorShort")}
           </Link>
         )}
       </div>
@@ -68,14 +70,14 @@ export function StatusBanner() {
       <div className={BOX}>
         <p className="flex items-center gap-2 font-semibold">
           <CloudOff size={20} className="shrink-0" />
-          {state.detail}
+          {tm(state.detail)}
         </p>
         <button
           type="button"
           className="btn btn-secondary sm:w-40"
           onClick={() => void syncNow(true)}
         >
-          Try again
+          {t("common.tryAgain")}
         </button>
       </div>
     );

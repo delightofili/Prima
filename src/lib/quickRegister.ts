@@ -1,3 +1,4 @@
+import type { Key } from "../i18n/locales/en";
 import { calculateAge, isWomanOver12 } from "./age";
 import { estimateDob, isoLocal } from "./estimateDob";
 import type { PatientFormValues } from "./schema";
@@ -35,10 +36,11 @@ export const emptyQuick = (): QuickInput => ({
   noticeGiven: false,
 });
 
+// Each value is a message key (see the "err." lines in the English dictionary), never a sentence
 export type QuickErrors = Partial<
   Record<
     "fullName" | "gender" | "age" | "dob" | "village" | "phone" | "complaint",
-    string
+    Key
   >
 >;
 
@@ -62,46 +64,40 @@ export function validateQuick(
   const e: QuickErrors = {};
 
   const name = q.fullName.trim();
-  if (name.length === 0) e.fullName = "Enter the patient's name";
-  else if (name.length < 2) e.fullName = "Name is too short";
-  else if (name.length > 100) e.fullName = "Name is too long";
+  if (name.length === 0) e.fullName = "err.nameRequired";
+  else if (name.length < 2) e.fullName = "err.nameShort";
+  else if (name.length > 100) e.fullName = "err.nameLong";
 
-  if (!q.gender) e.gender = "Select female or male";
+  if (!q.gender) e.gender = "err.sexRequired";
 
   if (q.ageMode === "age") {
     const v = q.ageValue.trim();
-    if (!DIGITS.test(v)) e.age = "Enter the age as a number";
+    if (!DIGITS.test(v)) e.age = "err.ageNumber";
     else {
       const n = Number(v);
-      if (q.ageUnit === "years" && n < 1)
-        e.age = "For a baby under 1 year, choose months";
-      else if (q.ageUnit === "years" && n > 120)
-        e.age = "Age cannot be more than 120 years";
-      else if (q.ageUnit === "months" && n > 59)
-        e.age = "Over 59 months, choose years";
+      if (q.ageUnit === "years" && n < 1) e.age = "err.ageUseMonths";
+      else if (q.ageUnit === "years" && n > 120) e.age = "err.ageTooOld";
+      else if (q.ageUnit === "months" && n > 59) e.age = "err.ageUseYears";
     }
   } else if (!DATE.test(q.dob)) {
-    e.dob = "Enter the date of birth";
+    e.dob = "err.dobRequired";
   } else if (q.dob > isoLocal(today)) {
-    e.dob = "Date of birth cannot be in the future";
+    e.dob = "err.dobFuture";
   } else {
     const age = calculateAge(q.dob, today);
-    if (age.unit === "years" && age.value > 120)
-      e.dob = "Check the date of birth";
+    if (age.unit === "years" && age.value > 120) e.dob = "err.dobCheck";
   }
 
   const village = q.village.trim();
-  if (village.length < 2) e.village = "Enter the village or area";
-  else if (village.length > 100) e.village = "Village name is too long";
+  if (village.length < 2) e.village = "err.villageRequired";
+  else if (village.length > 100) e.village = "err.villageLong";
 
-  if (q.phone.trim() && !toE164(q.phone))
-    e.phone = "Enter a valid Nigerian number, e.g. 08031234567";
+  if (q.phone.trim() && !toE164(q.phone)) e.phone = "err.phoneInvalid";
 
   if (!q.registrationOnly) {
     const c = q.complaint.trim();
-    if (c.length < 3)
-      e.complaint = "Say why the patient came, or tick Registration only";
-    else if (c.length > 200) e.complaint = "Keep it under 200 characters";
+    if (c.length < 3) e.complaint = "err.reasonRequired";
+    else if (c.length > 200) e.complaint = "err.reasonLong";
   }
   return e;
 }

@@ -10,6 +10,7 @@ import { usePageTitle } from "../hooks/common";
 import { usePatients } from "../hooks/usePatients";
 import { usePlan } from "../hooks/usePlan";
 import { useRegisterMode } from "../hooks/useRegisterMode";
+import { useI18n } from "../i18n";
 import { calculateAge } from "../lib/age";
 import { FREE_PATIENT_LIMIT, canUse } from "../lib/plan";
 import type { Patient } from "../types";
@@ -21,25 +22,27 @@ function SavedCard({
   patient: Patient;
   onNew: () => void;
 }) {
-  const age = calculateAge(patient.dob);
+  const { t, tp } = useI18n();
+  const a = calculateAge(patient.dob);
+  const age = tp(a.unit === "years" ? "age.years" : "age.months", a.value);
   return (
     <section className="card mx-auto max-w-lg space-y-3 text-center">
       <div className="flex justify-center text-ok">
         <CircleCheck size={40} />
       </div>
       <p className="text-sm font-semibold uppercase text-subtext">
-        Patient registered
+        {t("saved.title")}
       </p>
       <p className="text-3xl font-bold tracking-wider text-prima-500">
         {patient.cardNumber}
       </p>
       <p className="text-lg font-semibold">
-        {patient.fullName}, {patient.dobEstimated ? "about " : ""}
-        {age.label}
+        {patient.fullName},{" "}
+        {patient.dobEstimated ? t("saved.about", { age }) : age}
       </p>
       {patient.initialChiefComplaint && (
         <p className="text-left">
-          <span className="font-semibold">Reason for first registration:</span>{" "}
+          <span className="font-semibold">{t("saved.firstReason")}</span>{" "}
           {patient.initialChiefComplaint}
         </p>
       )}
@@ -47,26 +50,27 @@ function SavedCard({
         to={`/patients/${patient.id}/visits/new`}
         className="btn btn-primary"
       >
-        Record the visit
+        {t("saved.recordVisit")}
       </Link>
       <Link to={`/patients/${patient.id}`} className="btn btn-secondary">
-        View profile
+        {t("saved.viewProfile")}
       </Link>
       <Link
         to={`/patients/${patient.id}/card`}
         className="inline-block min-h-12 font-semibold text-prima-500 underline"
       >
-        Print card
+        {t("saved.printCard")}
       </Link>
       <button className="btn btn-secondary" onClick={onNew}>
-        Register another patient
+        {t("saved.another")}
       </button>
     </section>
   );
 }
 
 export function RegisterPage() {
-  usePageTitle("Register patient");
+  const { t } = useI18n();
+  usePageTitle(t("register.title"));
   const plan = usePlan();
   const { total } = usePatients("");
   const [saved, setSaved] = useState<Patient | null>(null);
@@ -78,16 +82,16 @@ export function RegisterPage() {
   return (
     <>
       <PageHeader
-        title="Register patient"
-        subtitle="Saved on this device first, then synced when online."
+        title={t("register.title")}
+        subtitle={t("register.subtitle")}
       />
       {limited && <PatientLimitBar used={total} />}
       {saved ? (
         <SavedCard patient={saved} onNew={() => setSaved(null)} />
       ) : atLimit ? (
         <UpgradeCard
-          title="You've reached 200 patients"
-          text="The Free plan holds 200 patients. Basic removes the limit and adds CSV export and the monthly LGA report. See Plans for prices."
+          title={t("register.limitTitle")}
+          text={t("register.limitText")}
         />
       ) : (
         <>
@@ -96,9 +100,7 @@ export function RegisterPage() {
             className="mb-4 min-h-12 font-semibold text-prima-500 underline"
             onClick={() => setMode(mode === "quick" ? "full" : "quick")}
           >
-            {mode === "quick"
-              ? "Need more details? Use the full form"
-              : "Use the quick form"}
+            {t(mode === "quick" ? "register.useFull" : "register.useQuick")}
           </button>
           {mode === "quick" ? (
             <QuickRegisterForm onSaved={setSaved} />

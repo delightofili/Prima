@@ -1,4 +1,7 @@
 // One place that decides what the sync badge, the banner and the Sync Doctor say, so they can never disagree.
+// It returns messages (keys and numbers), not sentences: the screen turns them into the person's language.
+import type { Msg } from "../i18n";
+
 export type SyncStateId =
   | "synced"
   | "offline"
@@ -28,13 +31,10 @@ export interface SyncInput {
 
 export interface SyncState {
   id: SyncStateId;
-  label: string; // short, for the badge
-  detail: string; // a sentence, for the panel and the Doctor
+  label: Msg; // short, for the badge
+  detail: Msg; // a sentence, for the panel and the Doctor
   tone: "ok" | "busy" | "calm" | "attention";
 }
-
-const plural = (n: number, one: string, many: string) =>
-  `${n} ${n === 1 ? one : many}`;
 
 export function describeSync(i: SyncInput): SyncState {
   const saved = i.waiting + i.failed;
@@ -42,43 +42,40 @@ export function describeSync(i: SyncInput): SyncState {
   if (!i.online) {
     return {
       id: "offline",
-      label: saved > 0 ? `Offline · ${saved} saved` : "Offline",
-      detail:
-        "There is no internet. Everything you record is saved on this phone and uploads by itself when the connection is back.",
+      label:
+        saved > 0
+          ? { key: "sync.offlineSaved", params: { count: saved } }
+          : { key: "sync.offline" },
+      detail: { key: "sync.offlineDetail" },
       tone: "calm",
     };
   }
-  if (!i.cloudOk) {
+  if (!i.cloudOk)
     return {
       id: "signin",
-      label: "Sign in to sync",
-      detail:
-        "Prima is not signed in to the cloud on this phone, so nothing uploads. Records are safe on this phone.",
+      label: { key: "sync.signin" },
+      detail: { key: "sync.signinDetail" },
       tone: "attention",
     };
-  }
-  if (i.schemaProblem) {
+  if (i.schemaProblem)
     return {
       id: "schema",
-      label: "Database update needed",
-      detail:
-        "The cloud database is missing something this version of Prima needs, so some records cannot upload. They are safe on this phone. Your admin should run the latest SQL, then tap Retry.",
+      label: { key: "sync.schema" },
+      detail: { key: "sync.schemaDetail" },
       tone: "attention",
     };
-  }
   if (i.working)
     return {
       id: "working",
-      label: "Syncing…",
-      detail: "Uploading and downloading now.",
+      label: { key: "sync.working" },
+      detail: { key: "sync.workingDetail" },
       tone: "busy",
     };
   if (i.powerActive && i.waiting > 0) {
     return {
       id: "paused",
-      label: `Paused · ${i.waiting} waiting`,
-      detail:
-        "Low Battery Mode has paused syncing. Tap Sync now, plug in, or switch it off.",
+      label: { key: "sync.paused", params: { count: i.waiting } },
+      detail: { key: "sync.pausedDetail" },
       tone: "calm",
     };
   }
@@ -86,25 +83,24 @@ export function describeSync(i: SyncInput): SyncState {
   if (other > 0) {
     return {
       id: "attention",
-      label: `${other} need${other === 1 ? "s" : ""} attention`,
-      detail: `${plural(other, "record could", "records could")} not be uploaded after several tries. They are safe on this phone. Open Sync details.`,
+      label: { plural: "sync.attention", count: other },
+      detail: { plural: "sync.attentionDetail", count: other },
       tone: "attention",
     };
   }
   if (i.parked > 0) {
     return {
       id: "upgrade",
-      label: `${i.parked} waiting for upgrade`,
-      detail: `${plural(i.parked, "patient is", "patients are")} saved on this phone but not uploaded, because the Free plan is full.`,
+      label: { key: "sync.upgrade", params: { count: i.parked } },
+      detail: { plural: "sync.upgradeDetail", count: i.parked },
       tone: "calm",
     };
   }
   if (i.failures >= 3 && i.waiting > 0) {
     return {
       id: "cloud-down",
-      label: `Cloud not reachable · ${i.waiting} waiting`,
-      detail:
-        "Prima cannot reach the cloud right now. Everything is saved on this phone and uploads by itself when it can.",
+      label: { key: "sync.cloudDown", params: { count: i.waiting } },
+      detail: { key: "sync.cloudDownDetail" },
       tone: "calm",
     };
   }
@@ -112,24 +108,28 @@ export function describeSync(i: SyncInput): SyncState {
     const secs = i.nextRetryAt
       ? Math.max(0, Math.ceil((i.nextRetryAt - i.now) / 1000))
       : 0;
-    if (secs > 0)
+    if (secs > 0) {
       return {
         id: "retrying",
-        label: `Retrying in ${secs} s · ${i.waiting} waiting`,
-        detail: "A record could not upload and will be tried again shortly.",
+        label: {
+          key: "sync.retrying",
+          params: { seconds: secs, count: i.waiting },
+        },
+        detail: { key: "sync.retryingDetail" },
         tone: "calm",
       };
+    }
     return {
       id: "waiting",
-      label: `${i.waiting} waiting to upload`,
-      detail: "These will upload in the next few seconds.",
+      label: { key: "sync.waiting", params: { count: i.waiting } },
+      detail: { key: "sync.waitingDetail" },
       tone: "busy",
     };
   }
   return {
     id: "synced",
-    label: "Synced",
-    detail: "Everything on this phone is in the cloud.",
+    label: { key: "sync.synced" },
+    detail: { key: "sync.syncedDetail" },
     tone: "ok",
   };
 }

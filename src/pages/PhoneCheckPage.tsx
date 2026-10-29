@@ -3,7 +3,9 @@ import { Copy, Play } from "lucide-react";
 import { db } from "../db";
 import { Field } from "../components/FormBits";
 import { GloveToggle } from "../components/GloveToggle";
+import { IgboFontTest } from "../components/IgboFontTest";
 import { PageHeader } from "../components/PageHeader";
+import { TimingCard } from "../components/TimingCard";
 import { usePageTitle } from "../hooks/common";
 import { useGloveMode } from "../hooks/useGloveMode";
 import { useToast } from "../hooks/useToast";
@@ -368,6 +370,10 @@ export function PhoneCheckPage() {
               <input className="input" type="date" />
             </Field>
           </section>
+
+          <IgboFontTest />
+
+          <TimingCard />
 
           <button
             type="button"

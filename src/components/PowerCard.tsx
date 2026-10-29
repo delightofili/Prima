@@ -1,37 +1,27 @@
 import { BatteryLow } from "lucide-react";
+import { useI18n, type Key } from "../i18n";
 import { setPowerMode, usePower, type PowerMode } from "../lib/power";
 import { SectionTitle } from "./FormBits";
 
-const CHOICES: { id: PowerMode; label: string; help: string }[] = [
-  {
-    id: "auto",
-    label: "Automatic",
-    help: "Turns on at 20% battery and off again at 30%, or when charging",
-  },
-  {
-    id: "on",
-    label: "Always on",
-    help: "Use this when you will not be able to charge for a long time",
-  },
-  { id: "off", label: "Off", help: "Never switch it on by itself" },
+const CHOICES: { id: PowerMode; label: Key; help: Key }[] = [
+  { id: "auto", label: "power.auto", help: "power.autoHelp" },
+  { id: "on", label: "power.on", help: "power.onHelp" },
+  { id: "off", label: "power.off", help: "power.offHelp" },
 ];
 
 export function PowerCard() {
   const power = usePower();
+  const { t } = useI18n();
+  const percent = power.level === null ? 0 : Math.round(power.level * 100);
 
   return (
     <section className="card space-y-3 md:col-span-2">
-      <SectionTitle icon={BatteryLow} title="Low Battery Mode" />
-      <p className="text-subtext">
-        When it is on, Prima stops syncing in the background, uses dark colours
-        and no animations. Everything you register is still saved on this phone
-        at once. Syncing waits until you tap Sync now, plug in, or switch it
-        off.
-      </p>
+      <SectionTitle icon={BatteryLow} title={t("power.title")} />
+      <p className="text-subtext">{t("power.explain")}</p>
 
       <div
         role="radiogroup"
-        aria-label="Low Battery Mode"
+        aria-label={t("power.title")}
         className="space-y-2"
       >
         {CHOICES.map((c) => (
@@ -47,8 +37,8 @@ export function PowerCard() {
               onChange={() => setPowerMode(c.id)}
             />
             <span>
-              <span className="block font-semibold">{c.label}</span>
-              <span className="block text-sm text-subtext">{c.help}</span>
+              <span className="block font-semibold">{t(c.label)}</span>
+              <span className="block text-sm text-subtext">{t(c.help)}</span>
             </span>
           </label>
         ))}
@@ -56,13 +46,10 @@ export function PowerCard() {
 
       <p className="text-sm text-subtext">
         {power.supported && power.level !== null
-          ? `Battery now: ${Math.round(power.level * 100)}%${power.charging ? ", charging" : ""}. ${power.active ? "Low Battery Mode is on." : "Low Battery Mode is off."}`
-          : "This phone's browser does not report the battery, so Automatic cannot switch it on. Use Always on when the battery is low."}
+          ? `${t(power.charging ? "power.batteryNowCharging" : "power.batteryNow", { percent })} ${t(power.active ? "power.isOn" : "power.isOff")}`
+          : t("power.unsupported")}
       </p>
-      <p className="text-sm text-subtext">
-        Dark colours save a little power only on phones with an OLED screen. The
-        biggest saving is your phone's own brightness: turn it down.
-      </p>
+      <p className="text-sm text-subtext">{t("power.oledNote")}</p>
     </section>
   );
 }

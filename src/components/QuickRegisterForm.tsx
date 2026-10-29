@@ -5,7 +5,8 @@ import { db } from "../db";
 import { useAuth } from "../hooks/useAuth";
 import { useRegistrationTiming } from "../hooks/useRegistrationTiming";
 import { useUnsavedWarning } from "../hooks/useUnsavedWarning";
-import { calculateAge, isUnder5 } from "../lib/age";
+import { useI18n, type Key } from "../i18n";
+import { calculateAge, isUnder5, type Age } from "../lib/age";
 import { checkComplaint } from "../lib/complaintCheck";
 import { findDuplicateHint, type DuplicateHint } from "../lib/duplicateHint";
 import type { GuardianChoice } from "../lib/guardians";
@@ -112,6 +113,9 @@ export function QuickRegisterForm({
 }: {
   onSaved: (patient: Patient) => void;
 }) {
+  const { t, tp } = useI18n();
+  const ageText = (a: Age) =>
+    tp(a.unit === "years" ? "age.years" : "age.months", a.value);
   const { facility } = useAuth();
   const navigate = useNavigate();
   const timing = useRegistrationTiming("quick");
@@ -215,8 +219,8 @@ export function QuickRegisterForm({
     } catch (e) {
       setProblem(
         e instanceof PlanLimitError
-          ? "The Free plan is full. See Plans to add more patients."
-          : "Could not save this patient. Please check the details and try again.",
+          ? t("register.planFull")
+          : t("register.saveFailed"),
       );
     } finally {
       setBusy(false);
@@ -227,7 +231,10 @@ export function QuickRegisterForm({
 
   return (
     <div className="space-y-5 pb-24 md:pb-0">
-      <Field label="Full name" error={errors.fullName}>
+      <Field
+        label={t("register.fullName")}
+        error={errors.fullName && t(errors.fullName)}
+      >
         <input
           className="input"
           autoFocus
@@ -241,11 +248,11 @@ export function QuickRegisterForm({
       </Field>
 
       <div className="space-y-1">
-        <span className="text-base font-semibold">Sex</span>
+        <span className="text-base font-semibold">{t("register.sex")}</span>
         <div
           className="grid grid-cols-2 gap-3"
           role="group"
-          aria-label="Sex"
+          aria-label={t("register.sex")}
           aria-invalid={errors.gender ? true : undefined}
         >
           {(["FEMALE", "MALE"] as const).map((g) => (
@@ -262,26 +269,26 @@ export function QuickRegisterForm({
                   : "border-line bg-white"
               }`}
             >
-              {g === "FEMALE" ? "Female" : "Male"}
+              {t(g === "FEMALE" ? "register.female" : "register.male")}
             </button>
           ))}
         </div>
         {errors.gender && (
           <p role="alert" className="text-sm font-medium text-danger">
-            {errors.gender}
+            {t(errors.gender)}
           </p>
         )}
       </div>
 
       <div className="space-y-2">
-        <span className="text-base font-semibold">Age</span>
+        <span className="text-base font-semibold">{t("register.age")}</span>
         <Segment
-          label="How to give the age"
+          label={t("register.howToGiveAge")}
           value={q.ageMode}
           onChange={(v) => set("ageMode", v)}
           options={[
-            { id: "age", text: "Age" },
-            { id: "date", text: "Birth date" },
+            { id: "age", text: t("register.byAge") },
+            { id: "date", text: t("register.byBirthDate") },
           ]}
         />
         {q.ageMode === "age" ? (
@@ -290,8 +297,8 @@ export function QuickRegisterForm({
               className="input text-xl font-semibold"
               inputMode="numeric"
               maxLength={3}
-              aria-label="Age"
-              placeholder="e.g. 34"
+              aria-label={t("register.age")}
+              placeholder={t("register.agePlaceholder")}
               aria-invalid={errors.age ? true : undefined}
               value={q.ageValue}
               onChange={(e) =>
@@ -299,12 +306,12 @@ export function QuickRegisterForm({
               }
             />
             <Segment
-              label="Years or months"
+              label={t("register.yearsOrMonths")}
               value={q.ageUnit}
               onChange={(v) => set("ageUnit", v)}
               options={[
-                { id: "years", text: "Years" },
-                { id: "months", text: "Months" },
+                { id: "years", text: t("register.years") },
+                { id: "months", text: t("register.months") },
               ]}
             />
           </div>
@@ -312,7 +319,7 @@ export function QuickRegisterForm({
           <input
             type="date"
             className="input"
-            aria-label="Date of birth"
+            aria-label={t("register.dateOfBirth")}
             max={todayISO()}
             aria-invalid={errors.dob ? true : undefined}
             value={q.dob}
@@ -321,20 +328,23 @@ export function QuickRegisterForm({
         )}
         {(errors.age || errors.dob) && (
           <p role="alert" className="text-sm font-medium text-danger">
-            {errors.age ?? errors.dob}
+            {t((errors.age ?? errors.dob) as Key)}
           </p>
         )}
         {age && !errors.age && !errors.dob && (
           <p className="text-sm text-subtext">
             {q.ageMode === "age"
-              ? "Saved as an estimate. The profile will ask for the real date later."
-              : `Age ${age.label}.`}
+              ? t("register.estimateNote")
+              : t("register.ageIs", { age: ageText(age) })}
           </p>
         )}
       </div>
 
       <div className="space-y-2">
-        <Field label="Village or area" error={errors.village}>
+        <Field
+          label={t("register.village")}
+          error={errors.village && t(errors.village)}
+        >
           <input
             className="input"
             autoComplete="off"
@@ -344,7 +354,7 @@ export function QuickRegisterForm({
           />
         </Field>
         <Chips
-          label="Villages used recently"
+          label={t("register.villagesRecent")}
           options={chips?.villages ?? []}
           isOn={(o) => o.toLowerCase() === villageValue}
           onPick={(o) => set("village", o)}
@@ -359,25 +369,25 @@ export function QuickRegisterForm({
             checked={q.pregnant}
             onChange={(e) => set("pregnant", e.target.checked)}
           />
-          Pregnant now
+          {t("register.pregnantNow")}
         </label>
       )}
 
       <div className="space-y-2">
-        <span className="text-base font-semibold">Reason for visit</span>
+        <span className="text-base font-semibold">{t("register.reason")}</span>
         {!q.registrationOnly && (
           <>
             <Chips
-              label="Common reasons"
+              label={t("register.commonReasons")}
               options={chips?.complaints ?? DEFAULT_COMPLAINTS}
               isOn={(o) => hasTerm(q.complaint, o)}
               onPick={(o) => set("complaint", toggleTerm(q.complaint, o))}
             />
             <input
               className="input"
-              placeholder="Or type it"
+              placeholder={t("register.orTypeIt")}
               autoComplete="off"
-              aria-label="Reason for visit"
+              aria-label={t("register.reason")}
               aria-invalid={errors.complaint ? true : undefined}
               value={q.complaint}
               onChange={(e) => set("complaint", e.target.value)}
@@ -395,16 +405,19 @@ export function QuickRegisterForm({
             checked={q.registrationOnly}
             onChange={(e) => set("registrationOnly", e.target.checked)}
           />
-          Registration only (no visit now)
+          {t("register.registrationOnly")}
         </label>
         {errors.complaint && (
           <p role="alert" className="text-sm font-medium text-danger">
-            {errors.complaint}
+            {t(errors.complaint)}
           </p>
         )}
       </div>
 
-      <Field label="Phone (optional)" error={errors.phone}>
+      <Field
+        label={t("register.phoneOptional")}
+        error={errors.phone && t(errors.phone)}
+      >
         <input
           className="input"
           type="tel"
@@ -420,7 +433,7 @@ export function QuickRegisterForm({
       {showGuardian && (
         <details className="rounded-xl border-2 border-line bg-white">
           <summary className="flex min-h-12 cursor-pointer items-center px-3 font-semibold">
-            Parent or guardian (optional)
+            {t("register.guardianOptional")}
           </summary>
           <div className="border-t-2 border-line p-3">
             <GuardianPicker
@@ -440,10 +453,11 @@ export function QuickRegisterForm({
           onChange={(e) => set("noticeGiven", e.target.checked)}
         />
         <span>
-          <span className="block font-semibold">Privacy notice explained</span>
+          <span className="block font-semibold">
+            {t("register.noticeTitle")}
+          </span>
           <span className="block text-sm text-subtext">
-            Tell the patient how their information is used. You can record this
-            later from the profile.
+            {t("register.noticeHelp")}
           </span>
         </span>
       </label>
@@ -454,21 +468,23 @@ export function QuickRegisterForm({
           className="space-y-3 rounded-2xl border-2 border-accent-500 bg-accent-50 p-4"
         >
           <p className="font-semibold">
-            {hint.kind === "exact"
-              ? "This patient may already be registered."
-              : "A similar patient is already registered."}
+            {t(
+              hint.kind === "exact"
+                ? "register.duplicateExact"
+                : "register.duplicateSimilar",
+            )}
           </p>
           <ul className="space-y-2">
             {(hint.kind === "exact"
               ? [hint.patient]
-              : hint.matches.map((m: { patient: Patient }) => m.patient)
-            ).map((p: Patient) => (
+              : hint.matches.map((m) => m.patient)
+            ).map((p) => (
               <li
                 key={p.id}
                 className="flex items-center justify-between gap-3"
               >
                 <span>
-                  {p.fullName}, {calculateAge(p.dob).label}, {p.village}
+                  {p.fullName}, {ageText(calculateAge(p.dob))}, {p.village}
                   <span className="block font-mono text-sm text-subtext">
                     {p.cardNumber}
                   </span>
@@ -477,7 +493,7 @@ export function QuickRegisterForm({
                   to={`/patients/${p.id}`}
                   className="shrink-0 font-semibold text-prima-500 underline"
                 >
-                  Open
+                  {t("common.open")}
                 </Link>
               </li>
             ))}
@@ -489,7 +505,7 @@ export function QuickRegisterForm({
               checked={confirmed}
               onChange={(e) => setConfirmed(e.target.checked)}
             />
-            This is a different person
+            {t("register.differentPerson")}
           </label>
         </div>
       )}
@@ -500,14 +516,14 @@ export function QuickRegisterForm({
         </p>
       )}
 
-      <StickyActions note={dirty ? "Unsaved changes" : undefined}>
+      <StickyActions note={dirty ? t("register.unsaved") : undefined}>
         <button
           type="button"
           className="btn btn-secondary"
           disabled={busy || (hint !== null && !confirmed)}
           onClick={() => void submit(false)}
         >
-          {busy ? "Saving…" : "Register"}
+          {busy ? t("register.saving") : t("register.submit")}
         </button>
         <button
           type="button"
@@ -515,7 +531,7 @@ export function QuickRegisterForm({
           disabled={busy || (hint !== null && !confirmed)}
           onClick={() => void submit(true)}
         >
-          Register and add visit
+          {t("register.submitAndVisit")}
         </button>
       </StickyActions>
     </div>

@@ -17,6 +17,7 @@ import { PhoneCheckPage } from "./pages/PhoneCheckPage";
 import { ScanPage } from "./pages/ScanPage";
 import { PatientCardPage } from "./pages/PatientCardPage";
 import { SyncDoctorPage } from "./pages/SyncDoctorPage";
+import { TranslationsPage } from "./pages/TranslationsPage";
 
 function NotFound() {
   return (
@@ -53,6 +54,7 @@ export default function App() {
         <Route path="scan" element={<ScanPage />} />
         <Route path="patients/:id/card" element={<PatientCardPage />} />
         <Route path="sync-doctor" element={<SyncDoctorPage />} />
+        <Route path="translations" element={<TranslationsPage />} />
         <Route path="*" element={<NotFound />} />
       </Route>
     </Routes>

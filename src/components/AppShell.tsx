@@ -6,6 +6,7 @@ import {
   Users,
   CircleUser,
   Lock,
+  type LucideIcon,
 } from "lucide-react";
 import { SessionBanner } from "./SessionBanner";
 import { GloveToggle } from "./GloveToggle";
@@ -15,16 +16,18 @@ import { config } from "../lib/config";
 import { useLock } from "../hooks/useLock";
 import { StatusBanner } from "./StatusBanner";
 import { PowerBanner } from "./PowerBanner";
+import { useI18n, type Key } from "../i18n";
 
-const NAV = [
-  { to: "/", label: "Home", icon: House, end: true },
-  { to: "/register", label: "Register", icon: UserPlus, end: false },
-  { to: "/patients", label: "Patients", icon: Users, end: false },
-  { to: "/dashboard", label: "Dashboard", icon: ChartColumn, end: false },
+const NAV: { to: string; label: Key; icon: LucideIcon; end: boolean }[] = [
+  { to: "/", label: "nav.home", icon: House, end: true },
+  { to: "/register", label: "nav.register", icon: UserPlus, end: false },
+  { to: "/patients", label: "nav.patients", icon: Users, end: false },
+  { to: "/dashboard", label: "nav.dashboard", icon: ChartColumn, end: false },
 ];
 
 export function AppShell() {
   const { lockNow } = useLock();
+  const { t } = useI18n();
   return (
     <div className="min-h-screen md:flex">
       {/* Sidebar: tablets and laptops */}
@@ -45,7 +48,7 @@ export function AppShell() {
                 }`
               }
             >
-              <Icon size={22} /> {label}
+              <Icon size={22} /> {t(label)}
             </NavLink>
           ))}
         </nav>
@@ -54,7 +57,7 @@ export function AppShell() {
           onClick={lockNow}
           className="mt-1 flex h-12 w-full items-center gap-3 rounded-xl px-3 text-base font-semibold text-ink hover:bg-page"
         >
-          <Lock size={22} /> Lock
+          <Lock size={22} /> {t("nav.lock")}
         </button>
         <NavLink
           to="/account"
@@ -64,7 +67,7 @@ export function AppShell() {
             }`
           }
         >
-          <CircleUser size={22} /> Account
+          <CircleUser size={22} /> {t("nav.account")}
         </NavLink>
         <div className="mt-auto space-y-3">
           <GloveToggle />
@@ -78,12 +81,16 @@ export function AppShell() {
           <Logo light size={32} />
           <div className="flex items-center gap-1">
             <SyncBadge />
-            <Link to="/account" aria-label="Account" className="p-2 text-white">
+            <Link
+              to="/account"
+              aria-label={t("nav.account")}
+              className="p-2 text-white"
+            >
               <CircleUser size={26} />
             </Link>
             <button
               type="button"
-              aria-label="Lock Prima"
+              aria-label={t("nav.lockPrima")}
               className="p-2 text-white"
               onClick={lockNow}
             >
@@ -113,7 +120,7 @@ export function AppShell() {
               }`
             }
           >
-            <Icon size={24} /> {label}
+            <Icon size={24} /> {t(label)}
           </NavLink>
         ))}
       </nav>

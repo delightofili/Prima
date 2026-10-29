@@ -6,6 +6,7 @@ import { PageHeader } from "../components/PageHeader";
 import { usePageTitle } from "../hooks/common";
 import { useAuth } from "../hooks/useAuth";
 import { useToast } from "../hooks/useToast";
+import { useI18n } from "../i18n";
 import {
   buildReport,
   checkCloud,
@@ -24,6 +25,7 @@ export function SyncDoctorPage() {
   const { state, items, counts } = useSyncState();
   const [checks, setChecks] = useState<Check[] | null>(null);
   const [busy, setBusy] = useState<string | null>(null);
+  const { tm } = useI18n();
 
   if (role !== "admin") {
     return (
@@ -55,8 +57,8 @@ export function SyncDoctorPage() {
       <div className="grid gap-4 lg:grid-cols-2">
         <section className="card space-y-3">
           <SectionTitle icon={Stethoscope} title="What is happening" />
-          <p className="text-lg font-semibold">{state.label}</p>
-          <p className="text-subtext">{state.detail}</p>
+          <p className="text-lg font-semibold">{tm(state.label)}</p>
+          <p className="text-subtext">{tm(state.detail)}</p>
           <ul className="space-y-1 text-sm">
             <li>Waiting to upload: {counts.waiting}</li>
             <li>Need attention: {counts.failed}</li>

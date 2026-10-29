@@ -4,7 +4,7 @@
 
 A nurse registers patients, records visits, tracks vaccines, links children to their guardians, sees who is due for follow-up, queues appointment reminders, cleans up duplicate records and produces the monthly LGA summary, on an Android phone, tablet or laptop, with or without network. Everything is saved on the device first and syncs both ways with the cloud in the background. Each facility's records are private to its own staff, and every sensitive action is logged.
 
-> Status: built in public. Days 1-18 complete, Day 19 (quick register for CHEWs, Low Battery Mode) in progress. The roadmap now runs to Day 34, then continues with feedback from real PHCs.
+> Status: built in public. Days 1-20 complete (the Day 19 usability session with real CHEWs and nurses, and buying the domain, are still to do), Day 21 (translation framework, English baseline, Igbo) in progress. The roadmap runs to Day 34, then continues with feedback from real PHCs.
 
 ---
 
@@ -14,12 +14,29 @@ Paper registers at PHCs lose patients, create duplicates (the same woman registe
 
 ## What Prima does today
 
+**Languages (Day 21)**
+
+- A small translation framework with no extra packages: every sentence a nurse sees lives in one English dictionary, and each language is one separate file loaded only when chosen (so it works offline once installed). A missing line shows the English one, never a blank. Numbers, dates and plurals follow the language (English has "1 year" and "34 years", Igbo has one form).
+- Igbo draft for the screens built so far: the bottom tabs and menu, registering a patient, the sync badge and banners, Low Battery Mode, the update prompt, the "finish this record" card and the whole Account page (account, facility, team and invite codes). A "Language / Asụsụ" card at the top of Account lets a person switch, and the choice is remembered on that phone. Hausa and Yoruba are shown as "coming soon".
+- Names of conditions, complaints and medicines stay in English on purpose, so records and reports read the same everywhere.
+- A review page for admins shows English and the translation side by side, flags lines that are missing, unchanged or much longer, and copies everything as a spreadsheet for a reviewer. A checker script catches a changed {blank}, a missing line, a wrong plural form, or letters saved in a split form.
+- The Igbo is a draft written by an AI assistant. It must be checked by a native speaker before it is called ready.
+
+**A landing page (Day 20)**
+
+- A separate small website in `landing/`, so people can learn what Prima is before they install anything. No framework and no packages: plain HTML, CSS and about 4 KB of script. About 14 KB compressed for the first load, no images or fonts to download, no requests to other websites, and no cookies or trackers.
+- Sections: a hero with an animated phone that tells the whole offline story (signal drops, a patient is saved on the phone, signal returns, it uploads), three promises, how it works in three steps, features labelled Built or Coming, questions people asked, a privacy section that says what is still to be reviewed, planned pricing, the story, a waitlist section, and straight answers.
+- The page never claims what Prima does not have: no certification claims, no usage numbers, and the pictures are labelled as examples with made-up data.
+- Works without JavaScript, respects the phone's "reduce motion" setting, passes colour contrast checks, and uses a strict security policy.
+- A build script fills in the address, WhatsApp, LinkedIn, email and launch time from one config file, and a check script refuses to pass a page with broken links, missing contact details, other websites' scripts, low contrast or placeholder text. The countdown to the pilot shows only when a launch time is set.
+
 **Quick register and Low Battery Mode (Day 19)**
 
 - A one-screen quick registration is now the default Register form: name, sex, age (or birth date), village, reason for visit, and an optional phone. Villages and common reasons the clinic actually uses appear as tap-to-fill chips. Next of kin is left for later; the profile shows a "Finish this record" card for anything missing. The full form is one tap away.
 - "Register and add visit" goes straight to the visit form. Duplicate checking works the same as before, and also covers estimated ages.
 - When nobody knows a birth date, the age is saved as an estimate, marked as an estimate on the profile and the printed card, and flagged in the FHIR export.
 - Low Battery Mode: on at 20% battery (off again at 30% or when charging), or switched on by hand. It pauses background syncing (a "Sync now" button stays available), skips optional network calls, slows the camera scanner, removes animations and switches to dark colours. Registering and saving still go straight to the phone's database, so nothing is lost.
+- A rebuilt sync engine and a Sync Doctor page (admins). Failures are now told apart: no connection waits quietly, a missing column in the cloud database fails at once and says which, a record Prima cannot convert is retried with growing gaps without holding up the others, and a request that never answers is given up on after 40 seconds. The badge says what is really happening ("Syncing…" only while something is running, "Retrying in 40 s", "Database update needed"), and the Doctor checks the cloud database for every column and function this version needs.
 - Registration speed measuring, for usability sessions only: off by default, records time and taps (no names), and stays on the phone.
 
 **Faster, safer data entry (Day 18)**
@@ -225,80 +242,112 @@ Email and password sign-in, facility creation and invite codes, row level securi
 - **Sticky save bar.** Fixed above the tab bar on phones using the keyboard-aware visual viewport, sticky on larger screens.
 - **Steppers.** Pure step logic (no rounding drift: 36.8 plus ten presses of 0.1 is exactly 37.8), accessible buttons, hold-to-repeat that speeds up.
 
-### Day 19: quick register and low battery (in progress)
+### Day 21: languages I (in progress)
+
+- **Why a small custom engine.** About 120 lines, no libraries, typed keys (a typo in a key is a compile error), plural forms from the browser's own rules (`Intl.PluralRules`), and a safe English fallback. A library would add weight on every phone for features this app does not need yet.
+- **Logic returns messages, screens translate them.** The sync status and the form checks return keys and numbers, not sentences, so they follow the language and stay easy to test.
+- **The dictionary.** 223 English lines in `src/i18n/locales/en.ts`; the Igbo draft in `ig.ts` has every line it needs (215 of 215, because Igbo has no singular form). `npm run i18n:check` catches a changed {blank}, a missing or misspelt key, a wrong plural form and letters saved in a split form. `npm run i18n:test` runs 27 checks on the engine, the files and the sync and form messages.
+- **Converted so far:** the app shell (tabs, Lock, Account), the quick registration form and its error messages, the register page, the sync badge, panel and banners, the complaint hint, the finish-this-record card, Low Battery Mode, the update prompt and the Account page. Dates on the Account page follow the language too (Igbo month names).
+- **Staff tools stay English:** Sync Doctor, Translations, Phone check and the usability timing card.
+- **Tested in a real browser** (Firefox): start in English, choose Igbo from the card, the badge and every button change at once and the choice survives a reload; no text is cut off and nothing scrolls sideways; Hausa and Yoruba cannot be picked yet; and the dot-below Igbo letters (ị ọ ụ) draw correctly. Strict TypeScript and the project's React lint rules pass on every converted file.
+- **Account page layout bug.** In a one-column grid, one card holding a long unbreakable piece of text (an email, a link, a code) made every card as wide as that text: 865 px on a 488 px screen, with the page scrolling sideways. Fixed by `grid-cols-1` on the card grid and `.card { min-width: 0; overflow-wrap: anywhere }` in `index.css`; after the fix the cards are 456 px, in English and Igbo.
+- **Editor errors in `scripts/`.** The scripts sit outside `src/`, so the editor did not know Node's types. Fixed with `npm install --save-dev @types/node` and a `scripts/tsconfig.json`; `tsc -b` never included them.
+- **Still to do (Day 22):** the home page, patients list, patient profile, visit form, the full registration form, the Security, Plan, Install and Backup cards, and the messages in `src/lib/auth.ts` are still English. The WhatsApp invite message stays English until the sign-in screens are translated.
+
+### Day 19: quick register and low battery
 
 - **Quick form.** Pure logic for validation, converting to the existing registration function, and estimating a birth date (tested over every day of ten years: the estimate always shows the same age today, including 29 February and month ends). The full form stays for people who want it, and editing a patient still uses it.
 - **What a quick registration leaves empty.** Next of kin is stored as empty text (the database already accepts it), and a profile card lists what is missing. One new database column, `dob_estimated`.
 - **Duplicates with an estimated age.** The check also looks two years either side of the estimate, but only among patients of the same sex from the same village.
 - **Low Battery Mode.** A small shared store, with hysteresis so it does not flicker at 20%. The sync engine asks it before every automatic upload and download; the Sync now buttons override it.
+- **Sync fix.** The Day 15 engine treated any error without a database code as "no connection", so a missing column (the Day 19 SQL not yet run) or a mistake inside Prima looked like a bad network and the badge said "Syncing 1…" for ever. It also let a patient waiting out a delay lose its visits' tries, and one hung request could block all uploading until a reload. Rebuilt with an error classifier, per-record backoff, a 40-second request limit, a run watchdog, held-back dependents, and 47 automated checks against a real local database.
 - **A usability session guide** in `docs/USABILITY_TEST.md` for testing the quick form with real CHEWs and nurses, with made-up patients only.
+
+### Day 20: landing page (in progress)
+
+- **Why static.** The pages are plain files, so they load fast on mobile data, work with JavaScript off, and carry their own share preview text for WhatsApp and LinkedIn (which do not run scripts).
+- **Pictures made of code.** The hero phone, the step pictures and the clinic illustration are HTML, CSS and SVG: sharp on any screen, a few KB, and honest (marked as examples). Real screenshots can be added later.
+- **Tested in a real browser** (Firefox, headless) at 390 px and 1280 px wide: no sideways scrolling, every section reveals, the phone story cycles through all five states, "reduce motion" shows one still picture, the strict security policy blocks nothing the page needs, and the countdown, contact buttons and mobile menu work. Plus 8 automated tests for the build and the check.
+- **To do:** buy the domain, set the address and contact details in `landing/site.config.json`, deploy to Cloudflare Pages, and check the share preview on WhatsApp and LinkedIn.
 
 ## Feedback queue
 
-| Feedback                                                                                     | Decision                                                                                                | Status              |
-| -------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- | ------------------- |
-| Guardian link                                                                                | Day 11                                                                                                  | Done                |
-| SMS base (consent, reminders table, dashboard count, no sending)                             | Day 12                                                                                                  | Done                |
-| Offline IDs like `ANK-{device}-{counter}` with a mapping table                               | Not added: device UUIDs and random card numbers already solve it without ever rewriting an ID           | Closed              |
-| A read-only supervisor role for LGA officers                                                 | Considered for Day 14, not built; needs careful read-only handling across the app                       | Open                |
-| Simplify the register flow, too many taps (LinkedIn comments, CHEW usability)                | Day 19: quick register built; the timed test with real nurses is still to do (`docs/USABILITY_TEST.md`) | Built, test pending |
-| Hausa, Igbo and Yoruba language switch                                                       | Days 22 and 23: translations drafted, then reviewed by native speakers before release                   | Planned             |
-| Low Battery Mode: stop background sync, dim, save at once                                    | Day 19: built; needs a test on a real phone with a low battery                                          | Built, test pending |
-| Sync with no internet over the clinic's Wi-Fi (3 tablets, power and a router, no data)       | Days 25 and 26: pairing by QR code, plus a shared changes file as a fallback                            | Planned             |
-| Sync status dashboard: which tablet last synced, how many records are waiting, who is behind | Day 24                                                                                                  | Planned             |
-| A landing page that explains Prima before anyone installs it                                 | Day 20                                                                                                  | Planned             |
-| A waitlist with a launch countdown, then a week of marketing                                 | Day 21 for the waitlist; marketing plan in `docs/MARKETING_PLAN.md`                                     | Planned             |
+| Feedback                                                                                     | Decision                                                                                                          | Status              |
+| -------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- | ------------------- |
+| Guardian link                                                                                | Day 11                                                                                                            | Done                |
+| SMS base (consent, reminders table, dashboard count, no sending)                             | Day 12                                                                                                            | Done                |
+| Offline IDs like `ANK-{device}-{counter}` with a mapping table                               | Not added: device UUIDs and random card numbers already solve it without ever rewriting an ID                     | Closed              |
+| A read-only supervisor role for LGA officers                                                 | Considered for Day 14, not built; needs careful read-only handling across the app                                 | Open                |
+| Simplify the register flow, too many taps (LinkedIn comments, CHEW usability)                | Day 19: quick register built; the timed test with real nurses is still to do (`docs/USABILITY_TEST.md`)           | Built, test pending |
+| Hausa, Igbo and Yoruba language switch                                                       | Day 21: framework and Igbo draft built; Day 22: Hausa and Yoruba, review pack, remaining screens                  | In progress         |
+| Low Battery Mode: stop background sync, dim, save at once                                    | Day 19: built; needs a test on a real phone with a low battery                                                    | Built, test pending |
+| Sync with no internet over the clinic's Wi-Fi (3 tablets, power and a router, no data)       | Days 25 and 26: pairing by QR code, plus a shared changes file as a fallback                                      | Planned             |
+| Sync status dashboard: which tablet last synced, how many records are waiting, who is behind | Day 24                                                                                                            | Planned             |
+| A landing page that explains Prima before anyone installs it                                 | Day 20: built, tested and deployed; domain still to buy                                                           | Built               |
+| A waitlist with a launch countdown, then a week of marketing                                 | Moved to the last day (Day 34), after the privacy and clinical review; marketing plan in `docs/MARKETING_PLAN.md` | Planned             |
 
 ## Decisions and why
 
-| Decision                                                                                      | Reason                                                                                                                                          |
-| --------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| IndexedDB first, server second                                                                | The UI must never wait for the network                                                                                                          |
-| UUIDs and card numbers generated on the device                                                | Offline phones cannot ask a server for the next number                                                                                          |
-| Soft delete                                                                                   | Deletes must sync, be undoable, and leave an audit trail                                                                                        |
-| Every Python feature gets an on-device fallback                                               | The app must never show an error because a server is not paid for yet                                                                           |
-| SMS consent lives on whoever owns the phone, and resets when the number changes               | The person who receives the text consents, to that number                                                                                       |
-| The app unlocks from a record on the phone, not from the network                              | A clinic with no signal must still open the app                                                                                                 |
-| Facility access is decided by database rules, not by the app                                  | The app's public key is visible to anyone                                                                                                       |
-| The PIN is a lock for casual access, not encryption                                           | A 6-digit PIN can be guessed offline by someone who copies the phone's storage; phone screen lock and device encryption are the real protection |
-| The app stays mounted behind the lock screen                                                  | Locking must never throw away a half-filled registration                                                                                        |
-| Audit entries are created by database hooks, not by each screen                               | A change cannot be made without leaving a record, and no screen can forget                                                                      |
-| Audit entries hold field names and card numbers, never names or diagnoses                     | The log must not become a second copy of patient data                                                                                           |
-| Audit entries are insert-only and the server stamps who sent them                             | Nobody, including an admin, can quietly edit history                                                                                            |
-| Admin-only: delete, merge, export, audit, requests, team                                      | Bulk and destructive actions have the fewest hands on them                                                                                      |
-| Deleting or merging a patient is also checked in the database                                 | A hidden button is not security                                                                                                                 |
-| Erasure wipes identifying details and keeps a marker, instead of deleting the row             | Other phones must receive the erasure, and a stale phone must not bring the data back                                                           |
-| Erasure needs the card number typed and a log entry                                           | It cannot be undone, and health records may have retention rules                                                                                |
-| Privacy notice and staff agreement are drafts for legal review                                | Compliance wording must come from a lawyer or the facility's data protection officer                                                            |
-| One facility per phone                                                                        | Records from two facilities must never mix on one device                                                                                        |
-| The database enforces what only the database can: patient cap and staff seats                 | Exports, reports and follow-up lists run on the device from data it already holds, so they are a convenience gate, not a security boundary      |
-| An over-limit upload is parked, not deleted                                                   | The patient is already registered in front of a nurse; losing the record is worse than a delayed upload                                         |
-| One calm banner at a time, always saying the records are safe                                 | Frightened nurses stop trusting the app; most failures here are not their fault                                                                 |
-| Uploads in dependency order and in batches, with one-by-one fallback                          | Hundreds of queued items must not mean hundreds of requests, and one bad record must not hide the good ones                                     |
-| Idle devices ask one cheap question before pulling                                            | At 1,500 devices, five queries each every few minutes is the real load                                                                          |
-| Exports are files a person imports, never automatic sends                                     | Patient data leaves the clinic only through a decision and a channel someone chose                                                              |
-| Sensitive diagnoses are left out of FHIR by default                                           | HIV, STI, mental health and pregnancy loss carry stigma and, in some cases, legal risk                                                          |
-| The DHIS2 mapping is filled in once, from a template, by the district officer                 | Prima cannot know a district's data element codes, and guessing them would put figures in the wrong place                                       |
-| Stable ids derived from the visit, not random ones                                            | Re-exporting must update the receiving system, not create duplicates                                                                            |
-| Service lines count by code prefix                                                            | A bigger diagnosis list must never reduce the antenatal count                                                                                   |
-| The quick form is the default, the full form stays one tap away                               | Most registrations need five things; the rest can be asked at the next visit without holding up the queue                                       |
-| An age with no birth date is saved as an estimate and labelled as one                         | An honest "about 34" is better than an invented date of birth, and reports only need the age                                                    |
-| Next of kin can be added later, and the profile says it is missing                            | A queue at the door should not be held up by a question the patient may not be able to answer yet                                               |
-| Low Battery Mode pauses the network, never the saving                                         | A nurse must never lose a record because the battery is low                                                                                     |
-| Low Battery Mode turns on at 20% and off at 30%                                               | A single threshold flickers on and off as the battery hovers                                                                                    |
-| Measuring registration speed is off unless someone switches it on                             | Timing staff can feel like monitoring them; it is meant for a usability session, with their knowledge                                           |
-| The complaint check suggests, it never blocks or auto-corrects                                | An emergency must always be savable, and a wrong silent fix is worse than a typo                                                                |
-| A QR on the patient card holds only the card number                                           | A lost card must tell a stranger nothing                                                                                                        |
-| Save and Cancel stay in view                                                                  | A nurse should never have to scroll to find Save, or lose a form by tapping away                                                                |
-| Stepper buttons start from a typical value only when the box is empty, and values are clamped | One tap should be useful, but a plausible number must never replace a measured one                                                              |
-| Languages are drafted by me and published only after native-speaker review                    | A wrong word in a clinical screen is a safety problem, not a style problem                                                                      |
-| Clinic Wi-Fi sync pairs devices in person by QR code, with a file-sharing fallback            | There is no server to introduce two phones, and some routers block phones from talking to each other                                            |
-| Updates wait for a tap, never reload by themselves                                            | A nurse mid-registration must never lose her form to a version change                                                                           |
-| The offline worker caches Prima's own files and nothing else                                  | Patient data belongs in the phone's database under the PIN, not in a browser cache                                                              |
-| Test on a real phone over HTTPS, with the gloves staff actually wear                          | Targets that pass on a desk fail in a glove, and a plain local-network address disables the security features                                   |
-| Backups are always encrypted with a password                                                  | A full register in a Downloads folder or a WhatsApp chat is a data breach waiting to happen                                                     |
-| Restore never deletes and never resurrects erased patients                                    | A restore must not be able to undo a legal erasure or destroy newer work                                                                        |
-| Confirmation email off, staff join by invite code                                             | The free built-in email only works for the project's own team                                                                                   |
+| Decision                                                                                         | Reason                                                                                                                                          |
+| ------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| IndexedDB first, server second                                                                   | The UI must never wait for the network                                                                                                          |
+| UUIDs and card numbers generated on the device                                                   | Offline phones cannot ask a server for the next number                                                                                          |
+| Soft delete                                                                                      | Deletes must sync, be undoable, and leave an audit trail                                                                                        |
+| Every Python feature gets an on-device fallback                                                  | The app must never show an error because a server is not paid for yet                                                                           |
+| SMS consent lives on whoever owns the phone, and resets when the number changes                  | The person who receives the text consents, to that number                                                                                       |
+| The app unlocks from a record on the phone, not from the network                                 | A clinic with no signal must still open the app                                                                                                 |
+| Facility access is decided by database rules, not by the app                                     | The app's public key is visible to anyone                                                                                                       |
+| The PIN is a lock for casual access, not encryption                                              | A 6-digit PIN can be guessed offline by someone who copies the phone's storage; phone screen lock and device encryption are the real protection |
+| The app stays mounted behind the lock screen                                                     | Locking must never throw away a half-filled registration                                                                                        |
+| Audit entries are created by database hooks, not by each screen                                  | A change cannot be made without leaving a record, and no screen can forget                                                                      |
+| Audit entries hold field names and card numbers, never names or diagnoses                        | The log must not become a second copy of patient data                                                                                           |
+| Audit entries are insert-only and the server stamps who sent them                                | Nobody, including an admin, can quietly edit history                                                                                            |
+| Admin-only: delete, merge, export, audit, requests, team                                         | Bulk and destructive actions have the fewest hands on them                                                                                      |
+| Deleting or merging a patient is also checked in the database                                    | A hidden button is not security                                                                                                                 |
+| Erasure wipes identifying details and keeps a marker, instead of deleting the row                | Other phones must receive the erasure, and a stale phone must not bring the data back                                                           |
+| Erasure needs the card number typed and a log entry                                              | It cannot be undone, and health records may have retention rules                                                                                |
+| Privacy notice and staff agreement are drafts for legal review                                   | Compliance wording must come from a lawyer or the facility's data protection officer                                                            |
+| One facility per phone                                                                           | Records from two facilities must never mix on one device                                                                                        |
+| The database enforces what only the database can: patient cap and staff seats                    | Exports, reports and follow-up lists run on the device from data it already holds, so they are a convenience gate, not a security boundary      |
+| An over-limit upload is parked, not deleted                                                      | The patient is already registered in front of a nurse; losing the record is worse than a delayed upload                                         |
+| One calm banner at a time, always saying the records are safe                                    | Frightened nurses stop trusting the app; most failures here are not their fault                                                                 |
+| Uploads in dependency order and in batches, with one-by-one fallback                             | Hundreds of queued items must not mean hundreds of requests, and one bad record must not hide the good ones                                     |
+| Idle devices ask one cheap question before pulling                                               | At 1,500 devices, five queries each every few minutes is the real load                                                                          |
+| Exports are files a person imports, never automatic sends                                        | Patient data leaves the clinic only through a decision and a channel someone chose                                                              |
+| Sensitive diagnoses are left out of FHIR by default                                              | HIV, STI, mental health and pregnancy loss carry stigma and, in some cases, legal risk                                                          |
+| The DHIS2 mapping is filled in once, from a template, by the district officer                    | Prima cannot know a district's data element codes, and guessing them would put figures in the wrong place                                       |
+| Stable ids derived from the visit, not random ones                                               | Re-exporting must update the receiving system, not create duplicates                                                                            |
+| Service lines count by code prefix                                                               | A bigger diagnosis list must never reduce the antenatal count                                                                                   |
+| The quick form is the default, the full form stays one tap away                                  | Most registrations need five things; the rest can be asked at the next visit without holding up the queue                                       |
+| An age with no birth date is saved as an estimate and labelled as one                            | An honest "about 34" is better than an invented date of birth, and reports only need the age                                                    |
+| Next of kin can be added later, and the profile says it is missing                               | A queue at the door should not be held up by a question the patient may not be able to answer yet                                               |
+| A card can never be wider than the screen                                                        | One long unbreakable word (an email or link) stretched every card in a one-column grid and made the page scroll sideways on a phone             |
+| The translation engine is small and has no library                                               | Typed keys, the browser's own plural rules, and one small file per language that works offline                                                  |
+| Clinical names stay in English in every language                                                 | Records and monthly reports must read the same in every clinic, and local-language medical words need clinician review first                    |
+| A language shows "Draft" until a native speaker has checked it                                   | A wrong word on a clinical screen is a safety problem, not a style problem                                                                      |
+| The waitlist is the last day of the roadmap                                                      | It collects personal data, so it comes after the privacy and clinical review, and pilot clinics are invited directly                            |
+| The landing page is plain static files, not a React app                                          | Speed on mobile data, share previews that work without scripts, and nothing that can break a build                                              |
+| The landing page loads nothing from other websites and has no tracker                            | Faster, private, and a strict security policy can be used. Measure visits with Cloudflare's own cookie-free analytics if needed                 |
+| Contact buttons appear only when contact details are set, and the check refuses a page with none | A waitlist section with no way to reach you is worse than no section                                                                            |
+| Pictures on the landing page are drawn in code and labelled as examples                          | No stock photos of people who never used Prima, no fake testimonials, no real patient                                                           |
+| Every sync failure is classified before anything is retried                                      | A bug, a missing column and a dead connection need different responses, and treating them all as "no network" hid the real problem              |
+| A record that cannot upload is retried with growing gaps and never holds up the others           | One bad record must not stop a clinic's whole day of work reaching the cloud                                                                    |
+| Every cloud request gives up after 40 seconds                                                    | A request that never answers would otherwise keep "Syncing…" on screen for ever                                                                 |
+| Low Battery Mode pauses the network, never the saving                                            | A nurse must never lose a record because the battery is low                                                                                     |
+| Low Battery Mode turns on at 20% and off at 30%                                                  | A single threshold flickers on and off as the battery hovers                                                                                    |
+| Measuring registration speed is off unless someone switches it on                                | Timing staff can feel like monitoring them; it is meant for a usability session, with their knowledge                                           |
+| The complaint check suggests, it never blocks or auto-corrects                                   | An emergency must always be savable, and a wrong silent fix is worse than a typo                                                                |
+| A QR on the patient card holds only the card number                                              | A lost card must tell a stranger nothing                                                                                                        |
+| Save and Cancel stay in view                                                                     | A nurse should never have to scroll to find Save, or lose a form by tapping away                                                                |
+| Stepper buttons start from a typical value only when the box is empty, and values are clamped    | One tap should be useful, but a plausible number must never replace a measured one                                                              |
+| Languages are drafted by me and published only after native-speaker review                       | A wrong word in a clinical screen is a safety problem, not a style problem                                                                      |
+| Clinic Wi-Fi sync pairs devices in person by QR code, with a file-sharing fallback               | There is no server to introduce two phones, and some routers block phones from talking to each other                                            |
+| Updates wait for a tap, never reload by themselves                                               | A nurse mid-registration must never lose her form to a version change                                                                           |
+| The offline worker caches Prima's own files and nothing else                                     | Patient data belongs in the phone's database under the PIN, not in a browser cache                                                              |
+| Test on a real phone over HTTPS, with the gloves staff actually wear                             | Targets that pass on a desk fail in a glove, and a plain local-network address disables the security features                                   |
+| Backups are always encrypted with a password                                                     | A full register in a Downloads folder or a WhatsApp chat is a data breach waiting to happen                                                     |
+| Restore never deletes and never resurrects erased patients                                       | A restore must not be able to undo a legal erasure or destroy newer work                                                                        |
+| Confirmation email off, staff join by invite code                                                | The free built-in email only works for the project's own team                                                                                   |
 
 ## Costs and hosting: launch lean
 
@@ -348,41 +397,43 @@ Nigeria is moving toward FHIR and DHIS2: the National Digital Health Architectur
 
 ## Roadmap
 
-| Phase               | Day   | Focus                                                                                                 | Status      |
-| ------------------- | ----- | ----------------------------------------------------------------------------------------------------- | ----------- |
-| Foundation          | 1-3   | Reference build, pivot, offline engine                                                                | Done        |
-| Product             | 4-6   | App shell, visits, edit/delete, two-way sync                                                          | Done        |
-| Insight and revenue | 7-8   | Dashboard, follow-ups, LGA report, export, plan limits                                                | Done        |
-| Data quality        | 9-10  | Duplicate merge tool, Python service                                                                  | Done        |
-| Families            | 11-12 | Guardians and family links, SMS reminders base                                                        | Done        |
-| Trust               | 13-14 | Accounts, facilities, row level security; PIN lock, roles, audit log, privacy notice, data requests   | Done        |
-| Phone-ready         | 15-16 | Plan limits, degraded mode, scale, backup; PWA and real-phone test                                    | Done        |
-| Standards           | 17    | FHIR and DHIS2 export, larger ICD-10 list                                                             | Done        |
-| Fast and frugal     | 18    | Complaint check, printed card with QR and scan, sticky save bar, vitals steppers                      | Done        |
-|                     | 19    | Quick register for CHEWs (fewer taps), Low Battery Mode                                               | In progress |
-| Be found            | 20    | Landing page: story, pictures, icons, animation, speed; domain bought                                 | Planned     |
-|                     | 21    | Waitlist, launch countdown, referral position, admin export; marketing starts                         | Planned     |
-| Everyone can use it | 22    | Languages I: translation framework, English baseline, Igbo                                            | Planned     |
-|                     | 23    | Languages II: Hausa, Yoruba, native-speaker review pack, fonts and formats                            | Planned     |
-| Works anywhere      | 24    | Sync status dashboard: per-tablet last sync, waiting records, who is behind                           | Planned     |
-|                     | 25    | Clinic Wi-Fi sync I: pairing by QR code, sync protocol, security                                      | Planned     |
-|                     | 26    | Clinic Wi-Fi sync II: "devices nearby" card, automatic re-sync, shared changes file, three-phone test | Planned     |
-| Money and launch    | 27    | Paystack test mode, Edge Function payment check, subscriptions, annual plans                          | Planned     |
-|                     | 28    | Polish, accessibility, onboarding wizard, demo mode, error boundaries, NDPA and clinical-safety gate  | Planned     |
-|                     | 29    | Deploy the app, custom mail, keep-alive live, privacy policy and terms, PHC officer guide             | Planned     |
-|                     | 30    | Pilot launch kit: training sheet, onboarding visit, waitlist invitations, feedback forms              | Planned     |
-|                     | 31    | Go live with 2 to 3 PHCs (the countdown reaches zero)                                                 | Planned     |
-| Discussions         | 32    | Cost and lean-launch review                                                                           | Planned     |
-|                     | 33    | Scaling to 500 users, Enugu and Owerri playbook, economics                                            | Planned     |
-|                     | 34    | Final Nigeria Data Protection Act check-in, clinical review wrap-up                                   | Planned     |
+| Phase               | Day   | Focus                                                                                                                                                                                                             | Status                           |
+| ------------------- | ----- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------- |
+| Foundation          | 1-3   | Reference build, pivot, offline engine                                                                                                                                                                            | Done                             |
+| Product             | 4-6   | App shell, visits, edit/delete, two-way sync                                                                                                                                                                      | Done                             |
+| Insight and revenue | 7-8   | Dashboard, follow-ups, LGA report, export, plan limits                                                                                                                                                            | Done                             |
+| Data quality        | 9-10  | Duplicate merge tool, Python service                                                                                                                                                                              | Done                             |
+| Families            | 11-12 | Guardians and family links, SMS reminders base                                                                                                                                                                    | Done                             |
+| Trust               | 13-14 | Accounts, facilities, row level security; PIN lock, roles, audit log, privacy notice, data requests                                                                                                               | Done                             |
+| Phone-ready         | 15-16 | Plan limits, degraded mode, scale, backup; PWA and real-phone test                                                                                                                                                | Done                             |
+| Standards           | 17    | FHIR and DHIS2 export, larger ICD-10 list                                                                                                                                                                         | Done                             |
+| Fast and frugal     | 18    | Complaint check, printed card with QR and scan, sticky save bar, vitals steppers                                                                                                                                  | Done                             |
+|                     | 19    | Quick register for CHEWs (fewer taps), Low Battery Mode                                                                                                                                                           | Done (usability session pending) |
+| Be found            | 20    | Landing page: story, pictures, icons, animation, speed                                                                                                                                                            | Done (domain still to buy)       |
+| Everyone can use it | 21    | Languages I: translation framework, English baseline, Igbo (tabs, registering, sync, battery, update prompt and Account done)                                                                                     | In progress                      |
+|                     | 22    | Languages II: Hausa, Yoruba, native-speaker review pack, fonts and formats, convert the remaining screens (home, patients, profile, visit form, full registration form, Security, Plan, Install and Backup cards) | Planned                          |
+| Works anywhere      | 23    | Sync status dashboard: per-tablet last sync, waiting records, who is behind                                                                                                                                       | Planned                          |
+|                     | 24    | Clinic Wi-Fi sync I: pairing by QR code, sync protocol, security                                                                                                                                                  | Planned                          |
+|                     | 25    | Clinic Wi-Fi sync II: "devices nearby" card, automatic re-sync, shared changes file, three-phone test                                                                                                             | Planned                          |
+| Money and launch    | 26    | Paystack test mode, Edge Function payment check, subscriptions, annual plans                                                                                                                                      | Planned                          |
+|                     | 27    | Polish, accessibility, onboarding wizard, demo mode, error boundaries, NDPA and clinical-safety gate                                                                                                              | Planned                          |
+|                     | 28    | Deploy the app, custom mail, keep-alive live, privacy policy and terms, PHC officer guide                                                                                                                         | Planned                          |
+|                     | 29    | Pilot launch kit: training sheet, onboarding visit, direct invitations to pilot clinics, feedback forms                                                                                                           | Planned                          |
+|                     | 30    | Go live with 2 to 3 PHCs                                                                                                                                                                                          | Planned                          |
+| Discussions         | 31    | Cost and lean-launch review                                                                                                                                                                                       | Planned                          |
+|                     | 32    | Scaling to 500 users, Enugu and Owerri playbook, economics                                                                                                                                                        | Planned                          |
+|                     | 33    | Final NDPA check-in, clinical review wrap-up                                                                                                                                                                      | Planned                          |
+| Public launch       | 34    | Waitlist form, launch countdown, referral position, admin export; public marketing starts                                                                                                                         | Planned                          |
 
-If one build day happens per calendar day, Day 18 is Friday 23 October, the landing page is live around 25 October, the waitlist opens around 26 October, and go-live is around 5 November. The numbers are build days, not dates: they move with the pace, and go-live also depends on PHCs agreeing to take part.
+The waitlist moved from Day 21 to the last day, on purpose. It collects personal data, so it now comes after the data protection and clinical review (Days 27 and 33), and the first 2 to 3 pilot clinics are invited directly by WhatsApp, LinkedIn and in person, which does not need a waitlist. Until Day 34 the landing page says "Get in touch" instead of "Join the waitlist".
+
+The numbers are build days, not dates. They move with the pace, and go-live also depends on PHCs agreeing to take part.
 
 After Day 34 the work is driven by feedback from real PHCs and reviewers.
 
 ## Run locally
 
-Day 18 adds two small libraries: `npm install qrcode jsqr` and `npm install -D @types/qrcode`.
+Day 18 adds two small libraries: `npm install qrcode jsqr` and `npm install -D @types/qrcode`. Day 21 adds `npm install --save-dev @types/node` (types for the scripts folder only).
 
 Needs Node 20+, Python 3.13 and a Supabase project. Run `supabase/schema.sql` (plus the Day 5, 6, 9, 11, 12, 13, 14 and 15 SQL) in the Supabase SQL editor first. In Supabase, open Authentication and turn off "Confirm email" (until custom mail is set up) and set the minimum password length to 8.
 
@@ -400,6 +451,26 @@ python -m pytest -q
 python -m uvicorn main:app --reload
 ```
 
+## The release routine
+
+Run these from the project folder, in order. Pushing to GitHub only saves the code; it does not update the phone.
+
+```bash
+npx tsc -b                  # types
+npm run lint                # code rules
+npm run i18n:check          # translations against English
+npm run i18n:test           # translation engine and messages
+npm run dev                 # look at it on the PC (http://localhost:5173), then Ctrl+C
+npm run build && npm run preview   # the real built app with the offline engine (http://localhost:4173)
+git add . && git commit -m "Day N: what changed" && git push
+npm run deploy:test         # build and upload the app to Cloudflare for the phone
+curl -s https://prima-test-axo.pages.dev/version.json   # the live build time
+```
+
+On the phone: open Prima online, wait 20 seconds, tap "Update now" when the card appears (or swipe the app away and reopen it). Phone check, first line "Build", should match the `curl` time. The landing page is a separate site: `npm run landing:deploy`.
+
+Optional shortcuts for `package.json`: `"check:all": "tsc -b && npm run lint && npm run i18n:check && npm run i18n:test"` and `"ship": "npm run check:all && npm run deploy:test"`.
+
 ## Testing on a real phone
 
 A phone only allows the PIN, installing and offline use on HTTPS pages or `localhost`, so a plain `http://192.168...` address will not work. Two options: plug the phone in with USB debugging on, forward port 4173 in Chrome's `chrome://inspect` page, run `npm run build && npm run preview`, and open `http://localhost:4173` on the phone; or publish `dist` to a private Cloudflare Pages project for a real HTTPS address. The full checklist, including the glove protocol, is in `docs/DEVICE_TEST.md`. Fake data only until the Day 20 gate.
@@ -410,7 +481,7 @@ Free Supabase projects pause after about a week without activity. Prima calls `k
 
 ## Security and clinical notes
 
-- Row level security separates facilities, and the audit log is insert-only. Keep using fake data until the Day 28 gate.
+- Row level security separates facilities, and the audit log is insert-only. Keep using fake data until the Day 27 gate.
 - The PIN lock and the audit log are protections against casual access and against disputes. They are not encryption. Records on a signed-in phone are stored unencrypted in the browser's storage, so a phone with a strong screen lock and device encryption is the real protection. Teach staff to report a lost phone to the facility admin immediately.
 - A removed staff member's phone keeps its local copy until it next connects. The app then locks and offers to erase it.
 - The privacy notice, the patient notice wording and the staff agreement are templates. They must be reviewed by a lawyer or the facility's data protection officer before real use, together with how long records must be kept before any erasure.
@@ -424,7 +495,7 @@ Free Supabase projects pause after about a week without activity. Prima calls `k
 - FHIR and DHIS2 files contain, or are derived from, identifiable health records. They are made on the phone and handed to a person; where they go next is the facility's responsibility. Prima's FHIR identifiers use `urn:prima:` names until the project has a web address of its own, and the vaccine codes use "unspecified formulation" entries where Prima records only a vaccine name, so a receiving system's owner should confirm the mapping.
 - The ICD-10 list was checked for existence against a WHO ICD-10 dataset, but editions differ (for example dengue and haemorrhoids moved between editions) and a few three-character codes have finer sub-codes in the newest edition. Nigeria's national reporting rules decide what is required; confirm with a health worker or the state records officer before real use.
 - Immunization intervals, vitals thresholds, follow-up rules, the ICD-10 list and the report groupings are simplified starting points. Confirm them with a health worker before real use.
-- Before real PHC data, complete the Nigeria Data Protection Act and NDPC check planned for Day 28. The waitlist (Day 21) collects names and contact details of prospective users, which are personal data too: it needs its own privacy notice and consent from the day it opens.
+- Before real PHC data, complete the Nigeria Data Protection Act and NDPC check planned for Day 27, and repeat it on Day 33. The waitlist (Day 34) collects names and contact details, which are personal data too: it needs its own privacy notice and consent from the day it opens.
 
 ## Facts for the LinkedIn post
 

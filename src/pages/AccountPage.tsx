@@ -39,6 +39,7 @@ import { InstallCard } from "../components/InstallCard";
 import { PowerCard } from "../components/PowerCard";
 import { LanguageCard } from "../components/LanguageCard";
 import { useI18n } from "../i18n";
+import { AppVersionCard } from "../components/AppVersionCard";
 
 function EditFacilityDialog({ onClose }: { onClose: () => void }) {
   const { facility, refreshFacility } = useAuth();
@@ -250,6 +251,7 @@ export function AccountPage() {
         <PlanCard />
         <InstallCard />
         <PowerCard />
+        <AppVersionCard />
         {can("backup") && <BackupCard />}
 
         <section className="card space-y-3 md:col-span-2">

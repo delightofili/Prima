@@ -18,11 +18,13 @@ import {
 } from "lucide-react";
 import { useDashboardStats } from "../hooks/useDashboardStats";
 import { useFollowUps } from "../hooks/useFollowUps";
-import { monthLabel, monthOf, shiftMonth, todayISO } from "../lib/utils";
+import { monthOf, shiftMonth, todayISO } from "../lib/utils";
 import { GenderDonut, HorizontalBars, VerticalBars } from "./Charts";
 import { COLORS } from "../lib/chartColors";
 import { StatTile } from "./StatTile";
 import { useSmsStats } from "../hooks/useSmsStats";
+import { useI18n } from "../i18n";
+import { useMonthLabel } from "../hooks/useMonthLabel";
 
 const ARROW =
   "inline-flex size-11 items-center justify-center rounded-xl text-ink hover:bg-page disabled:opacity-30";
@@ -53,6 +55,8 @@ const Empty = ({ text }: { text: string }) => (
 );
 
 export function DashboardOverview() {
+  const { t } = useI18n();
+  const monthLabel = useMonthLabel();
   const [month, setMonth] = useState(monthOf(todayISO()));
   const result = useDashboardStats(month);
   const followUps = useFollowUps(7);
@@ -65,12 +69,10 @@ export function DashboardOverview() {
   if (stats.total === 0) {
     return (
       <div className="card space-y-3 py-10 text-center">
-        <p className="text-lg font-semibold">No data yet</p>
-        <p className="text-subtext">
-          Register patients and the dashboard fills in by itself.
-        </p>
+        <p className="text-lg font-semibold">{t("dash.noData")}</p>
+        <p className="text-subtext">{t("dash.noDataHelp")}</p>
         <Link to="/register" className="btn btn-primary mx-auto sm:w-60">
-          Register first patient
+          {t("home.registerFirst")}
         </Link>
       </div>
     );
@@ -81,7 +83,7 @@ export function DashboardOverview() {
       <div className="card flex items-center justify-between gap-3">
         <button
           type="button"
-          aria-label="Previous month"
+          aria-label={t("dash.prevMonth")}
           className={ARROW}
           onClick={() => setMonth(shiftMonth(month, -1))}
         >
@@ -90,7 +92,7 @@ export function DashboardOverview() {
         <p className="text-lg font-bold">{monthLabel(month)}</p>
         <button
           type="button"
-          aria-label="Next month"
+          aria-label={t("dash.nextMonth")}
           className={ARROW}
           disabled={isCurrent}
           onClick={() => setMonth(shiftMonth(month, 1))}
@@ -100,32 +102,36 @@ export function DashboardOverview() {
       </div>
 
       <section className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-        <StatTile label="Total patients" value={stats.total} icon={Users} />
         <StatTile
-          label="New this month"
+          label={t("home.totalPatients")}
+          value={stats.total}
+          icon={Users}
+        />
+        <StatTile
+          label={t("dash.newMonth")}
           value={stats.newInMonth}
           icon={UserPlus}
         />
         <StatTile
-          label="Visits this month"
+          label={t("dash.visitsMonth")}
           value={stats.visitsInMonth}
           icon={Stethoscope}
         />
         <StatTile
-          label="Under 5"
+          label={t("badge.under5")}
           value={stats.under5}
           icon={Baby}
           tone="orange"
         />
         <StatTile
-          label="Pregnant"
+          label={t("patient.pregnant")}
           value={stats.pregnant}
           icon={HeartPulse}
           tone="pink"
         />
         <Link to="/dashboard?tab=followups">
           <StatTile
-            label="Follow-ups due (7 days)"
+            label={t("dash.followUps7")}
             value={followUps?.length ?? 0}
             icon={CalendarClock}
             tone="orange"
@@ -133,7 +139,7 @@ export function DashboardOverview() {
         </Link>
         <Link to="/dashboard?tab=reminders">
           <StatTile
-            label="SMS reminders queued"
+            label={t("dash.smsQueued")}
             value={sms?.pending ?? 0}
             icon={MessageSquare}
             tone="orange"
@@ -141,7 +147,7 @@ export function DashboardOverview() {
         </Link>
         <Link to="/dashboard?tab=reminders">
           <StatTile
-            label="Reachable by SMS"
+            label={t("dash.reachable")}
             value={sms?.reachable ?? 0}
             icon={Smartphone}
           />
@@ -149,22 +155,24 @@ export function DashboardOverview() {
       </section>
 
       <div className="grid gap-4 lg:grid-cols-2">
-        <ChartCard title="Gender" icon={Users}>
+        <ChartCard title={t("patient.gender")} icon={Users}>
           <GenderDonut female={stats.female} male={stats.male} />
         </ChartCard>
 
-        <ChartCard title="Age groups" icon={Calendar}>
+        <ChartCard title={t("dash.ageGroups")} icon={Calendar}>
           <VerticalBars
             data={stats.ageGroups}
             xKey="label"
             labels
-            series={[{ key: "value", name: "Patients", color: COLORS.teal }]}
+            series={[
+              { key: "value", name: t("nav.patients"), color: COLORS.teal },
+            ]}
           />
         </ChartCard>
 
-        <ChartCard title="Activity per day" icon={Activity} wide>
+        <ChartCard title={t("dash.activity")} icon={Activity} wide>
           {stats.newInMonth + stats.visitsInMonth === 0 ? (
-            <Empty text="No registrations or visits this month." />
+            <Empty text={t("dash.noActivity")} />
           ) : (
             <VerticalBars
               data={stats.perDay}
@@ -172,31 +180,31 @@ export function DashboardOverview() {
               series={[
                 {
                   key: "registrations",
-                  name: "Registrations",
+                  name: t("dash.registrations"),
                   color: COLORS.tealDark,
                 },
-                { key: "visits", name: "Visits", color: "#14B8A6" },
+                { key: "visits", name: t("dash.visits"), color: "#14B8A6" },
               ]}
             />
           )}
         </ChartCard>
 
-        <ChartCard title="Top diagnoses this month" icon={Stethoscope}>
+        <ChartCard title={t("dash.topDiagnoses")} icon={Stethoscope}>
           {stats.topDiagnoses.length ? (
             <HorizontalBars data={stats.topDiagnoses} color={COLORS.teal} />
           ) : (
-            <Empty text="No diagnoses recorded this month." />
+            <Empty text={t("dash.noDiagnoses")} />
           )}
         </ChartCard>
 
-        <ChartCard title="Top villages (all patients)" icon={MapPin}>
+        <ChartCard title={t("dash.topVillages")} icon={MapPin}>
           <HorizontalBars data={stats.topVillages} color={COLORS.tealDark} />
         </ChartCard>
       </div>
 
       {import.meta.env.DEV && (
         <p className="text-center text-sm text-subtext">
-          Stats computed on this device in {ms.toFixed(1)} ms
+          {t("dash.devStats", { ms: ms.toFixed(1) })}
         </p>
       )}
     </div>

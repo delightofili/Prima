@@ -592,4 +592,141 @@ export const dict: Partial<Record<Key, string>> = {
   "err.diaLower": "Diastolic ga-adịrị ala karịa systolic",
   "err.validDate": "Tinye ụbọchị ziri ezi",
   "err.followAfter": "Nleta ọzọ ga-abụrịrị mgbe ụbọchị nleta gasịrị",
+
+  // ----- small shared pieces
+  "glove.mode": "Ụdị uwe aka",
+  "app.notFound": "Achọtaghị ibe",
+  "app.goHome": "Laghachi n'ụlọ",
+
+  // ----- signing in and setting up a facility
+  "auth.opening": "Na-emeghe Prima…",
+  "auth.hidePassword": "Zoo paswọdụ",
+  "auth.showPassword": "Gosi paswọdụ",
+  "auth.tagline":
+    "Ndekọ ndị ọrịa maka ụlọ ọgwụ gị nke na-arụ ọrụ na-enweghị netwọk.",
+  "auth.signIn": "Banye",
+  "auth.createAccount": "Mepụta akaụntụ",
+  "auth.yourName": "Aha gị",
+  "auth.email": "Imeelụ",
+  "auth.password": "Paswọdụ",
+  "auth.passwordHint": "Opekata mpe mkpụrụedemede 8.",
+  "auth.wait": "Biko chere…",
+  "auth.needInternet":
+    "Ị chọrọ ịntanetị iji banye. Mgbe nke ahụ gasịrị, Prima na-emeghe ma na-arụ ọrụ na-enweghị netwọk.",
+  "auth.errName": "Tinye aha gị.",
+  "auth.errEmail": "Tinye adreesị imeelụ ziri ezi.",
+  "auth.errPassword": "Jiri paswọdụ nwere opekata mpe mkpụrụedemede 8.",
+  "auth.setupTitle": "Hazie ụlọ ọgwụ gị",
+  "auth.signedInAs": "Ị banyere dị ka {email}",
+  "auth.createFacility": "Mepụta ụlọ ọgwụ",
+  "auth.joinWithCode": "Sonye site na koodu",
+  "auth.adminNote":
+    "Ị ga-abụ onye nchịkwa ụlọ ọgwụ ahụ, ị nwekwara ike ịkpọ ndị ọrụ gị oku.",
+  "auth.facilityName": "Aha ụlọ ọgwụ",
+  "auth.facilityCode": "Koodu ụlọ ọgwụ",
+  "auth.facilityCodeHint":
+    "Mkpụrụedemede 2 ruo 5. Ọ na-amalite nọmba kaadị ọ bụla, dị ka ANK-7K3F9Q.",
+  "auth.createFacilityBtn": "Mepụta ụlọ ọgwụ",
+  "auth.joinHelp":
+    "Gwa onye nchịkwa ụlọ ọgwụ gị ka o nye gị koodu oku. Koodu ọ bụla na-arụ ọrụ otu ugboro.",
+  "auth.inviteCode": "Koodu oku",
+  "auth.joinFacility": "Sonye n'ụlọ ọgwụ",
+  "auth.differentAccount": "Jiri akaụntụ ọzọ",
+  "auth.errFacilityName": "Tinye aha ụlọ ọgwụ.",
+  "auth.errFacilityCode":
+    "Koodu ụlọ ọgwụ ga-abụrịrị mkpụrụedemede 2 ruo 5, dịka ANK.",
+  "auth.errLgaState": "Tinye LGA na steeti.",
+  "auth.errInvite": "Tinye koodu oku e nyere gị.",
+  "auth.endedTitle": "Ohere gị agwụla",
+  "auth.endedBody":
+    "Ị anọghịzi n'{name}, ya mere enweghị ike imeghe ndekọ ndị ọrịa ya n'ekwentị a. Hichapụ ihe niile echekwara n'ekwentị a wee pụọ iji chebe nzuzo ndị ọrịa.",
+  "auth.eraseSignOut": "Hichapụ ekwentị a wee pụọ",
+  "auth.checkAgain": "Lelee ọzọ (echere m na nke a bụ njehie)",
+  "auth.foreignTitle": "Ekwentị a nwere ndekọ nke ụlọ ọgwụ ọzọ",
+  "auth.foreignBody":
+    "Edebere ndekọ sitere n'ụlọ ọgwụ ọzọ n'ekwentị a. Ọ ga-adị mkpa ihichapụ ha tupu ị gaa n'ihu, ka ndị ọrịa ụlọ ọgwụ abụọ ahụ ghara ịgwakọta.",
+  "auth.unsynced_other":
+    "Mgbanwe {count} e jibeghị bulite ma ọ ga-efu. Banye n'ụlọ ọgwụ ọzọ ahụ buru ụzọ ma ọ dị gị mkpa.",
+  "auth.eraseContinue": "Hichapụ ma gaa n'ihu",
+  "auth.signInAgain": "Banye ọzọ",
+  "auth.reauthHelp":
+    "Ndekọ gị dị nchebe n'ekwentị a. Ịbanye ọzọ na-enye ha ohere ibulite.",
+  "authErr.wrongLogin": "Imeelụ ma ọ bụ paswọdụ adịghị mma.",
+  "authErr.exists": "Imeelụ a nwerelarị akaụntụ. Nwaa ịbanye.",
+  "authErr.network": "Enweghị ịntanetị. Ị chọrọ njikọ maka nzọụkwụ a.",
+  "authErr.rate": "Ọtụtụ nnwale. Chere nkeji ole na ole ma nwaa ọzọ.",
+  "authErr.generic": "Ihe gbagoro.",
+
+  // ----- PIN, lock screen and security
+  "lock.choose": "Họrọ PIN nwere ọnụọgụ 6",
+  "lock.repeat": "Kwughachi PIN ahụ",
+  "lock.differ": "PIN abụọ ahụ adịghị otu. Malite ọzọ.",
+  "lock.protectTitle": "Chebe ekwentị a",
+  "lock.protectSub":
+    "Ị ga-etinye PIN a mgbe ọ bụla Prima meghere ma ọ bụ mechie.",
+  "lock.protectNote":
+    "PIN na-egbochi ndị na-achọ ịhụ ihe n'enweghị ihe ha chọrọ. Jikwa mkpọchi ihuenyo ekwentị gị na-arụ ọrụ.",
+  "lock.locked": "Prima mechiri",
+  "lock.tooMany": "PIN ndị na-ezighi ezi dị ọtụtụ.",
+  "lock.wrong": "PIN adịghị mma.",
+  "lock.resetMsg":
+    "PIN ndị na-ezighi ezi dị ọtụtụ. Jiri paswọdụ gị banye ka ịtọọ nke ọhụrụ.",
+  "lock.wait_other": "Nnwale ndị na-ezighi ezi dị ọtụtụ. Chere sekọnd {count}.",
+  "lock.forgot": "Echefuru PIN? Jiri paswọdụ gị banye",
+  "lock.newPinTitle": "Tọọ PIN ọhụrụ",
+  "lock.forgotHelp":
+    "Tinye paswọdụ akaụntụ gị iji gosi na ọ bụ gị. Ị chọrọ ịntanetị maka nke a.",
+  "lock.continue": "Gaa n'ihu",
+  "lock.enterCurrent": "Tinye PIN gị ugbu a",
+  "security.title": "Nchekwa",
+  "security.lockNow": "Mechie ugbu a",
+  "security.changePin": "Gbanwee PIN",
+  "security.autoLock": "Mechie n'onwe ya mgbe",
+  "security.minutes_other": "nkeji {count} n'enweghị iji ya",
+  "security.note":
+    "PIN na-egbochi ndị na-achọ ịhụ ihe n'enweghị ihe ha chọrọ. Ọ bụ mkpọchi, ọ bụghị akpati nchekwa: jikwa mkpọchi ihuenyo ekwentị gị na-arụ ọrụ, gwakwa onye nchịkwa gị ozugbo ma ọ bụrụ na ekwentị ahụ furu efu.",
+  "session.reauth":
+    "Banye ọzọ ka ọ na-aga n'ihu na-ebulite. Ndekọ gị dị nchebe n'ekwentị a.",
+  "session.offline":
+    "Ị anọghị n'ịntanetị. Prima na-arụ ọrụ dị ka mgbe niile ma ọ ga-ebulite ozugbo ị banyere ọzọ n'ịntanetị.",
+
+  // ----- the dashboard and follow-ups
+  "dash.noData": "Enweghị data ọ bụla",
+  "dash.noDataHelp": "Debanye ndị ọrịa aha, bọọdụ ahụ ga-ejupụta n'onwe ya.",
+  "dash.prevMonth": "Ọnwa gara aga",
+  "dash.nextMonth": "Ọnwa na-esote",
+  "dash.newMonth": "Ndị ọhụrụ n'ọnwa a",
+  "dash.visitsMonth": "Nleta n'ọnwa a",
+  "dash.followUps7": "Nleta ọzọ kwesịrị ime (ụbọchị 7)",
+  "dash.smsQueued": "Ncheta SMS na-eche",
+  "dash.reachable": "Ndị a ga-eji SMS rute",
+  "dash.ageGroups": "Ìgwè afọ",
+  "dash.activity": "Ọrụ kwa ụbọchị",
+  "dash.topDiagnoses": "Nchoputa ndị kachasị n'ọnwa a",
+  "dash.topVillages": "Obodo ndị kachasị (ndị ọrịa niile)",
+  "dash.noActivity": "Enweghị ndebanye aha ma ọ bụ nleta n'ọnwa a.",
+  "dash.noDiagnoses": "Edekọghị nchoputa ọ bụla n'ọnwa a.",
+  "dash.registrations": "Ndebanye aha",
+  "dash.visits": "Nleta",
+  "dash.devStats": "E gbakọrọ ọnụ ọgụgụ n'ngwaọrụ a n'ime {ms} ms",
+  "dash.tabOverview": "Nchịkọta",
+  "dash.tabFollowUps": "Nleta ọzọ",
+  "dash.tabReminders": "Ncheta",
+  "dash.tabReport": "Akụkọ LGA",
+  "dash.subtitle": "Ụlọ ọgwụ gị n'otu leba anya, e gbakọrọ ya n'ngwaọrụ a.",
+  "fu.overdueBy_other": "Gafere oge site na ụbọchị {count}",
+  "fu.dueToday": "Kwesịrị taa",
+  "fu.dueIn_other": "Kwesịrị n'ime ụbọchị {count} · {date}",
+  "fu.days": "Ụbọchị {count}",
+  "fu.callAbout": "Kpọọ maka {name}",
+  "fu.overdue": "Gafere oge",
+  "fu.comingUp": "Na-abịa",
+  "fu.count_other": "Nleta ọzọ {count}",
+  "fu.summary": "{overdue} gafere oge · {today} taa · {upcoming} na-abịa",
+  "fu.allCaughtUp": "Ihe niile emechaala",
+  "fu.nothing":
+    "Ọ dịghị ihe gafere oge ma ọ bụ kwesịrị n'ime ụbọchị {days} ndị na-abịa.",
+  "fu.upgradeTitle": "Lee onye kwesịrị, kpọkwa ya",
+  "fu.upgradeText":
+    "Atụmatụ Pro na-edepụta onye ọrịa ọ bụla nwere nleta ọzọ ma ọ bụ ọgwụ mgbochi gafere oge ma ọ bụ na-abịa, na otu mmetụ iji kpọọ onye ọrịa ma ọ bụ onye na-elekọta ya.",
 };

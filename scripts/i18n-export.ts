@@ -57,6 +57,15 @@ const WHERE: Record<string, string> = {
   upgrade: "Upgrade window",
   vitals: "Notes next to a reading",
   stepper: "Number boxes with plus and minus",
+  glove: "Glove mode switch",
+  app: "Page not found",
+  auth: "Signing in and setting up a facility",
+  authErr: "Sign-in error messages",
+  lock: "PIN and lock screen",
+  security: "Security card on the Account page",
+  session: "Sign in again banner",
+  dash: "Dashboard",
+  fu: "Follow-ups tab",
 };
 
 const q = (s: string) => `"${s.replace(/"/g, '""')}"`;

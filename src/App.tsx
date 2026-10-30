@@ -18,13 +18,15 @@ import { ScanPage } from "./pages/ScanPage";
 import { PatientCardPage } from "./pages/PatientCardPage";
 import { SyncDoctorPage } from "./pages/SyncDoctorPage";
 import { TranslationsPage } from "./pages/TranslationsPage";
+import { useI18n } from "./i18n";
 
 function NotFound() {
+  const { t } = useI18n();
   return (
     <div className="card mx-auto max-w-md space-y-3 text-center">
-      <p className="text-lg font-semibold">Page not found</p>
+      <p className="text-lg font-semibold">{t("app.notFound")}</p>
       <Link to="/" className="btn btn-secondary">
-        Go home
+        {t("app.goHome")}
       </Link>
     </div>
   );

@@ -587,4 +587,142 @@ export const dict: Partial<Record<Key, string>> = {
   "err.diaLower": "Diastolic gbọdọ̀ kéré sí systolic",
   "err.validDate": "Tẹ ọjọ́ tó tọ́",
   "err.followAfter": "Àbẹ̀wò àtẹ̀lé gbọdọ̀ jẹ́ lẹ́yìn ọjọ́ àbẹ̀wò",
+
+  // ----- small shared pieces
+  "glove.mode": "Ìgbà ìbọwọ́",
+  "app.notFound": "A kò rí ojú-ìwé náà",
+  "app.goHome": "Padà sílé",
+
+  // ----- signing in and setting up a facility
+  "auth.opening": "Ń ṣí Prima…",
+  "auth.hidePassword": "Fi ọ̀rọ̀ aṣínà pamọ́",
+  "auth.showPassword": "Fi ọ̀rọ̀ aṣínà hàn",
+  "auth.tagline":
+    "Àkọsílẹ̀ àwọn aláìsàn fún ilé ìwòsàn rẹ tó ń ṣiṣẹ́ láìsí nẹ́tíwọ́ọ̀kì.",
+  "auth.signIn": "Wọlé",
+  "auth.createAccount": "Ṣẹ̀dá àkáǹtì",
+  "auth.yourName": "Orúkọ rẹ",
+  "auth.email": "Ímeèlì",
+  "auth.password": "Ọ̀rọ̀ aṣínà",
+  "auth.passwordHint": "Kò gbọdọ̀ dín ní lẹ́tà 8.",
+  "auth.wait": "Jọ̀wọ́ dúró…",
+  "auth.needInternet":
+    "O nílò íńtánẹ́ẹ̀tì láti wọlé. Lẹ́yìn náà, Prima á ṣí, á sì ṣiṣẹ́ láìsí nẹ́tíwọ́ọ̀kì.",
+  "auth.errName": "Tẹ orúkọ rẹ.",
+  "auth.errEmail": "Tẹ àdírẹ́sì ímeèlì tó tọ́.",
+  "auth.errPassword": "Lo ọ̀rọ̀ aṣínà tí kò dín ní lẹ́tà 8.",
+  "auth.setupTitle": "Ṣètò ilé ìwòsàn rẹ",
+  "auth.signedInAs": "O ti wọlé gẹ́gẹ́ bí {email}",
+  "auth.createFacility": "Ṣẹ̀dá ilé ìwòsàn",
+  "auth.joinWithCode": "Darapọ̀ pẹ̀lú kóòdù",
+  "auth.adminNote":
+    "O máa di alábòójútó ilé ìwòsàn náà, o sì lè pe àwọn òṣìṣẹ́ rẹ.",
+  "auth.facilityName": "Orúkọ ilé ìwòsàn",
+  "auth.facilityCode": "Kóòdù ilé ìwòsàn",
+  "auth.facilityCodeHint":
+    "Lẹ́tà 2 sí 5. Ó máa ń bẹ̀rẹ̀ gbogbo nọ́mbà káàdì, bíi ANK-7K3F9Q.",
+  "auth.createFacilityBtn": "Ṣẹ̀dá ilé ìwòsàn",
+  "auth.joinHelp":
+    "Béèrè kóòdù ìpè lọ́wọ́ alábòójútó ilé ìwòsàn rẹ. Kóòdù kọ̀ọ̀kan ń ṣiṣẹ́ lẹ́ẹ̀kan péré.",
+  "auth.inviteCode": "Kóòdù ìpè",
+  "auth.joinFacility": "Darapọ̀ mọ́ ilé ìwòsàn",
+  "auth.differentAccount": "Lo àkáǹtì mìíràn",
+  "auth.errFacilityName": "Tẹ orúkọ ilé ìwòsàn.",
+  "auth.errFacilityCode":
+    "Kóòdù ilé ìwòsàn gbọdọ̀ jẹ́ lẹ́tà 2 sí 5, bí àpẹẹrẹ ANK.",
+  "auth.errLgaState": "Tẹ LGA àti ìpínlẹ̀.",
+  "auth.errInvite": "Tẹ kóòdù ìpè tí a fún ọ.",
+  "auth.endedTitle": "Àyè rẹ ti parí",
+  "auth.endedBody":
+    "O kò sí lára {name} mọ́, nítorí náà a kò lè ṣí àwọn àkọsílẹ̀ aláìsàn rẹ̀ lórí fóònù yìí. Pa ẹ̀dà fóònù yìí rẹ́ kí o sì jáde láti dáàbò bo àṣírí àwọn aláìsàn.",
+  "auth.eraseSignOut": "Pa fóònù yìí rẹ́ kí o sì jáde",
+  "auth.checkAgain": "Tún ṣàyẹ̀wò (mo rò pé àṣìṣe ni èyí)",
+  "auth.foreignTitle": "Fóònù yìí ní àkọsílẹ̀ ilé ìwòsàn mìíràn",
+  "auth.foreignBody":
+    "A fi àkọsílẹ̀ láti ilé ìwòsàn mìíràn pamọ́ sórí fóònù yìí. Wọ́n gbọdọ̀ parẹ́ kí o tó tẹ̀síwájú, kí àwọn aláìsàn ilé ìwòsàn méjèèjì má baà dàpọ̀.",
+  "auth.unsynced_other":
+    "Àyípadà {count} kò tíì gbéra sókè, yóò sì parẹ́. Wọlé sí ilé ìwòsàn kejì ná tí ó bá ṣe pàtàkì.",
+  "auth.eraseContinue": "Pa rẹ́ kí o tẹ̀síwájú",
+  "auth.signInAgain": "Tún wọlé",
+  "auth.reauthHelp":
+    "Àwọn àkọsílẹ̀ rẹ wà ní ààbò lórí fóònù yìí. Tún wọlé yóò jẹ́ kí wọ́n gbé ara wọn sókè.",
+  "authErr.wrongLogin": "Ímeèlì tàbí ọ̀rọ̀ aṣínà kò tọ́.",
+  "authErr.exists": "Ímeèlì yìí ti ní àkáǹtì tẹ́lẹ̀. Gbìyànjú láti wọlé.",
+  "authErr.network": "Kò sí íńtánẹ́ẹ̀tì. O nílò ìsopọ̀ fún ìgbésẹ̀ yìí.",
+  "authErr.rate": "Ìgbìyànjú pọ̀ jù. Dúró fún ìṣẹ́jú díẹ̀ kí o tún gbìyànjú.",
+  "authErr.generic": "Nǹkan kan ṣẹlẹ̀ tí kò tọ́.",
+
+  // ----- PIN, lock screen and security
+  "lock.choose": "Yan PIN oní nọ́mbà 6",
+  "lock.repeat": "Tún PIN náà tẹ̀",
+  "lock.differ": "Àwọn PIN méjèèjì kò jọra. Bẹ̀rẹ̀ lẹ́ẹ̀kan sí i.",
+  "lock.protectTitle": "Dáàbò bo fóònù yìí",
+  "lock.protectSub":
+    "Wàá tẹ PIN yìí nígbàkúùgbà tí Prima bá ṣí tàbí tí ó bá tì.",
+  "lock.protectNote":
+    "PIN ń dènà àwọn tó ń yọjú lásán. Jẹ́ kí ìdènà ojú-ìwé fóònù rẹ náà wà ní títàn.",
+  "lock.locked": "Prima ti tì",
+  "lock.tooMany": "PIN tí kò tọ́ pọ̀ jù.",
+  "lock.wrong": "PIN kò tọ́.",
+  "lock.resetMsg":
+    "PIN tí kò tọ́ pọ̀ jù. Wọlé pẹ̀lú ọ̀rọ̀ aṣínà rẹ láti ṣètò tuntun.",
+  "lock.wait_other": "Ìgbìyànjú tí kò tọ́ pọ̀ jù. Dúró fún ìṣẹ́jú-àáyá {count}.",
+  "lock.forgot": "O gbàgbé PIN? Wọlé pẹ̀lú ọ̀rọ̀ aṣínà rẹ",
+  "lock.newPinTitle": "Ṣètò PIN tuntun",
+  "lock.forgotHelp":
+    "Tẹ ọ̀rọ̀ aṣínà àkáǹtì rẹ láti fi hàn pé ìwọ ni. O nílò íńtánẹ́ẹ̀tì fún èyí.",
+  "lock.continue": "Tẹ̀síwájú",
+  "lock.enterCurrent": "Tẹ PIN rẹ lọ́wọ́lọ́wọ́",
+  "security.title": "Ààbò",
+  "security.lockNow": "Tì báyìí",
+  "security.changePin": "Yí PIN padà",
+  "security.autoLock": "Tì fúnra rẹ̀ lẹ́yìn",
+  "security.minutes_other": "ìṣẹ́jú {count} láìlò ó",
+  "security.note":
+    "PIN ń dènà àwọn tó ń yọjú lásán. Ìdè ni, kì í ṣe àpótí ààbò: jẹ́ kí ìdènà ojú-ìwé fóònù rẹ náà wà ní títàn, kí o sì sọ fún alábòójútó rẹ lẹ́sẹ̀kẹsẹ̀ bí fóònù bá sọnù.",
+  "session.reauth":
+    "Tún wọlé kí ìgbéra-sókè lè máa tẹ̀síwájú. Àwọn àkọsílẹ̀ rẹ wà ní ààbò lórí fóònù yìí.",
+  "session.offline":
+    "O kò sí lórí íńtánẹ́ẹ̀tì. Prima ń ṣiṣẹ́ bí ó ti yẹ yóò sì gbé ara rẹ̀ sókè nígbà tí o bá tún wọlé lórí íńtánẹ́ẹ̀tì.",
+
+  // ----- the dashboard and follow-ups
+  "dash.noData": "Kò sí dátà síbẹ̀",
+  "dash.noDataHelp":
+    "Forúkọ àwọn aláìsàn sílẹ̀, pẹpẹ ìṣàkóso yóò sì kún fúnra rẹ̀.",
+  "dash.prevMonth": "Oṣù tó kọjá",
+  "dash.nextMonth": "Oṣù tó kàn",
+  "dash.newMonth": "Tuntun ní oṣù yìí",
+  "dash.visitsMonth": "Àwọn àbẹ̀wò ní oṣù yìí",
+  "dash.followUps7": "Àbẹ̀wò àtẹ̀lé tó ń dúró (ọjọ́ 7)",
+  "dash.smsQueued": "Ìrántí SMS tó ń dúró",
+  "dash.reachable": "Àwọn tí a lè dé nípasẹ̀ SMS",
+  "dash.ageGroups": "Àwọn ẹgbẹ́ ọjọ́-orí",
+  "dash.activity": "Iṣẹ́ ní ojoojúmọ́",
+  "dash.topDiagnoses": "Àwọn àyẹ̀wò àrùn tó pọ̀ jù ní oṣù yìí",
+  "dash.topVillages": "Àwọn abúlé tó pọ̀ jù (gbogbo aláìsàn)",
+  "dash.noActivity": "Kò sí ìforúkọsílẹ̀ tàbí àbẹ̀wò ní oṣù yìí.",
+  "dash.noDiagnoses": "A kò ṣe àkọsílẹ̀ àyẹ̀wò àrùn kankan ní oṣù yìí.",
+  "dash.registrations": "Ìforúkọsílẹ̀",
+  "dash.visits": "Àwọn àbẹ̀wò",
+  "dash.devStats": "A ṣírò àwọn ìṣirò lórí ẹ̀rọ yìí láàrin {ms} ms",
+  "dash.tabOverview": "Àkópọ̀",
+  "dash.tabFollowUps": "Àbẹ̀wò àtẹ̀lé",
+  "dash.tabReminders": "Ìrántí",
+  "dash.tabReport": "Ìròyìn LGA",
+  "dash.subtitle": "Ilé ìwòsàn rẹ ní àkópọ̀, a ṣírò rẹ̀ lórí ẹ̀rọ yìí.",
+  "fu.overdueBy_other": "Ó ti kọjá àkókò fún ọjọ́ {count}",
+  "fu.dueToday": "Ó tó lónìí",
+  "fu.dueIn_other": "Ó tó láàrin ọjọ́ {count} · {date}",
+  "fu.days": "Ọjọ́ {count}",
+  "fu.callAbout": "Pe nípa {name}",
+  "fu.overdue": "Ti kọjá àkókò",
+  "fu.comingUp": "Tó ń bọ̀",
+  "fu.count_other": "Àbẹ̀wò àtẹ̀lé {count}",
+  "fu.summary": "{overdue} ti kọjá àkókò · {today} lónìí · {upcoming} tó ń bọ̀",
+  "fu.allCaughtUp": "Gbogbo rẹ̀ ti tán",
+  "fu.nothing":
+    "Kò sí ohun tó ti kọjá àkókò tàbí tó tó láàrin ọjọ́ {days} tó ń bọ̀.",
+  "fu.upgradeTitle": "Wo ẹni tó tó, kí o sì pè wọ́n",
+  "fu.upgradeText":
+    "Ètò Pro ń ṣe àtòjọ gbogbo aláìsàn tó ní àbẹ̀wò àtẹ̀lé tàbí abẹ́rẹ́ àjẹsára tó ti kọjá àkókò tàbí tó ń bọ̀, pẹ̀lú ìfọwọ́kan kan láti pe aláìsàn tàbí olùtọ́jú.",
 };

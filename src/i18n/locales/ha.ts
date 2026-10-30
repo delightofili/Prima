@@ -615,4 +615,153 @@ export const dict: Partial<Record<Key, string>> = {
   "err.diaLower": "Diastolic dole ya yi ƙasa da systolic",
   "err.validDate": "Shigar da ingantacciyar rana",
   "err.followAfter": "Ziyarar biyo baya dole ta zama bayan ranar ziyara",
+
+  // ----- small shared pieces
+  "glove.mode": "Yanayin safar hannu",
+  "app.notFound": "Ba a sami shafi ba",
+  "app.goHome": "Koma gida",
+
+  // ----- signing in and setting up a facility
+  "auth.opening": "Ana buɗe Prima…",
+  "auth.hidePassword": "Ɓoye kalmar sirri",
+  "auth.showPassword": "Nuna kalmar sirri",
+  "auth.tagline":
+    "Bayanan marasa lafiya na asibitinka waɗanda ke aiki ba tare da network ba.",
+  "auth.signIn": "Shiga",
+  "auth.createAccount": "Buɗe asusu",
+  "auth.yourName": "Sunanka",
+  "auth.email": "Imel",
+  "auth.password": "Kalmar sirri",
+  "auth.passwordHint": "Aƙalla haruffa 8.",
+  "auth.wait": "Da fatan a jira…",
+  "auth.needInternet":
+    "Kana buƙatar intanet don shiga. Bayan haka, Prima tana buɗewa kuma tana aiki ba tare da network ba.",
+  "auth.errName": "Shigar da sunanka.",
+  "auth.errEmail": "Shigar da ingantaccen adireshin imel.",
+  "auth.errPassword": "Yi amfani da kalmar sirri mai haruffa aƙalla 8.",
+  "auth.setupTitle": "Tsara asibitinka",
+  "auth.signedInAs": "An shiga a matsayin {email}",
+  "auth.createFacility": "Buɗe asibiti",
+  "auth.joinWithCode": "Shiga da lamba",
+  "auth.adminNote":
+    "Za ka zama mai kula da asibitin kuma za ka iya gayyatar ma'aikatanka.",
+  "auth.facilityName": "Sunan asibiti",
+  "auth.facilityCode": "Lambar asibiti",
+  "auth.facilityCodeHint":
+    "Haruffa 2 zuwa 5. Yana farawa kowace lambar kati, kamar ANK-7K3F9Q.",
+  "auth.createFacilityBtn": "Buɗe asibiti",
+  "auth.joinHelp":
+    "Ka tambayi mai kula da asibitinka lambar gayyata. Kowace lamba tana aiki sau ɗaya.",
+  "auth.inviteCode": "Lambar gayyata",
+  "auth.joinFacility": "Shiga asibiti",
+  "auth.differentAccount": "Yi amfani da wani asusu",
+  "auth.errFacilityName": "Shigar da sunan asibiti.",
+  "auth.errFacilityCode":
+    "Lambar asibiti dole ta zama haruffa 2 zuwa 5, misali ANK.",
+  "auth.errLgaState": "Shigar da LGA da jiha.",
+  "auth.errInvite": "Shigar da lambar gayyatar da aka ba ka.",
+  "auth.endedTitle": "Damar shigarka ta ƙare",
+  "auth.endedBody":
+    "Ba ka cikin {name} kuma, don haka ba za a iya buɗe bayanan marasa lafiyarta a wannan waya ba. Goge kwafin wannan waya ka fita don kare sirrin marasa lafiya.",
+  "auth.eraseSignOut": "Goge wannan waya ka fita",
+  "auth.checkAgain": "Sake dubawa (ina tsammanin kuskure ne)",
+  "auth.foreignTitle": "Wannan waya tana da bayanan wani asibiti",
+  "auth.foreignBody":
+    "Ana ajiye bayanai daga wani asibiti a wannan waya. Dole a goge su kafin ka ci gaba, don kada marasa lafiyar asibitocin biyu su haɗu.",
+  "auth.unsynced_one":
+    "Canji {count} bai daidaita ba tukuna kuma zai ɓace. Shiga cikin ɗayan asibitin tukuna idan yana da muhimmanci.",
+  "auth.unsynced_other":
+    "Canje-canje {count} ba su daidaita ba tukuna kuma za su ɓace. Shiga cikin ɗayan asibitin tukuna idan yana da muhimmanci.",
+  "auth.eraseContinue": "Goge ka ci gaba",
+  "auth.signInAgain": "Sake shiga",
+  "auth.reauthHelp":
+    "Bayananka suna lafiya a wannan waya. Sake shiga yana ba su damar daidaitawa.",
+  "authErr.wrongLogin": "Imel ko kalmar sirri ba daidai ba ne.",
+  "authErr.exists": "Wannan imel ya riga yana da asusu. Gwada shiga.",
+  "authErr.network":
+    "Babu intanet. Kana buƙatar haɗin yanar gizo don wannan mataki.",
+  "authErr.rate": "An yi yunƙuri da yawa. Ka jira ƴan mintuna ka sake gwadawa.",
+  "authErr.generic": "Wani abu ya yi kuskure.",
+
+  // ----- PIN, lock screen and security
+  "lock.choose": "Zaɓi PIN mai lamba 6",
+  "lock.repeat": "Maimaita PIN ɗin",
+  "lock.differ": "PIN ɗin biyu ba ɗaya ba ne. Fara daga farko.",
+  "lock.protectTitle": "Kare wannan waya",
+  "lock.protectSub":
+    "Za ka shigar da wannan PIN duk lokacin da Prima ta buɗe ko ta kulle.",
+  "lock.protectNote":
+    "PIN yana hana masu leƙen asiri shiga. Ka kuma bar makullin allon wayarka a kunne.",
+  "lock.locked": "An kulle Prima",
+  "lock.tooMany": "PIN ɗin da ba daidai ba sun yi yawa.",
+  "lock.wrong": "PIN ɗin ba daidai ba ne.",
+  "lock.resetMsg":
+    "PIN ɗin da ba daidai ba sun yi yawa. Shiga da kalmar sirrinka don saita sabo.",
+  "lock.wait_one":
+    "Yunƙurin da ba daidai ba sun yi yawa. Ka jira daƙiƙa {count}.",
+  "lock.wait_other":
+    "Yunƙurin da ba daidai ba sun yi yawa. Ka jira daƙiƙa {count}.",
+  "lock.forgot": "Ka manta PIN? Shiga da kalmar sirrinka",
+  "lock.newPinTitle": "Saita sabon PIN",
+  "lock.forgotHelp":
+    "Shigar da kalmar sirrin asusunka don tabbatar da kai ne. Kana buƙatar intanet don wannan.",
+  "lock.continue": "Ci gaba",
+  "lock.enterCurrent": "Shigar da PIN ɗinka na yanzu",
+  "security.title": "Tsaro",
+  "security.lockNow": "Kulle yanzu",
+  "security.changePin": "Canza PIN",
+  "security.autoLock": "Kulle kai tsaye bayan",
+  "security.minutes_one": "minti {count} ba tare da amfani ba",
+  "security.minutes_other": "mintuna {count} ba tare da amfani ba",
+  "security.note":
+    "PIN yana hana masu leƙen asiri. Makulli ne, ba amintaccen ɗaki ba: ka kuma bar makullin allon wayarka a kunne, ka gaya wa mai kula da kai nan da nan idan waya ta ɓace.",
+  "session.reauth":
+    "Sake shiga don ci gaba da daidaitawa. Bayananka suna lafiya a wannan waya.",
+  "session.offline":
+    "Ba ka kan intanet. Prima tana aiki kamar yadda aka saba kuma za ta daidaita da zarar ka sake shiga a kan intanet.",
+
+  // ----- the dashboard and follow-ups
+  "dash.noData": "Babu bayanai tukuna",
+  "dash.noDataHelp":
+    "Yi wa marasa lafiya rajista kuma allon bayanai zai cika da kansa.",
+  "dash.prevMonth": "Watan da ya gabata",
+  "dash.nextMonth": "Wata mai zuwa",
+  "dash.newMonth": "Sababbi a wannan wata",
+  "dash.visitsMonth": "Ziyarori a wannan wata",
+  "dash.followUps7": "Ziyarorin biyo baya masu jiran lokaci (kwanaki 7)",
+  "dash.smsQueued": "Tunatarwar SMS da ke jira",
+  "dash.reachable": "Waɗanda za a iya kaiwa ta SMS",
+  "dash.ageGroups": "Rukunin shekaru",
+  "dash.activity": "Ayyuka a kowace rana",
+  "dash.topDiagnoses": "Manyan ganewar asali a wannan wata",
+  "dash.topVillages": "Manyan ƙauyuka (duk marasa lafiya)",
+  "dash.noActivity": "Babu rajista ko ziyara a wannan wata.",
+  "dash.noDiagnoses": "Ba a rubuta wani ganewar asali a wannan wata ba.",
+  "dash.registrations": "Rajista",
+  "dash.visits": "Ziyarori",
+  "dash.devStats": "An ƙirga ƙididdiga a wannan na'ura cikin {ms} ms",
+  "dash.tabOverview": "Taƙaitaccen bayani",
+  "dash.tabFollowUps": "Ziyarorin biyo baya",
+  "dash.tabReminders": "Tunatarwa",
+  "dash.tabReport": "Rahoton LGA",
+  "dash.subtitle": "Asibitinka a taƙaice, an ƙirga ta a wannan na'ura.",
+  "fu.overdueBy_one": "Ya wuce lokaci da kwana {count}",
+  "fu.overdueBy_other": "Ya wuce lokaci da kwanaki {count}",
+  "fu.dueToday": "Ya kamata yau",
+  "fu.dueIn_one": "Ya kamata cikin kwana {count} · {date}",
+  "fu.dueIn_other": "Ya kamata cikin kwanaki {count} · {date}",
+  "fu.days": "Kwanaki {count}",
+  "fu.callAbout": "Kira game da {name}",
+  "fu.overdue": "Ya wuce lokaci",
+  "fu.comingUp": "Masu zuwa",
+  "fu.count_one": "Ziyarar biyo baya {count}",
+  "fu.count_other": "Ziyarori na biyo baya {count}",
+  "fu.summary":
+    "{overdue} sun wuce lokaci · {today} yau · {upcoming} masu zuwa",
+  "fu.allCaughtUp": "Komai ya kammala",
+  "fu.nothing":
+    "Babu abin da ya wuce lokaci ko ya kamata cikin kwanaki {days} masu zuwa.",
+  "fu.upgradeTitle": "Duba wanda ya kamata, ka kira su",
+  "fu.upgradeText":
+    "Tsarin Pro yana lissafa kowane mara lafiya mai ziyarar biyo baya ko allura da ta wuce lokaci ko mai zuwa, tare da taɓawa ɗaya don kiran mara lafiyar ko mai kula da shi.",
 };

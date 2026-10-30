@@ -1,6 +1,7 @@
 import { useEffect, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { X } from "lucide-react";
+import { useI18n } from "../i18n";
 
 interface Props {
   title: string;
@@ -11,6 +12,7 @@ interface Props {
 }
 
 export function Modal({ title, children, onClose, dismissible = true }: Props) {
+  const { t } = useI18n();
   useEffect(() => {
     if (!dismissible || !onClose) return;
     const onKey = (e: KeyboardEvent) => {
@@ -37,7 +39,7 @@ export function Modal({ title, children, onClose, dismissible = true }: Props) {
           {dismissible && onClose && (
             <button
               type="button"
-              aria-label="Close"
+              aria-label={t("common.close")}
               className="p-2"
               onClick={onClose}
             >

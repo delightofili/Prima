@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { createPortal } from "react-dom";
 import { TriangleAlert } from "lucide-react";
+import { useI18n } from "../i18n";
 
 interface Props {
   title: string;
@@ -17,6 +18,7 @@ export function ConfirmDialog({
   onConfirm,
   onCancel,
 }: Props) {
+  const { t } = useI18n();
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") onCancel();
@@ -55,7 +57,7 @@ export function ConfirmDialog({
             className="btn btn-secondary md:w-36"
             onClick={onCancel}
           >
-            Cancel
+            {t("common.cancel")}
           </button>
           <button
             type="button"

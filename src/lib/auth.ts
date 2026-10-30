@@ -1,4 +1,5 @@
 import { db } from "../db";
+import { en, type Key } from "../i18n/locales/en";
 import type { FacilityInfo } from "./config";
 import { supabase } from "./supabase";
 
@@ -192,16 +193,25 @@ export async function eraseLocalDataOnly() {
 
 /* ---------- friendly wording ---------- */
 
-export function friendlyError(e: unknown): string {
-  const msg = (e as { message?: string })?.message ?? "Something went wrong.";
-  if (/invalid login credentials/i.test(msg)) return "Wrong email or password.";
+// The message for a screen: a dictionary key when Prima has its own words for the problem (the screen turns it
+// into the person's language with tv), otherwise the server's own message as it came.
+export function friendlyErrorKey(e: unknown): string {
+  const msg = (e as { message?: string })?.message;
+  if (!msg) return "authErr.generic" satisfies Key;
+  if (/invalid login credentials/i.test(msg))
+    return "authErr.wrongLogin" satisfies Key;
   if (/already registered|already exists/i.test(msg))
-    return "This email already has an account. Try signing in.";
+    return "authErr.exists" satisfies Key;
   if (/failed to fetch|network|load failed/i.test(msg))
-    return "No internet. You need a connection for this step.";
-  if (/rate limit|too many/i.test(msg))
-    return "Too many tries. Wait a few minutes and try again.";
+    return "authErr.network" satisfies Key;
+  if (/rate limit|too many/i.test(msg)) return "authErr.rate" satisfies Key;
   return msg;
+}
+
+// The same thing as an English sentence, for code that has not been converted
+export function friendlyError(e: unknown): string {
+  const k = friendlyErrorKey(e);
+  return k in en ? en[k as Key] : k;
 }
 
 const SKIP = new Set([

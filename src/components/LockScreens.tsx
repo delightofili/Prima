@@ -2,7 +2,7 @@ import { useEffect, useState, type FormEvent, type ReactNode } from "react";
 import { LogOut, ShieldCheck } from "lucide-react";
 import { useAuth } from "../hooks/useAuth";
 import { logAudit } from "../lib/audit";
-import { friendlyError } from "../lib/auth";
+import { friendlyErrorKey } from "../lib/auth";
 import {
   createPin,
   readGuard,
@@ -18,6 +18,13 @@ import { Field } from "./FormBits";
 import { Logo } from "./Logo";
 import { Modal } from "./Modal";
 import { PinPad } from "./PinPad";
+import { useI18n } from "../i18n";
+
+// The confidentiality promise is legal wording: it stays in English until the privacy review (Day 27)
+const ACK_TITLE = "Patient confidentiality";
+const ACK_SUBTITLE = "Please read and agree before you continue.";
+const ACK_AGREE = "I agree to these terms.";
+const ACK_DRAFT = "Draft wording. Have it reviewed before real use.";
 
 function LockShell({
   title,
@@ -49,6 +56,7 @@ export function PinSetup({
   userId: string;
   onDone: (rec: PinRecord) => void;
 }) {
+  const { t, tv } = useI18n();
   const [first, setFirst] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [padKey, setPadKey] = useState(0);
@@ -57,14 +65,14 @@ export function PinSetup({
     setPadKey((k) => k + 1);
     if (first === null) {
       const weak = weakReason(pin);
-      if (weak) return setError(weak);
+      if (weak) return setError(tv(weak) ?? weak);
       setError(null);
       setFirst(pin);
       return;
     }
     if (pin !== first) {
       setFirst(null);
-      return setError("The two PINs were different. Start again.");
+      return setError(t("lock.differ"));
     }
     onDone(await createPin(pin, userId));
   };
@@ -72,7 +80,7 @@ export function PinSetup({
   return (
     <div className="space-y-4">
       <p className="font-semibold">
-        {first === null ? "Choose a 6-digit PIN" : "Repeat the PIN"}
+        {t(first === null ? "lock.choose" : "lock.repeat")}
       </p>
       <PinPad key={padKey} onComplete={(p) => void entered(p)} />
       {error && (
@@ -91,16 +99,11 @@ export function SetupScreen({
   userId: string;
   onDone: (rec: PinRecord) => void;
 }) {
+  const { t } = useI18n();
   return (
-    <LockShell
-      title="Protect this phone"
-      subtitle="You will enter this PIN whenever Prima opens or locks."
-    >
+    <LockShell title={t("lock.protectTitle")} subtitle={t("lock.protectSub")}>
       <PinSetup userId={userId} onDone={onDone} />
-      <p className="text-sm text-subtext">
-        The PIN keeps casual snoopers out. Also keep your phone's own screen
-        lock switched on.
-      </p>
+      <p className="text-sm text-subtext">{t("lock.protectNote")}</p>
     </LockShell>
   );
 }
@@ -115,6 +118,7 @@ export function LockScreen({
   onForgot: () => void;
 }) {
   const { account, facility, signOut } = useAuth();
+  const { t, tp } = useI18n();
   const [guard, setGuard] = useState(readGuard);
   const [now, setNow] = useState(() => Date.now());
   const [padKey, setPadKey] = useState(0);
@@ -139,7 +143,7 @@ export function LockScreen({
     setGuard(next);
     setNow(Date.now());
     setPadKey((k) => k + 1);
-    setError(next.reset ? "Too many wrong PINs." : "Wrong PIN.");
+    setError(t(next.reset ? "lock.tooMany" : "lock.wrong"));
     if (account && (next.fails === 5 || next.fails === 10)) {
       void logAudit(
         "security.pin_lockout",
@@ -152,18 +156,18 @@ export function LockScreen({
 
   return (
     <LockShell
-      title="Prima is locked"
+      title={t("lock.locked")}
       subtitle={`${account?.name ?? ""} · ${facility?.name ?? ""}`}
     >
       {guard.reset ? (
         <p role="alert" className="rounded-xl bg-accent-50 p-3 font-medium">
-          Too many wrong PINs. Sign in with your password to set a new one.
+          {t("lock.resetMsg")}
         </p>
       ) : (
         <>
           {wait > 0 ? (
             <p role="alert" className="font-semibold text-danger">
-              Too many wrong tries. Wait {wait} seconds.
+              {tp("lock.wait", wait)}
             </p>
           ) : (
             error && (
@@ -184,14 +188,14 @@ export function LockScreen({
         className="min-h-12 font-semibold text-prima-500"
         onClick={onForgot}
       >
-        Forgot the PIN? Sign in with your password
+        {t("lock.forgot")}
       </button>
       <button
         type="button"
         className="inline-flex min-h-12 items-center justify-center gap-2 text-subtext"
         onClick={() => void signOut()}
       >
-        <LogOut size={18} /> Sign out
+        <LogOut size={18} /> {t("account.signOut")}
       </button>
     </LockShell>
   );
@@ -206,6 +210,7 @@ export function ForgotPinDialog({
   onVerified: () => void;
   onClose: () => void;
 }) {
+  const { t, tv } = useI18n();
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
@@ -219,21 +224,18 @@ export function ForgotPinDialog({
       password,
     });
     setBusy(false);
-    if (err) return setError(friendlyError(err));
+    if (err) return setError(tv(friendlyErrorKey(err)) ?? "");
     onVerified();
   };
 
   return (
-    <Modal title="Set a new PIN" onClose={onClose} top>
+    <Modal title={t("lock.newPinTitle")} onClose={onClose} top>
       <form onSubmit={submit} className="space-y-4" noValidate>
-        <p className="text-subtext">
-          Enter your account password to prove it is you. You need internet for
-          this.
-        </p>
-        <Field label="Email">
+        <p className="text-subtext">{t("lock.forgotHelp")}</p>
+        <Field label={t("auth.email")}>
           <input className="input" value={email} readOnly />
         </Field>
-        <Field label="Password">
+        <Field label={t("auth.password")}>
           <input
             className="input"
             type="password"
@@ -248,7 +250,7 @@ export function ForgotPinDialog({
           </p>
         )}
         <button type="submit" className="btn btn-primary" disabled={busy}>
-          {busy ? "Please wait…" : "Continue"}
+          {busy ? t("auth.wait") : t("lock.continue")}
         </button>
       </form>
     </Modal>
@@ -266,6 +268,7 @@ export function ChangePinDialog({
   onDone: (rec: PinRecord) => void;
   onClose: () => void;
 }) {
+  const { t } = useI18n();
   const [verified, setVerified] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [padKey, setPadKey] = useState(0);
@@ -275,16 +278,16 @@ export function ChangePinDialog({
       setVerified(true);
       setError(null);
     } else {
-      setError("Wrong PIN.");
+      setError(t("lock.wrong"));
       setPadKey((k) => k + 1);
     }
   };
 
   return (
-    <Modal title="Change PIN" onClose={onClose}>
+    <Modal title={t("security.changePin")} onClose={onClose}>
       {!verified ? (
         <div className="space-y-4 text-center">
-          <p className="font-semibold">Enter your current PIN</p>
+          <p className="font-semibold">{t("lock.enterCurrent")}</p>
           <PinPad key={padKey} onComplete={(p) => void checkCurrent(p)} />
           {error && (
             <p role="alert" className="font-medium text-danger">
@@ -316,15 +319,13 @@ const COMMITMENTS = [
 ];
 
 export function StaffAckScreen({ onDone }: { onDone: () => void }) {
+  const { t } = useI18n();
   const { account } = useAuth();
   const [agreed, setAgreed] = useState(false);
   const [busy, setBusy] = useState(false);
 
   return (
-    <LockShell
-      title="Patient confidentiality"
-      subtitle="Please read and agree before you continue."
-    >
+    <LockShell title={ACK_TITLE} subtitle={ACK_SUBTITLE}>
       <ul className="space-y-3 text-left">
         {COMMITMENTS.map((c) => (
           <li key={c} className="flex items-start gap-3">
@@ -340,7 +341,7 @@ export function StaffAckScreen({ onDone }: { onDone: () => void }) {
           checked={agreed}
           onChange={(e) => setAgreed(e.target.checked)}
         />
-        I agree to these terms.
+        {ACK_AGREE}
       </label>
       <button
         type="button"
@@ -353,11 +354,9 @@ export function StaffAckScreen({ onDone }: { onDone: () => void }) {
           onDone();
         }}
       >
-        Continue
+        {t("lock.continue")}
       </button>
-      <p className="text-xs text-subtext">
-        Draft wording. Have it reviewed before real use.
-      </p>
+      <p className="text-xs text-subtext">{ACK_DRAFT}</p>
     </LockShell>
   );
 }

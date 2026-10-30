@@ -594,6 +594,147 @@ export const en = {
   "err.diaLower": "Diastolic must be lower than systolic",
   "err.validDate": "Enter a valid date",
   "err.followAfter": "Follow-up must be after the visit date",
+
+  // ----- small shared pieces
+  "glove.mode": "Glove mode",
+  "app.notFound": "Page not found",
+  "app.goHome": "Go home",
+
+  // ----- signing in and setting up a facility
+  "auth.opening": "Opening Prima…",
+  "auth.hidePassword": "Hide password",
+  "auth.showPassword": "Show password",
+  "auth.tagline": "Patient records for your clinic that work with no network.",
+  "auth.signIn": "Sign in",
+  "auth.createAccount": "Create account",
+  "auth.yourName": "Your name",
+  "auth.email": "Email",
+  "auth.password": "Password",
+  "auth.passwordHint": "At least 8 characters.",
+  "auth.wait": "Please wait…",
+  "auth.needInternet":
+    "You need internet to sign in. After that, Prima opens and works with no network.",
+  "auth.errName": "Enter your name.",
+  "auth.errEmail": "Enter a valid email address.",
+  "auth.errPassword": "Use a password of at least 8 characters.",
+  "auth.setupTitle": "Set up your facility",
+  "auth.signedInAs": "Signed in as {email}",
+  "auth.createFacility": "Create a facility",
+  "auth.joinWithCode": "Join with a code",
+  "auth.adminNote":
+    "You become the facility's admin and can invite your staff.",
+  "auth.facilityName": "Facility name",
+  "auth.facilityCode": "Facility code",
+  "auth.facilityCodeHint":
+    "2 to 5 letters. It starts every card number, like ANK-7K3F9Q.",
+  "auth.createFacilityBtn": "Create facility",
+  "auth.joinHelp":
+    "Ask your facility admin for an invite code. Each code works once.",
+  "auth.inviteCode": "Invite code",
+  "auth.joinFacility": "Join facility",
+  "auth.differentAccount": "Use a different account",
+  "auth.errFacilityName": "Enter the facility name.",
+  "auth.errFacilityCode":
+    "The facility code must be 2 to 5 letters, for example ANK.",
+  "auth.errLgaState": "Enter the LGA and the state.",
+  "auth.errInvite": "Enter the invite code you were given.",
+  "auth.endedTitle": "Your access has ended",
+  "auth.endedBody":
+    "You no longer belong to {name}, so its patient records can't be opened on this phone. Erase this phone's copy and sign out to protect the patients' privacy.",
+  "auth.eraseSignOut": "Erase this phone and sign out",
+  "auth.checkAgain": "Check again (I think this is a mistake)",
+  "auth.foreignTitle": "This phone has another facility's records",
+  "auth.foreignBody":
+    "Records from a different facility are stored on this phone. They must be erased before you can continue, so the two facilities' patients never mix.",
+  "auth.unsynced_one":
+    "{count} change has not been synced yet and will be lost. Sign in to the other facility first if that matters.",
+  "auth.unsynced_other":
+    "{count} changes have not been synced yet and will be lost. Sign in to the other facility first if that matters.",
+  "auth.eraseContinue": "Erase and continue",
+  "auth.signInAgain": "Sign in again",
+  "auth.reauthHelp":
+    "Your records are safe on this phone. Signing in again lets them sync.",
+  "authErr.wrongLogin": "Wrong email or password.",
+  "authErr.exists": "This email already has an account. Try signing in.",
+  "authErr.network": "No internet. You need a connection for this step.",
+  "authErr.rate": "Too many tries. Wait a few minutes and try again.",
+  "authErr.generic": "Something went wrong.",
+
+  // ----- PIN, lock screen and security
+  "lock.choose": "Choose a 6-digit PIN",
+  "lock.repeat": "Repeat the PIN",
+  "lock.differ": "The two PINs were different. Start again.",
+  "lock.protectTitle": "Protect this phone",
+  "lock.protectSub": "You will enter this PIN whenever Prima opens or locks.",
+  "lock.protectNote":
+    "The PIN keeps casual snoopers out. Also keep your phone's own screen lock switched on.",
+  "lock.locked": "Prima is locked",
+  "lock.tooMany": "Too many wrong PINs.",
+  "lock.wrong": "Wrong PIN.",
+  "lock.resetMsg":
+    "Too many wrong PINs. Sign in with your password to set a new one.",
+  "lock.wait_one": "Too many wrong tries. Wait {count} second.",
+  "lock.wait_other": "Too many wrong tries. Wait {count} seconds.",
+  "lock.forgot": "Forgot the PIN? Sign in with your password",
+  "lock.newPinTitle": "Set a new PIN",
+  "lock.forgotHelp":
+    "Enter your account password to prove it is you. You need internet for this.",
+  "lock.continue": "Continue",
+  "lock.enterCurrent": "Enter your current PIN",
+  "security.title": "Security",
+  "security.lockNow": "Lock now",
+  "security.changePin": "Change PIN",
+  "security.autoLock": "Lock automatically after",
+  "security.minutes_one": "{count} minute without use",
+  "security.minutes_other": "{count} minutes without use",
+  "security.note":
+    "The PIN keeps casual snoopers out. It is a lock, not a safe: also keep your phone's own screen lock on, and tell your admin at once if the phone is lost.",
+  "session.reauth":
+    "Sign in again to keep syncing. Your records are safe on this phone.",
+  "session.offline":
+    "You are offline. Prima works normally and will sync once you sign in again online.",
+
+  // ----- the dashboard and follow-ups
+  "dash.noData": "No data yet",
+  "dash.noDataHelp": "Register patients and the dashboard fills in by itself.",
+  "dash.prevMonth": "Previous month",
+  "dash.nextMonth": "Next month",
+  "dash.newMonth": "New this month",
+  "dash.visitsMonth": "Visits this month",
+  "dash.followUps7": "Follow-ups due (7 days)",
+  "dash.smsQueued": "SMS reminders queued",
+  "dash.reachable": "Reachable by SMS",
+  "dash.ageGroups": "Age groups",
+  "dash.activity": "Activity per day",
+  "dash.topDiagnoses": "Top diagnoses this month",
+  "dash.topVillages": "Top villages (all patients)",
+  "dash.noActivity": "No registrations or visits this month.",
+  "dash.noDiagnoses": "No diagnoses recorded this month.",
+  "dash.registrations": "Registrations",
+  "dash.visits": "Visits",
+  "dash.devStats": "Stats computed on this device in {ms} ms",
+  "dash.tabOverview": "Overview",
+  "dash.tabFollowUps": "Follow-ups",
+  "dash.tabReminders": "Reminders",
+  "dash.tabReport": "LGA report",
+  "dash.subtitle": "Your facility at a glance, calculated on this device.",
+  "fu.overdueBy_one": "Overdue by {count} day",
+  "fu.overdueBy_other": "Overdue by {count} days",
+  "fu.dueToday": "Due today",
+  "fu.dueIn_one": "Due in {count} day · {date}",
+  "fu.dueIn_other": "Due in {count} days · {date}",
+  "fu.days": "{count} days",
+  "fu.callAbout": "Call about {name}",
+  "fu.overdue": "Overdue",
+  "fu.comingUp": "Coming up",
+  "fu.count_one": "{count} follow-up",
+  "fu.count_other": "{count} follow-ups",
+  "fu.summary": "{overdue} overdue · {today} today · {upcoming} upcoming",
+  "fu.allCaughtUp": "All caught up",
+  "fu.nothing": "Nothing is overdue or due in the next {days} days.",
+  "fu.upgradeTitle": "See who is due, and call them",
+  "fu.upgradeText":
+    "The Pro plan lists every patient with an overdue or upcoming follow-up or vaccine, with one tap to call the patient or caregiver.",
 } as const;
 
 export type Key = keyof typeof en;

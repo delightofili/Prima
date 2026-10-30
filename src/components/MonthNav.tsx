@@ -1,5 +1,7 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { monthLabel, monthOf, shiftMonth, todayISO } from "../lib/utils";
+import { monthOf, shiftMonth, todayISO } from "../lib/utils";
+import { useI18n } from "../i18n";
+import { useMonthLabel } from "../hooks/useMonthLabel";
 
 const ARROW =
   "inline-flex size-11 items-center justify-center rounded-xl text-ink hover:bg-page disabled:opacity-30";
@@ -11,12 +13,14 @@ export function MonthNav({
   month: string;
   onChange: (m: string) => void;
 }) {
+  const { t } = useI18n();
+  const monthLabel = useMonthLabel();
   const isCurrent = month === monthOf(todayISO());
   return (
     <div className="card flex items-center justify-between gap-3">
       <button
         type="button"
-        aria-label="Previous month"
+        aria-label={t("dash.prevMonth")}
         className={ARROW}
         onClick={() => onChange(shiftMonth(month, -1))}
       >
@@ -25,7 +29,7 @@ export function MonthNav({
       <p className="text-lg font-bold">{monthLabel(month)}</p>
       <button
         type="button"
-        aria-label="Next month"
+        aria-label={t("dash.nextMonth")}
         className={ARROW}
         disabled={isCurrent}
         onClick={() => onChange(shiftMonth(month, 1))}

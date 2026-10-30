@@ -498,4 +498,93 @@ export const dict: Partial<Record<Key, string>> = {
   "err.vaccineDateMissing": "Tẹ ọjọ́ tí a fún {label}",
   "err.vaccineFuture": "Ọjọ́ {label} kò lè jẹ́ ọjọ́ iwájú",
   "err.vaccineBeforeBirth": "A kò lè fún {label} ṣáájú ọjọ́ ìbí",
+
+  // ----- shared
+  "common.loading": "Ń gbé wá…",
+
+  // ----- the home page
+  "home.goodMorning": "Ẹ kú àárọ̀",
+  "home.goodAfternoon": "Ẹ kú ọ̀sán",
+  "home.goodEvening": "Ẹ kú alẹ́",
+  "home.find": "Wá aláìsàn",
+  "home.totalPatients": "Àpapọ̀ àwọn aláìsàn",
+  "home.registeredToday": "A forúkọ sílẹ̀ lónìí",
+  "home.followUpsDue_other": "Àbẹ̀wò àtẹ̀lé {count} ń dúró",
+  "home.followUpsHelp": "Èyí tó ti kọjá àkókò àti ọjọ́ 7 tó ń bọ̀",
+  "home.welcome": "Káàbọ̀ sí Prima",
+  "home.emptyHelp":
+    "Ìwé orúkọ rẹ ṣófo. Forúkọ aláìsàn àkọ́kọ́ rẹ sílẹ̀. Ó ń ṣiṣẹ́ kódà láìsí nẹ́tíwọ́ọ̀kì.",
+  "home.registerFirst": "Forúkọ aláìsàn àkọ́kọ́ sílẹ̀",
+  "home.recent": "A forúkọ sílẹ̀ láìpẹ́ yìí",
+  "home.viewAll": "Wo gbogbo rẹ̀",
+  "home.footer":
+    "Prima ń ṣiṣẹ́ láìsí nẹ́tíwọ́ọ̀kì. A ń fi àwọn àkọsílẹ̀ pamọ́ sórí ẹ̀rọ yìí, wọ́n sì ń gbé ara wọn sókè fúnra wọn.",
+
+  // ----- the patients page and the list
+  "patients.subtitle": "Wá nípasẹ̀ orúkọ, fóònù, NHIS tàbí nọ́mbà káàdì.",
+  "patients.findDuplicates": "Wá àwọn tí a kọ lẹ́ẹ̀mejì",
+  "patients.exportCsv": "Gbé CSV jáde",
+  "patients.exportNeedsBasic": "Ìgbéjáde nílò ètò Basic",
+  "patients.exportUpgradeText":
+    "Gbé ètò ga sí Basic ({price} lóṣooṣù) láti gbà gbogbo àkọsílẹ̀ àwọn aláìsàn rẹ wálẹ̀ gẹ́gẹ́ bí CSV, àti ìròyìn LGA pẹ̀lú.",
+  "list.search": "Wá orúkọ, fóònù, NHIS tàbí nọ́mbà káàdì",
+  "list.none": "Kò sí aláìsàn kankan síbẹ̀",
+  "list.noneHelp": "Forúkọ aláìsàn àkọ́kọ́ sílẹ̀, yóò sì fara hàn níbí.",
+  "list.noMatch": "Kò sí aláìsàn tàbí olùtọ́jú tó bá “{search}” mu.",
+  "list.guardians": "Àwọn olùtọ́jú",
+  "list.count": "Aláìsàn {count} nínú {total}",
+  "list.first100": "Ń fi 100 àkọ́kọ́ hàn. Wá láti dín in kù.",
+  "limit.freePlan": "Ètò ọ̀fẹ́",
+  "limit.usage": "Aláìsàn {used} / {limit}",
+  "limit.spotsLeft_other": "Ààyè {count} ló kù.",
+  "upgrade.notNow": "Kì í ṣe báyìí",
+
+  // ----- the patient card and scanning
+  "card.pageTitle": "Káàdì aláìsàn",
+  "card.printHelp":
+    "A ń tẹ̀ ẹ́ ní ìwọ̀n káàdì báńkì. Tẹ̀ ẹ́ sórí bébà káàdì, tàbí bébà lásán kí o sì gé e ní ìlà náà.",
+  "card.unavailable": "Aláìsàn yìí kò sí.",
+  "card.qrNote":
+    "Kóòdù QR ní nọ́mbà káàdì nìkan nínú. Ẹnikẹ́ni tó bá rí káàdì náà kò lè ka àkọsílẹ̀ láti inú rẹ̀. Ṣàyẹ̀wò rẹ̀ nínú Prima pẹ̀lú Ṣàyẹ̀wò káàdì.",
+  "card.number": "Nọ́mbà káàdì",
+  "card.note":
+    "Mú káàdì yìí wá sí gbogbo àbẹ̀wò. Jẹ́ kí ó gbẹ, kí ó sì wà ní ààbò.",
+  "card.about": "Tó tó {age}",
+  "card.born": "Ọjọ́ ìbí: {date}",
+  "scan.title": "Ṣàyẹ̀wò káàdì",
+  "scan.subtitle": "Darí kámẹ́rà sí kóòdù QR tó wà lórí káàdì aláìsàn.",
+  "scan.notPrima": "Èyí kì í ṣe káàdì aláìsàn Prima.",
+  "scan.notFound":
+    "Kò sí aláìsàn tó ní káàdì {card} lórí fóònù yìí. Bí a bá forúkọ aláìsàn náà sílẹ̀ lórí fóònù mìíràn, dúró kí ó gbé sókè.",
+  "scan.typeLabel": "Tàbí kọ nọ́mbà káàdì",
+  "scan.open": "Ṣí aláìsàn",
+  "scan.noCamera": "Kámẹ́rà kò sí.",
+  "scan.denied":
+    "Jẹ́ kí Prima lo kámẹ́rà nínú ètò ojú-ìwé aṣàwárí, lẹ́yìn náà ṣí ojú-ìwé yìí padà.",
+  "scan.noDevice": "Ẹ̀rọ yìí kò ní kámẹ́rà tí a lè lò.",
+  "scan.cameraError": "Kámẹ́rà kò lè bẹ̀rẹ̀.",
+  "scan.typeInstead": "O lè kọ nọ́mbà káàdì sí ìsàlẹ̀ dípò rẹ̀.",
+  "scan.starting": "Ń bẹ̀rẹ̀ kámẹ́rà…",
+  "scan.qrAria": "Kóòdù QR pẹ̀lú nọ́mbà káàdì",
+
+  // ----- readings, steppers and visit rules
+  "vitals.veryHigh": "Ga gan-an",
+  "vitals.high": "Ga",
+  "vitals.highFever": "Ibà gíga",
+  "vitals.fever": "Ibà",
+  "vitals.low": "Kéré",
+  "stepper.increase": "Mú {label} pọ̀ sí i",
+  "stepper.decrease": "Mú {label} dín kù",
+  "err.fieldNumber": "{label} gbọdọ̀ jẹ́ nọ́mbà",
+  "err.fieldWhole": "{label} gbọdọ̀ jẹ́ nọ́mbà kíkún",
+  "err.fieldLow": "{label} dà bí ẹni pé ó kéré jù",
+  "err.fieldHigh": "{label} dà bí ẹni pé ó ga jù",
+  "err.visitDateRequired": "Tẹ ọjọ́ àbẹ̀wò",
+  "err.visitFuture": "Ọjọ́ àbẹ̀wò kò lè jẹ́ ọjọ́ iwájú",
+  "err.visitBeforeBirth": "Àbẹ̀wò kò lè jẹ́ ṣáájú ọjọ́ ìbí",
+  "err.under500": "Jẹ́ kí ó kéré sí lẹ́tà 500",
+  "err.bothBp": "Tẹ àwọn nọ́mbà BP méjèèjì",
+  "err.diaLower": "Diastolic gbọdọ̀ kéré sí systolic",
+  "err.validDate": "Tẹ ọjọ́ tó tọ́",
+  "err.followAfter": "Àbẹ̀wò àtẹ̀lé gbọdọ̀ jẹ́ lẹ́yìn ọjọ́ àbẹ̀wò",
 };

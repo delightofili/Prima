@@ -1,5 +1,6 @@
 import type { LucideIcon } from "lucide-react";
-import type { Flag } from "../lib/vitals";
+import { NOTE_KEY, type Flag } from "../lib/vitals";
+import { useI18n } from "../i18n";
 
 const TONE: Record<Flag, string> = {
   normal: "bg-prima-50 text-prima-900",
@@ -18,13 +19,15 @@ export function VitalChip({
   flag?: Flag;
   note?: string;
 }) {
+  const { t } = useI18n();
+  const noteKey = note ? NOTE_KEY[note] : undefined;
   return (
     <span
       className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-semibold ${TONE[flag]}`}
     >
       <Icon size={16} />
       {text}
-      {note && <strong> · {note}</strong>}
+      {note && <strong> · {noteKey ? t(noteKey) : note}</strong>}
     </span>
   );
 }

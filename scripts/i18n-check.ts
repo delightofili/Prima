@@ -28,7 +28,7 @@ function* walk(dir: string): Generator<string> {
   }
 }
 const GROUPS =
-  "lang|nav|common|age|register|err|complaint|saved|record|sync|syncErr|banner|power|update|account|facility|team|invite|patient|visit|form|rel|guardian|family|vaccine|diagnosis|badge";
+  "lang|nav|common|age|register|err|complaint|saved|record|sync|syncErr|banner|power|update|account|facility|team|invite|patient|visit|form|rel|guardian|family|vaccine|diagnosis|badge|home|list|limit|card|scan|upgrade|vitals|stepper";
 const KEY = new RegExp(`"((?:${GROUPS})\\.[\\w.]+)"`, "g");
 // Only a real call to the translator counts: t("nav.home") or tp("sync.attention", 3), with one of our word groups.
 // Your own data (a dashboard figure with key: "visits", a vaccine with key: "bcg", an audit action "team.invite") is not a translation line.

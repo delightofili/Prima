@@ -524,4 +524,95 @@ export const dict: Partial<Record<Key, string>> = {
   "err.vaccineDateMissing": "Shigar da ranar da aka yi {label}",
   "err.vaccineFuture": "Ranar {label} ba za ta zama a nan gaba ba",
   "err.vaccineBeforeBirth": "Ba za a iya yin {label} kafin ranar haihuwa ba",
+
+  // ----- shared
+  "common.loading": "Ana ɗauko…",
+
+  // ----- the home page
+  "home.goodMorning": "Barka da safe",
+  "home.goodAfternoon": "Barka da rana",
+  "home.goodEvening": "Barka da yamma",
+  "home.find": "Nemi mara lafiya",
+  "home.totalPatients": "Jimillar marasa lafiya",
+  "home.registeredToday": "An yi rajista yau",
+  "home.followUpsDue_one": "Ziyarar biyo baya {count} tana jira",
+  "home.followUpsDue_other": "Ziyarori na biyo baya {count} suna jira",
+  "home.followUpsHelp": "Waɗanda suka wuce lokaci da kwanaki 7 masu zuwa",
+  "home.welcome": "Barka da zuwa Prima",
+  "home.emptyHelp":
+    "Rajistar ka babu komai a ciki. Yi wa mara lafiyarka na farko rajista. Yana aiki ko da babu network.",
+  "home.registerFirst": "Yi wa mara lafiya na farko rajista",
+  "home.recent": "An yi wa rajista kwanan nan",
+  "home.viewAll": "Duba duka",
+  "home.footer":
+    "Prima tana aiki ba tare da network ba. Ana ajiye bayanai a wannan na'ura kuma suna daidaita kansu.",
+
+  // ----- the patients page and the list
+  "patients.subtitle": "Nemi ta suna, waya, NHIS ko lambar kati.",
+  "patients.findDuplicates": "Nemi waɗanda aka maimaita",
+  "patients.exportCsv": "Fitar da CSV",
+  "patients.exportNeedsBasic": "Fitarwa tana buƙatar tsarin Basic",
+  "patients.exportUpgradeText":
+    "Haɓaka zuwa Basic ({price} a wata) don sauke cikakken rajistar marasa lafiyarka a matsayin CSV, da rahoton LGA ma.",
+  "list.search": "Nemi suna, waya, NHIS ko lambar kati",
+  "list.none": "Babu marasa lafiya tukuna",
+  "list.noneHelp": "Yi wa mara lafiya na farko rajista, zai bayyana a nan.",
+  "list.noMatch": "Babu mara lafiya ko mai kula da ya dace da “{search}”.",
+  "list.guardians": "Masu kula",
+  "list.count": "Marasa lafiya {count} cikin {total}",
+  "list.first100": "Ana nuna 100 na farko. Yi nema don ƙunsar da su.",
+  "limit.freePlan": "Tsarin kyauta",
+  "limit.usage": "Marasa lafiya {used} / {limit}",
+  "limit.spotsLeft_one": "Wuri {count} ya rage.",
+  "limit.spotsLeft_other": "Wurare {count} sun rage.",
+  "upgrade.notNow": "Ba yanzu ba",
+
+  // ----- the patient card and scanning
+  "card.pageTitle": "Katin mara lafiya",
+  "card.printHelp":
+    "Ana bugawa da girman katin banki. Buga a takardar kati, ko a takarda ta yau da kullum ka yanke a layin.",
+  "card.unavailable": "Wannan mara lafiya ba ya nan.",
+  "card.qrNote":
+    "Lambar QR tana ɗauke da lambar kati kawai. Duk wanda ya sami katin ba zai iya karanta bayanan ba. Duba shi a Prima ta hanyar Duba kati.",
+  "card.number": "Lambar kati",
+  "card.note":
+    "Zo da wannan kati a kowace ziyara. Ka ajiye shi a bushe kuma lafiya.",
+  "card.about": "Kusan {age}",
+  "card.born": "Haihuwa: {date}",
+  "scan.title": "Duba kati",
+  "scan.subtitle": "Nuna kyamara ga lambar QR da ke kan katin mara lafiya.",
+  "scan.notPrima": "Wannan ba katin mara lafiya na Prima ba ne.",
+  "scan.notFound":
+    "Babu mara lafiya mai kati {card} a wannan waya. Idan an yi wa mara lafiyar rajista a wata waya, a jira ta daidaita.",
+  "scan.typeLabel": "Ko ka rubuta lambar kati",
+  "scan.open": "Buɗe mara lafiya",
+  "scan.noCamera": "Kyamara ba ta nan.",
+  "scan.denied":
+    "Ka ba Prima izinin kyamara a saitin shafi na mai bincike, sannan ka sake buɗe wannan shafi.",
+  "scan.noDevice": "Wannan na'ura ba ta da kyamarar da za a iya amfani da ita.",
+  "scan.cameraError": "Kyamara ba ta iya farawa ba.",
+  "scan.typeInstead": "Za ka iya rubuta lambar kati a ƙasa maimakon haka.",
+  "scan.starting": "Ana kunna kyamara…",
+  "scan.qrAria": "Lambar QR mai ɗauke da lambar kati",
+
+  // ----- readings, steppers and visit rules
+  "vitals.veryHigh": "Ya yi yawa sosai",
+  "vitals.high": "Ya yi yawa",
+  "vitals.highFever": "Zazzaɓi mai tsanani",
+  "vitals.fever": "Zazzaɓi",
+  "vitals.low": "Ya yi ƙasa",
+  "stepper.increase": "Ƙara {label}",
+  "stepper.decrease": "Rage {label}",
+  "err.fieldNumber": "{label} dole ya zama lamba",
+  "err.fieldWhole": "{label} dole ya zama cikakkiyar lamba",
+  "err.fieldLow": "{label} ya yi kamar ƙasa da yawa",
+  "err.fieldHigh": "{label} ya yi kamar sama da yawa",
+  "err.visitDateRequired": "Shigar da ranar ziyara",
+  "err.visitFuture": "Ranar ziyara ba za ta zama a nan gaba ba",
+  "err.visitBeforeBirth": "Ziyara ba za ta zama kafin ranar haihuwa ba",
+  "err.under500": "Ka rage shi ƙasa da haruffa 500",
+  "err.bothBp": "Shigar da duka lambobin BP biyu",
+  "err.diaLower": "Diastolic dole ya yi ƙasa da systolic",
+  "err.validDate": "Shigar da ingantacciyar rana",
+  "err.followAfter": "Ziyarar biyo baya dole ta zama bayan ranar ziyara",
 };

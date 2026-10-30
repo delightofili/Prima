@@ -503,4 +503,93 @@ export const dict: Partial<Record<Key, string>> = {
   "err.vaccineDateMissing": "Tinye ụbọchị e nyere {label}",
   "err.vaccineFuture": "Ụbọchị {label} enweghị ike ịbụ n'ọdịnihu",
   "err.vaccineBeforeBirth": "Enweghị ike inye {label} tupu ụbọchị amụrụ",
+
+  // ----- shared
+  "common.loading": "Na-ebudata…",
+
+  // ----- the home page
+  "home.goodMorning": "Ụtụtụ ọma",
+  "home.goodAfternoon": "Ehihie ọma",
+  "home.goodEvening": "Mgbede ọma",
+  "home.find": "Chọọ onye ọrịa",
+  "home.totalPatients": "Ndị ọrịa niile",
+  "home.registeredToday": "E debanyere taa",
+  "home.followUpsDue_other": "Nleta ọzọ {count} kwesịrị ime",
+  "home.followUpsHelp": "Nke agafeela oge na ụbọchị 7 ndị na-abịa",
+  "home.welcome": "Nnọọ na Prima",
+  "home.emptyHelp":
+    "Ndebanye aha gị tọgbọ chakoo. Debanye onye ọrịa mbụ gị aha. Ọ na-arụ ọrụ ọbụna na-enweghị netwọk.",
+  "home.registerFirst": "Debanye onye ọrịa mbụ aha",
+  "home.recent": "E debanyere n'oge na-adịbeghị anya",
+  "home.viewAll": "Lee ha niile",
+  "home.footer":
+    "Prima na-arụ ọrụ na-enweghị netwọk. A na-echekwa ndekọ n'ngwaọrụ a, ha na-ebulite n'onwe ha.",
+
+  // ----- the patients page and the list
+  "patients.subtitle": "Chọọ site na aha, ekwentị, NHIS ma ọ bụ nọmba kaadị.",
+  "patients.findDuplicates": "Chọpụta ndị e debanyere ugboro abụọ",
+  "patients.exportCsv": "Bupụ CSV",
+  "patients.exportNeedsBasic": "Mbupụ chọrọ atụmatụ Basic",
+  "patients.exportUpgradeText":
+    "Melite gaa na Basic ({price} n'ọnwa) iji budata ndekọ ndị ọrịa gị niile dị ka CSV, na akụkọ LGA ọzọ.",
+  "list.search": "Chọọ aha, ekwentị, NHIS ma ọ bụ nọmba kaadị",
+  "list.none": "Enweghị onye ọrịa ọ bụla",
+  "list.noneHelp": "Debanye onye ọrịa mbụ aha, ọ ga-apụta ebe a.",
+  "list.noMatch":
+    "Enweghị onye ọrịa ma ọ bụ onye na-elekọta dabara na “{search}”.",
+  "list.guardians": "Ndị na-elekọta",
+  "list.count": "Ndị ọrịa {count} n'ime {total}",
+  "list.first100": "Na-egosi 100 mbụ. Chọọ iji belata ya.",
+  "limit.freePlan": "Atụmatụ efu",
+  "limit.usage": "Ndị ọrịa {used} / {limit}",
+  "limit.spotsLeft_other": "Ebe {count} fọdụrụ.",
+  "upgrade.notNow": "Ọ bụghị ugbu a",
+
+  // ----- the patient card and scanning
+  "card.pageTitle": "Kaadị onye ọrịa",
+  "card.printHelp":
+    "A na-ebipụta ya n'ogo kaadị ụlọ akụ. Bipụta ya na akwụkwọ kaadị, ma ọ bụ na akwụkwọ nkịtị wee bepụ ya n'akara ahụ.",
+  "card.unavailable": "Onye ọrịa a adịghị.",
+  "card.qrNote":
+    "Koodu QR na-ejide naanị nọmba kaadị. Onye ọ bụla chọtara kaadị enweghị ike ịgụ ndekọ site na ya. Nyochaa ya na Prima site na Nyochaa kaadị.",
+  "card.number": "Nọmba kaadị",
+  "card.note": "Wetara kaadị a n'nleta ọ bụla. Debe ya n'ebe akọrọ na nchekwa.",
+  "card.about": "Ihe dị ka {age}",
+  "card.born": "Amụrụ {date}",
+  "scan.title": "Nyochaa kaadị",
+  "scan.subtitle": "Chee igwefoto ahụ n'ihu koodu QR dị na kaadị onye ọrịa.",
+  "scan.notPrima": "Nke ahụ abụghị kaadị onye ọrịa Prima.",
+  "scan.notFound":
+    "Enweghị onye ọrịa nwere kaadị {card} n'ekwentị a. Ọ bụrụ na e debanyere onye ọrịa ahụ n'ekwentị ọzọ, chere ka ọ bulite.",
+  "scan.typeLabel": "Ma ọ bụ dee nọmba kaadị",
+  "scan.open": "Meghee onye ọrịa",
+  "scan.noCamera": "Igwefoto adịghị.",
+  "scan.denied":
+    "Kwe ka Prima jiri igwefoto n'ntọala saịtị nke ihe nchọgharị, wee meghee ibe a ọzọ.",
+  "scan.noDevice": "Ngwaọrụ a enweghị igwefoto ọ ga-eji.",
+  "scan.cameraError": "Igwefoto enweghị ike ịmalite.",
+  "scan.typeInstead": "Ị nwere ike ide nọmba kaadị n'okpuru kama.",
+  "scan.starting": "Na-amalite igwefoto…",
+  "scan.qrAria": "Koodu QR nwere nọmba kaadị",
+
+  // ----- readings, steppers and visit rules
+  "vitals.veryHigh": "Dị elu nke ukwuu",
+  "vitals.high": "Dị elu",
+  "vitals.highFever": "Ahụ ọkụ dị elu",
+  "vitals.fever": "Ahụ ọkụ",
+  "vitals.low": "Dị ala",
+  "stepper.increase": "Bawanye {label}",
+  "stepper.decrease": "Belata {label}",
+  "err.fieldNumber": "{label} ga-abụrịrị nọmba",
+  "err.fieldWhole": "{label} ga-abụrịrị nọmba zuru ezu",
+  "err.fieldLow": "{label} dị ka nke dị ala nke ukwuu",
+  "err.fieldHigh": "{label} dị ka nke dị elu nke ukwuu",
+  "err.visitDateRequired": "Tinye ụbọchị nleta",
+  "err.visitFuture": "Ụbọchị nleta enweghị ike ịbụ n'ọdịnihu",
+  "err.visitBeforeBirth": "Nleta enweghị ike ịbụ tupu ụbọchị amụrụ",
+  "err.under500": "Debe ya n'okpuru mkpụrụedemede 500",
+  "err.bothBp": "Tinye ọnụọgụ BP abụọ ahụ",
+  "err.diaLower": "Diastolic ga-adịrị ala karịa systolic",
+  "err.validDate": "Tinye ụbọchị ziri ezi",
+  "err.followAfter": "Nleta ọzọ ga-abụrịrị mgbe ụbọchị nleta gasịrị",
 };

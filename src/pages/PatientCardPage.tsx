@@ -7,9 +7,11 @@ import { PatientCard } from "../components/PatientCard";
 import { usePageTitle } from "../hooks/common";
 import { useAuth } from "../hooks/useAuth";
 import { logAudit } from "../lib/audit";
+import { useI18n } from "../i18n";
 
 export function PatientCardPage() {
-  usePageTitle("Patient card");
+  const { t } = useI18n();
+  usePageTitle(t("card.pageTitle"));
   const { id } = useParams();
   const { facility } = useAuth();
   const patient = useLiveQuery(
@@ -17,13 +19,14 @@ export function PatientCardPage() {
     [id],
   );
 
-  if (patient === undefined) return <p className="text-subtext">Loading…</p>;
+  if (patient === undefined)
+    return <p className="text-subtext">{t("common.loading")}</p>;
   if (patient === null || patient.deletedAt) {
     return (
       <div className="card mx-auto max-w-md space-y-3 text-center">
-        <p className="text-lg font-semibold">This patient is not available.</p>
+        <p className="text-lg font-semibold">{t("card.unavailable")}</p>
         <Link to="/patients" className="btn btn-secondary">
-          Back to patients
+          {t("patient.backToPatients")}
         </Link>
       </div>
     );
@@ -43,8 +46,8 @@ export function PatientCardPage() {
     <>
       <div className="no-print">
         <PageHeader
-          title="Patient card"
-          subtitle="Printed at bank-card size. Print on card paper, or on plain paper and cut along the line."
+          title={t("card.pageTitle")}
+          subtitle={t("card.printHelp")}
         />
         <div className="mb-5 flex flex-col gap-3 sm:flex-row">
           <button
@@ -52,13 +55,13 @@ export function PatientCardPage() {
             className="btn btn-primary sm:w-48"
             onClick={print}
           >
-            <Printer size={20} className="mr-2" /> Print card
+            <Printer size={20} className="mr-2" /> {t("saved.printCard")}
           </button>
           <Link
             to={`/patients/${patient.id}`}
             className="btn btn-secondary sm:w-48"
           >
-            <ArrowLeft size={20} className="mr-2" /> Back to patient
+            <ArrowLeft size={20} className="mr-2" /> {t("visit.backToPatient")}
           </Link>
         </div>
       </div>
@@ -68,8 +71,7 @@ export function PatientCardPage() {
       </div>
 
       <p className="no-print mt-4 max-w-md text-sm text-subtext">
-        The QR code holds only the card number. Anyone who finds the card cannot
-        read the record from it. Scan it in Prima with Scan card.
+        {t("card.qrNote")}
       </p>
     </>
   );

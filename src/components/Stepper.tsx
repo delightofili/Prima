@@ -13,6 +13,7 @@ import {
   speedFor,
   type StepSpec,
 } from "../lib/stepper";
+import { useI18n } from "../i18n";
 
 interface Props extends StepSpec {
   label: string;
@@ -33,6 +34,7 @@ export function Stepper({
   inputMode = "decimal",
   ...spec
 }: Props) {
+  const { t } = useI18n();
   const [draft, setDraft] = useState<string | null>(null); // what is being typed right now, such as "36."
   const valueRef = useRef(value);
   const specRef = useRef<StepSpec>(spec);
@@ -85,7 +87,9 @@ export function Stepper({
   const buttons = (direction: 1 | -1) => ({
     type: "button" as const,
     className: "stepper-btn",
-    "aria-label": `${direction === 1 ? "Increase" : "Decrease"} ${label}`,
+    "aria-label": t(direction === 1 ? "stepper.increase" : "stepper.decrease", {
+      label,
+    }),
     onPointerDown: hold(direction),
     onPointerUp: stop,
     onPointerLeave: stop,

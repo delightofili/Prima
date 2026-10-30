@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { qrPath } from "../lib/qrPath";
+import { useI18n } from "../i18n";
 
 // Draws a QR code as an SVG. The QR library is loaded only when a code is first needed.
 export function QrSvg({
@@ -9,6 +10,7 @@ export function QrSvg({
   text: string;
   className?: string;
 }) {
+  const { t } = useI18n();
   const [code, setCode] = useState<{ d: string; n: number } | null>(null);
 
   useEffect(() => {
@@ -31,7 +33,7 @@ export function QrSvg({
     <svg
       viewBox={`-4 -4 ${code.n + 8} ${code.n + 8}`}
       role="img"
-      aria-label="QR code with the card number"
+      aria-label={t("scan.qrAria")}
       shapeRendering="crispEdges"
       className={className}
     >

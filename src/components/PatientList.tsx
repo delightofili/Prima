@@ -6,8 +6,10 @@ import { usePatients } from "../hooks/usePatients";
 import { searchGuardians } from "../lib/guardians";
 import { GuardianCard } from "./GuardianCard";
 import { PatientListCard } from "./PatientListCard";
+import { useI18n } from "../i18n";
 
 export function PatientList() {
+  const { t } = useI18n();
   const [search, setSearch] = useState("");
   const query = useDebounce(search, 200);
   const { results, total } = usePatients(query);
@@ -24,28 +26,27 @@ export function PatientList() {
         type="search"
         inputMode="search"
         className="input"
-        placeholder="Search name, phone, NHIS or card number"
+        placeholder={t("list.search")}
         value={search}
         onChange={(e) => setSearch(e.target.value)}
       />
 
       {total === 0 ? (
         <div className="card text-center">
-          <p className="text-lg font-semibold">No patients yet</p>
-          <p className="text-subtext">
-            Register the first patient and they will appear here.
-          </p>
+          <p className="text-lg font-semibold">{t("list.none")}</p>
+          <p className="text-subtext">{t("list.noneHelp")}</p>
         </div>
       ) : results.length === 0 && guardianMatches.length === 0 ? (
         <p className="py-8 text-center text-subtext">
-          No patient or guardian matches “{search}”.
+          {t("list.noMatch", { search })}
         </p>
       ) : (
         <>
           {guardianMatches.length > 0 && (
             <div className="space-y-2">
               <h2 className="flex items-center gap-2 text-lg font-bold">
-                <Users size={20} className="text-prima-500" /> Guardians
+                <Users size={20} className="text-prima-500" />{" "}
+                {t("list.guardians")}
               </h2>
               <div className="grid gap-3 md:grid-cols-2">
                 {guardianMatches.map((g) => (
@@ -62,7 +63,7 @@ export function PatientList() {
           {results.length > 0 && (
             <>
               <p className="text-sm text-subtext">
-                {results.length} of {total} patients
+                {t("list.count", { count: results.length, total })}
               </p>
               <ul className="grid gap-3 md:grid-cols-2">
                 {shown.map((p) => (
@@ -73,7 +74,7 @@ export function PatientList() {
               </ul>
               {results.length > shown.length && (
                 <p className="text-center text-sm text-subtext">
-                  Showing the first 100. Search to narrow down.
+                  {t("list.first100")}
                 </p>
               )}
             </>

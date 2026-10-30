@@ -49,6 +49,14 @@ const WHERE: Record<string, string> = {
   vaccine: "Vaccines",
   diagnosis: "Diagnosis box",
   badge: "Small labels",
+  home: "Home page",
+  list: "Patient list",
+  limit: "Free plan bar",
+  card: "Patient card",
+  scan: "Scanning a card",
+  upgrade: "Upgrade window",
+  vitals: "Notes next to a reading",
+  stepper: "Number boxes with plus and minus",
 };
 
 const q = (s: string) => `"${s.replace(/"/g, '""')}"`;

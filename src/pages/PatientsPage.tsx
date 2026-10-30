@@ -15,9 +15,11 @@ import { PRICES, money } from "../lib/plan";
 import { useCan } from "../hooks/useCan";
 import { logAudit } from "../lib/audit";
 import { config } from "../lib/config";
+import { useI18n } from "../i18n";
 
 export function PatientsPage() {
-  usePageTitle("Patients");
+  const { t } = useI18n();
+  usePageTitle(t("nav.patients"));
   const plan = usePlan();
   const { results } = usePatients("");
   const [upgrade, setUpgrade] = useState(false);
@@ -40,13 +42,14 @@ export function PatientsPage() {
   return (
     <>
       <PageHeader
-        title="Patients"
-        subtitle="Search by name, phone, NHIS or card number."
+        title={t("nav.patients")}
+        subtitle={t("patients.subtitle")}
         action={
           <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap">
             {can("mergeDuplicates") && (
               <Link to="/duplicates" className="btn btn-secondary sm:w-48">
-                <GitMerge size={20} className="mr-2" /> Find duplicates
+                <GitMerge size={20} className="mr-2" />{" "}
+                {t("patients.findDuplicates")}
               </Link>
             )}
             {can("exportData") && (
@@ -55,14 +58,15 @@ export function PatientsPage() {
                 className="btn btn-secondary sm:w-44"
                 onClick={exportCsv}
               >
-                <Download size={20} className="mr-2" /> Export CSV
+                <Download size={20} className="mr-2" />{" "}
+                {t("patients.exportCsv")}
               </button>
             )}
             <Link to="/register" className="btn btn-primary sm:w-44">
-              <UserPlus size={20} className="mr-2" /> Register
+              <UserPlus size={20} className="mr-2" /> {t("nav.register")}
             </Link>
             <Link to="/scan" className="btn btn-secondary sm:w-48">
-              <ScanLine size={20} className="mr-2" /> Scan card
+              <ScanLine size={20} className="mr-2" /> {t("scan.title")}
             </Link>
           </div>
         }
@@ -70,8 +74,10 @@ export function PatientsPage() {
       <PatientList />
       {upgrade && (
         <UpgradeDialog
-          title="Export needs the Basic plan"
-          text={`Upgrade to Basic (${money(PRICES.basic)} a month) to download your full patient register as CSV, and the LGA report too.`}
+          title={t("patients.exportNeedsBasic")}
+          text={t("patients.exportUpgradeText", {
+            price: money(PRICES.basic),
+          })}
           onClose={() => setUpgrade(false)}
         />
       )}

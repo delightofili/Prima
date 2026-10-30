@@ -1,21 +1,26 @@
 import { z } from "zod";
+import type { Key } from "../i18n/locales/en";
 import { todayISO } from "./utils";
 
 const ISO = /^\d{4}-\d{2}-\d{2}$/;
 
-const whole = (label: string, min: number, max: number) =>
+// A message here is a dictionary key, and sometimes a field name after a "|": "err.fieldLow|visit.weight".
+// The screen turns it into the person's language (see tv in src/i18n). A wrong key is a type error.
+const coded = (key: Key, label?: Key) => (label ? `${key}|${label}` : key);
+
+const whole = (label: Key, min: number, max: number) =>
   z
-    .number({ invalid_type_error: `${label} must be a number` })
-    .int(`${label} must be a whole number`)
-    .min(min, `${label} looks too low`)
-    .max(max, `${label} looks too high`)
+    .number({ invalid_type_error: coded("err.fieldNumber", label) })
+    .int(coded("err.fieldWhole", label))
+    .min(min, coded("err.fieldLow", label))
+    .max(max, coded("err.fieldHigh", label))
     .optional();
 
-const decimal = (label: string, min: number, max: number) =>
+const decimal = (label: Key, min: number, max: number) =>
   z
-    .number({ invalid_type_error: `${label} must be a number` })
-    .min(min, `${label} looks too low`)
-    .max(max, `${label} looks too high`)
+    .number({ invalid_type_error: coded("err.fieldNumber", label) })
+    .min(min, coded("err.fieldLow", label))
+    .max(max, coded("err.fieldHigh", label))
     .optional();
 
 export function makeVisitSchema(dob: string) {
@@ -23,23 +28,19 @@ export function makeVisitSchema(dob: string) {
     .object({
       visitDate: z
         .string()
-        .regex(ISO, "Enter the visit date")
-        .refine((s) => s <= todayISO(), "Visit date cannot be in the future")
-        .refine((s) => s >= dob, "Visit cannot be before the date of birth"),
+        .regex(ISO, coded("err.visitDateRequired"))
+        .refine((s) => s <= todayISO(), coded("err.visitFuture"))
+        .refine((s) => s >= dob, coded("err.visitBeforeBirth")),
       complaints: z
         .string()
         .trim()
-        .min(3, "Describe the complaint (at least 3 characters)")
-        .max(500, "Keep it under 500 characters"),
-      systolic: whole("Systolic", 50, 300),
-      diastolic: whole("Diastolic", 30, 200),
-      temperature: decimal("Temperature", 30, 45),
-      weightKg: decimal("Weight", 0.5, 300),
-      treatment: z
-        .string()
-        .trim()
-        .max(500, "Keep it under 500 characters")
-        .optional(),
+        .min(3, coded("err.complaintShort"))
+        .max(500, coded("err.under500")),
+      systolic: whole("visit.bpTop", 50, 300),
+      diastolic: whole("visit.bpBottom", 30, 200),
+      temperature: decimal("visit.temperature", 30, 45),
+      weightKg: decimal("visit.weight", 0.5, 300),
+      treatment: z.string().trim().max(500, coded("err.under500")).optional(),
       nextDueDate: z.string().optional(),
     })
     .superRefine((v, ctx) => {
@@ -49,7 +50,7 @@ export function makeVisitSchema(dob: string) {
       if ((v.systolic === undefined) !== (v.diastolic === undefined)) {
         issue(
           v.systolic === undefined ? "systolic" : "diastolic",
-          "Enter both BP values",
+          coded("err.bothBp"),
         );
       }
       if (
@@ -57,13 +58,13 @@ export function makeVisitSchema(dob: string) {
         v.diastolic !== undefined &&
         v.systolic <= v.diastolic
       ) {
-        issue("diastolic", "Diastolic must be lower than systolic");
+        issue("diastolic", coded("err.diaLower"));
       }
       if (v.nextDueDate) {
         if (!ISO.test(v.nextDueDate))
-          issue("nextDueDate", "Enter a valid date");
+          issue("nextDueDate", coded("err.validDate"));
         else if (v.nextDueDate <= v.visitDate)
-          issue("nextDueDate", "Follow-up must be after the visit date");
+          issue("nextDueDate", coded("err.followAfter"));
       }
     });
 }

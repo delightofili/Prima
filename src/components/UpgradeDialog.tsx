@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { createPortal } from "react-dom";
 import { Link } from "react-router-dom";
 import { Lock } from "lucide-react";
+import { useI18n } from "../i18n";
 
 export function UpgradeDialog({
   title,
@@ -12,6 +13,7 @@ export function UpgradeDialog({
   text: string;
   onClose: () => void;
 }) {
+  const { t } = useI18n();
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
@@ -49,14 +51,14 @@ export function UpgradeDialog({
             className="btn btn-secondary md:w-36"
             onClick={onClose}
           >
-            Not now
+            {t("upgrade.notNow")}
           </button>
           <Link
             to="/plans"
             className="btn btn-accent md:w-48"
             onClick={onClose}
           >
-            See plans
+            {t("banner.seePlans")}
           </Link>
         </div>
       </div>

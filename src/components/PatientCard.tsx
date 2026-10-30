@@ -42,12 +42,7 @@ import type { Patient } from "../types";
 import { Logo } from "./Logo";
 import { QrSvg } from "./QrSvg";
 import { calculateAge } from "../lib/age";
-
-const BIRTH = new Intl.DateTimeFormat("en-NG", {
-  day: "numeric",
-  month: "short",
-  year: "numeric",
-});
+import { useI18n } from "../i18n";
 
 // A long name gets smaller letters so the whole name still fits, instead of being cut off
 const nameSize = (name: string) =>
@@ -65,9 +60,13 @@ export function PatientCard({
   patient: Patient;
   facilityName: string;
 }) {
+  const { t, tp, isoDate } = useI18n();
+  const a = calculateAge(patient.dob);
   const born = patient.dobEstimated
-    ? `About ${calculateAge(patient.dob).label}`
-    : `Born ${BIRTH.format(new Date(`${patient.dob}T00:00:00`))}`;
+    ? t("card.about", {
+        age: tp(a.unit === "years" ? "age.years" : "age.months", a.value),
+      })
+    : t("card.born", { date: isoDate(patient.dob) });
 
   return (
     <div className="id-card relative flex h-[54mm] w-[85.6mm] flex-col justify-between overflow-hidden rounded-[3mm] border-[0.4mm] border-prima-500 bg-white p-[3.5mm] text-black">
@@ -86,10 +85,13 @@ export function PatientCard({
             {patient.fullName}
           </p>
           <p className="text-[2.8mm] leading-tight">
-            {patient.gender === "FEMALE" ? "Female" : "Male"} · {born}
+            {t(
+              patient.gender === "FEMALE" ? "register.female" : "register.male",
+            )}{" "}
+            · {born}
           </p>
           <p className="text-[2.2mm] uppercase tracking-wide text-black/60">
-            Card number
+            {t("card.number")}
           </p>
           <p className="font-mono text-[5mm] font-bold leading-none tracking-wider">
             {patient.cardNumber}
@@ -102,7 +104,7 @@ export function PatientCard({
       </div>
 
       <p className="text-[2.2mm] leading-tight text-black/70">
-        Bring this card to every visit. Keep it dry and safe.
+        {t("card.note")}
       </p>
     </div>
   );

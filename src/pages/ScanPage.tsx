@@ -9,9 +9,14 @@ import { usePageTitle } from "../hooks/common";
 
 import { parseCard } from "../lib/cardCode";
 import { usePower } from "../lib/power";
+import { useI18n } from "../i18n";
+
+// An example of what a card number looks like, shown in the empty box
+const CARD_EXAMPLE = "ANK-7K3F9Q";
 
 export function ScanPage() {
-  usePageTitle("Scan card");
+  const { t } = useI18n();
+  usePageTitle(t("scan.title"));
   const navigate = useNavigate();
   const power = usePower();
   const [message, setMessage] = useState<string | null>(null);
@@ -19,14 +24,12 @@ export function ScanPage() {
 
   const open = async (text: string) => {
     const card = parseCard(text);
-    if (!card) return setMessage("That is not a Prima patient card.");
+    if (!card) return setMessage(t("scan.notPrima"));
     const patient = await db.patients
       .filter((p) => p.cardNumber === card && !p.deletedAt)
       .first();
     if (!patient) {
-      return setMessage(
-        `No patient with card ${card} on this phone. If she was registered on another phone, wait for it to sync.`,
-      );
+      return setMessage(t("scan.notFound", { card }));
     }
     navigate(`/patients/${patient.id}`);
   };
@@ -38,10 +41,7 @@ export function ScanPage() {
 
   return (
     <>
-      <PageHeader
-        title="Scan card"
-        subtitle="Point the camera at the QR code on a patient card."
-      />
+      <PageHeader title={t("scan.title")} subtitle={t("scan.subtitle")} />
       <div className="mx-auto max-w-lg space-y-4">
         <QrScanner
           everyMs={power.active ? 700 : 200}
@@ -53,10 +53,10 @@ export function ScanPage() {
           </p>
         )}
         <form onSubmit={submit} className="card space-y-3" noValidate>
-          <Field label="Or type the card number">
+          <Field label={t("scan.typeLabel")}>
             <input
               className="input font-mono uppercase"
-              placeholder="ANK-7K3F9Q"
+              placeholder={CARD_EXAMPLE}
               autoCapitalize="characters"
               autoComplete="off"
               spellCheck={false}
@@ -69,7 +69,7 @@ export function ScanPage() {
             className="btn btn-primary"
             disabled={typed.trim().length < 4}
           >
-            <ScanLine size={20} className="mr-2" /> Open patient
+            <ScanLine size={20} className="mr-2" /> {t("scan.open")}
           </button>
         </form>
       </div>

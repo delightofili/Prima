@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { CameraOff } from "lucide-react";
+import { useI18n } from "../i18n";
 
 interface Detector {
   detect(source: CanvasImageSource): Promise<{ rawValue: string }[]>;
@@ -17,6 +18,7 @@ export function QrScanner({
   onResult: (text: string) => void;
   everyMs?: number;
 }) {
+  const { t } = useI18n();
   const video = useRef<HTMLVideoElement>(null);
   const [state, setState] = useState<State>("starting");
   const resultRef = useRef(onResult);
@@ -111,15 +113,15 @@ export function QrScanner({
         className="space-y-2 rounded-2xl border-2 border-line bg-white p-4"
       >
         <p className="flex items-center gap-2 font-semibold">
-          <CameraOff size={20} /> The camera is not available.
+          <CameraOff size={20} /> {t("scan.noCamera")}
         </p>
         <p className="text-subtext">
           {state === "denied"
-            ? "Allow the camera for Prima in the browser's site settings, then open this page again."
+            ? t("scan.denied")
             : state === "no-camera"
-              ? "This device has no usable camera."
-              : "The camera could not start."}{" "}
-          You can type the card number below instead.
+              ? t("scan.noDevice")
+              : t("scan.cameraError")}{" "}
+          {t("scan.typeInstead")}
         </p>
       </div>
     );
@@ -139,7 +141,7 @@ export function QrScanner({
       />
       {state === "starting" && (
         <p className="absolute inset-x-0 bottom-3 text-center text-sm font-medium text-white">
-          Starting the camera…
+          {t("scan.starting")}
         </p>
       )}
     </div>

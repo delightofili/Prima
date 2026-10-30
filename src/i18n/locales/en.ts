@@ -504,6 +504,96 @@ export const en = {
   "err.vaccineDateMissing": "Enter the date {label} was given",
   "err.vaccineFuture": "{label} date cannot be in the future",
   "err.vaccineBeforeBirth": "{label} cannot be given before the date of birth",
+
+  // ----- shared
+  "common.loading": "Loading…",
+
+  // ----- the home page
+  "home.goodMorning": "Good morning",
+  "home.goodAfternoon": "Good afternoon",
+  "home.goodEvening": "Good evening",
+  "home.find": "Find a patient",
+  "home.totalPatients": "Total patients",
+  "home.registeredToday": "Registered today",
+  "home.followUpsDue_one": "{count} follow-up due",
+  "home.followUpsDue_other": "{count} follow-ups due",
+  "home.followUpsHelp": "Overdue and the next 7 days",
+  "home.welcome": "Welcome to Prima",
+  "home.emptyHelp":
+    "Your register is empty. Register your first patient. It works even without network.",
+  "home.registerFirst": "Register first patient",
+  "home.recent": "Recently registered",
+  "home.viewAll": "View all",
+  "home.footer":
+    "Prima works without network. Records are saved on this device and sync automatically.",
+
+  // ----- the patients page and the list
+  "patients.subtitle": "Search by name, phone, NHIS or card number.",
+  "patients.findDuplicates": "Find duplicates",
+  "patients.exportCsv": "Export CSV",
+  "patients.exportNeedsBasic": "Export needs the Basic plan",
+  "patients.exportUpgradeText":
+    "Upgrade to Basic ({price} a month) to download your full patient register as CSV, and the LGA report too.",
+  "list.search": "Search name, phone, NHIS or card number",
+  "list.none": "No patients yet",
+  "list.noneHelp": "Register the first patient and they will appear here.",
+  "list.noMatch": "No patient or guardian matches “{search}”.",
+  "list.guardians": "Guardians",
+  "list.count": "{count} of {total} patients",
+  "list.first100": "Showing the first 100. Search to narrow down.",
+  "limit.freePlan": "Free plan",
+  "limit.usage": "{used} / {limit} patients",
+  "limit.spotsLeft_one": "{count} spot left.",
+  "limit.spotsLeft_other": "{count} spots left.",
+  "upgrade.notNow": "Not now",
+
+  // ----- the patient card and scanning
+  "card.pageTitle": "Patient card",
+  "card.printHelp":
+    "Printed at bank-card size. Print on card paper, or on plain paper and cut along the line.",
+  "card.unavailable": "This patient is not available.",
+  "card.qrNote":
+    "The QR code holds only the card number. Anyone who finds the card cannot read the record from it. Scan it in Prima with Scan card.",
+  "card.number": "Card number",
+  "card.note": "Bring this card to every visit. Keep it dry and safe.",
+  "card.about": "About {age}",
+  "card.born": "Born {date}",
+  "scan.title": "Scan card",
+  "scan.subtitle": "Point the camera at the QR code on a patient card.",
+  "scan.notPrima": "That is not a Prima patient card.",
+  "scan.notFound":
+    "No patient with card {card} on this phone. If the patient was registered on another phone, wait for it to sync.",
+  "scan.typeLabel": "Or type the card number",
+  "scan.open": "Open patient",
+  "scan.noCamera": "The camera is not available.",
+  "scan.denied":
+    "Allow the camera for Prima in the browser's site settings, then open this page again.",
+  "scan.noDevice": "This device has no usable camera.",
+  "scan.cameraError": "The camera could not start.",
+  "scan.typeInstead": "You can type the card number below instead.",
+  "scan.starting": "Starting the camera…",
+  "scan.qrAria": "QR code with the card number",
+
+  // ----- readings, steppers and visit rules
+  "vitals.veryHigh": "Very high",
+  "vitals.high": "High",
+  "vitals.highFever": "High fever",
+  "vitals.fever": "Fever",
+  "vitals.low": "Low",
+  "stepper.increase": "Increase {label}",
+  "stepper.decrease": "Decrease {label}",
+  "err.fieldNumber": "{label} must be a number",
+  "err.fieldWhole": "{label} must be a whole number",
+  "err.fieldLow": "{label} looks too low",
+  "err.fieldHigh": "{label} looks too high",
+  "err.visitDateRequired": "Enter the visit date",
+  "err.visitFuture": "Visit date cannot be in the future",
+  "err.visitBeforeBirth": "Visit cannot be before the date of birth",
+  "err.under500": "Keep it under 500 characters",
+  "err.bothBp": "Enter both BP values",
+  "err.diaLower": "Diastolic must be lower than systolic",
+  "err.validDate": "Enter a valid date",
+  "err.followAfter": "Follow-up must be after the visit date",
 } as const;
 
 export type Key = keyof typeof en;

@@ -3,9 +3,15 @@ import { MapPin, Phone } from "lucide-react";
 import { calculateAge, isUnder5 } from "../lib/age";
 import { PregnantBadge, Under5Badge } from "./Badges";
 import type { Patient } from "../types";
+import { useI18n } from "../i18n";
 
 export function PatientListCard({ patient }: { patient: Patient }) {
+  const { t, tp } = useI18n();
   const age = calculateAge(patient.dob);
+  const ageText = tp(
+    age.unit === "years" ? "age.years" : "age.months",
+    age.value,
+  );
 
   return (
     <Link
@@ -19,8 +25,9 @@ export function PatientListCard({ patient }: { patient: Patient }) {
         </span>
       </div>
       <p className="flex items-center gap-1.5 text-subtext">
-        <MapPin size={16} /> {age.label} ·{" "}
-        {patient.gender === "FEMALE" ? "Female" : "Male"} · {patient.village}
+        <MapPin size={16} /> {ageText} ·{" "}
+        {t(patient.gender === "FEMALE" ? "register.female" : "register.male")} ·{" "}
+        {patient.village}
       </p>
       {patient.phone && (
         <p className="flex items-center gap-1.5">

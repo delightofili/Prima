@@ -4,20 +4,24 @@ import { PageHeader } from "../components/PageHeader";
 import { VisitForm } from "../components/VisitForm";
 import { usePageTitle } from "../hooks/common";
 import { usePatients } from "../hooks/usePatients";
+import { useI18n } from "../i18n";
 
 export function NewVisitPage() {
   const { id = "" } = useParams();
+  const { t } = useI18n();
   const { patientMap, loading } = usePatients("");
   const p = patientMap.get(id);
-  usePageTitle(p ? `New visit · ${p.fullName}` : "New visit");
+  usePageTitle(
+    p ? t("visit.newPageTitle", { name: p.fullName }) : t("visit.newTitle"),
+  );
 
   if (loading) return null;
   if (!p) {
     return (
       <div className="card mx-auto max-w-md space-y-3 text-center">
-        <p className="text-lg font-semibold">Patient not found</p>
+        <p className="text-lg font-semibold">{t("patient.notFound")}</p>
         <Link to="/patients" className="btn btn-secondary">
-          Back to patients
+          {t("patient.backToPatients")}
         </Link>
       </div>
     );
@@ -32,7 +36,7 @@ export function NewVisitPage() {
         <ArrowLeft size={20} /> {p.fullName}
       </Link>
       <PageHeader
-        title="New visit"
+        title={t("visit.newTitle")}
         subtitle={`${p.fullName} · ${p.cardNumber}`}
       />
       <VisitForm patient={p} />

@@ -1,6 +1,9 @@
 // Tests for the translation engine and the files:  npx tsx scripts/i18n-tests.ts
+import { fileURLToPath, pathToFileURL } from "node:url";
+import { dirname, join } from "node:path";
 import {
   formatDate,
+  formatMoney,
   formatNumber,
   interpolate,
   localeFor,
@@ -8,7 +11,6 @@ import {
   pickPlural,
 } from "../src/i18n/core";
 import { en } from "../src/i18n/locales/en";
-import { dict as ig } from "../src/i18n/locales/ig";
 import { describeSync } from "../src/lib/syncState";
 import { validateQuick, emptyQuick } from "../src/lib/quickRegister";
 
@@ -18,7 +20,22 @@ const ok = (name: string, cond: boolean, extra = "") => {
   if (!cond) failed++;
 };
 const E = en as Record<string, string>;
-const G = ig as Record<string, string>;
+const load = async (code: string) =>
+  (
+    (await import(
+      pathToFileURL(
+        join(
+          dirname(fileURLToPath(import.meta.url)),
+          "..",
+          "src",
+          "i18n",
+          "locales",
+          `${code}.ts`,
+        ),
+      ).href
+    )) as { dict: Record<string, string> }
+  ).dict;
+const L = { ig: await load("ig"), ha: await load("ha"), yo: await load("yo") };
 
 /* ---- the engine ---- */
 ok(
@@ -35,6 +52,10 @@ ok(
   "text with no blanks is untouched",
   interpolate("Sync now", { x: 1 }) === "Sync now",
 );
+ok(
+  "pickPlural falls back to the _other form",
+  pickPlural({ x_other: "many" }, "x", 1, "en") === "many",
+);
 
 const eng = makeTranslator({}, E, "en");
 ok(
@@ -48,7 +69,9 @@ ok(
 );
 
 const missingLog: string[] = [];
-const igbo = makeTranslator(G, E, "ig", (k) => missingLog.push(k));
+const igbo = makeTranslator(L.ig, E, "ig", (k) => missingLog.push(k));
+const hausa = makeTranslator(L.ha, E, "ha");
+const yoruba = makeTranslator(L.yo, E, "yo");
 ok(
   "Igbo uses its own words",
   igbo.t("common.cancel") === "Kagbuo" && igbo.t("nav.patients") === "Ndị ọrịa",
@@ -60,6 +83,31 @@ ok(
 ok(
   "Igbo plural, with the count inside a longer sentence",
   igbo.tp("sync.attention", 3) === "3 chọrọ nlekọta",
+);
+ok(
+  "Hausa has two forms: 1 year, 34 years",
+  hausa.tp("age.years", 1) === "shekara 1" &&
+    hausa.tp("age.years", 34) === "shekaru 34",
+);
+ok(
+  "Hausa: 1 month, 5 months",
+  hausa.tp("age.months", 1) === "wata 1" &&
+    hausa.tp("age.months", 5) === "watanni 5",
+);
+ok(
+  "Hausa: one record needs attention, three records need attention",
+  hausa.tp("sync.attention", 1) === "1 yana buƙatar kulawa" &&
+    hausa.tp("sync.attention", 3) === "3 suna buƙatar kulawa",
+);
+ok(
+  "Yoruba has one plural form, so 1 and 34 use the same line",
+  yoruba.tp("age.years", 1) === "ọdún 1" &&
+    yoruba.tp("age.years", 34) === "ọdún 34",
+);
+ok(
+  "Yoruba uses its own words",
+  yoruba.t("nav.patients") === "Àwọn aláìsàn" &&
+    yoruba.t("common.cancel") === "Fagilé",
 );
 ok(
   "a line with several {blanks}",
@@ -83,56 +131,81 @@ ok(
   "a key that exists nowhere shows the key, so it is noticed",
   partial.t("no.such.key") === "no.such.key",
 );
-ok(
-  "pickPlural falls back to the _other form",
-  pickPlural({ x_other: "many" }, "x", 1, "en") === "many",
-);
 
 /* ---- formats ---- */
+const day = new Date(2026, 9, 29);
 ok(
-  "numbers and dates work in every language the app will offer",
+  "numbers, dates and naira work in every language",
   ["en", "ig", "ha", "yo"].every(
     (l) =>
       formatNumber(1234567, l).length > 0 &&
-      formatDate(new Date(2026, 9, 28), l, "long").length > 0,
+      formatDate(day, l, "long").length > 0 &&
+      formatMoney(2500, l).includes("2,500"),
   ),
 );
 ok(
-  "Igbo month names come from the phone's own calendar",
-  /Ọktoba/.test(formatDate(new Date(2026, 9, 28), "ig", "long")) ||
-    localeFor("ig") === "en-NG",
-  formatDate(new Date(2026, 9, 28), "ig", "long"),
+  "naira has the ₦ sign and no kobo, in every language",
+  ["en", "ig", "ha", "yo"].every((l) =>
+    /^₦2,500$/.test(formatMoney(2500, l).replace(/\s/g, "")),
+  ),
+  formatMoney(2500, "ha"),
+);
+ok(
+  "month names come from the phone's own calendar",
+  /Ọktoba/.test(formatDate(day, "ig", "long")) &&
+    /Oktoba/.test(formatDate(day, "ha", "long")) &&
+    /Ọ̀wàrà|Owara/i.test(formatDate(day, "yo", "long")),
+  `${formatDate(day, "ig", "long")} | ${formatDate(day, "ha", "long")} | ${formatDate(day, "yo", "long")}`,
 );
 ok(
   "an unknown language falls back to Nigerian English",
   localeFor("zz") === "en-NG",
 );
 
-/* ---- the files ---- */
+/* ---- the files, for each language ---- */
 const names = (s: string) =>
   [...s.matchAll(/\{(\w+)\}/g)]
     .map((m) => m[1])
     .sort()
     .join(",");
-ok(
-  "every Igbo line exists in English (no typos in keys)",
-  Object.keys(G).every((k) => k in E),
-);
-ok(
-  "every Igbo line keeps exactly the same {blanks} as English",
-  Object.keys(G).every((k) => names(G[k]) === names(E[k])),
-  Object.keys(G)
-    .filter((k) => names(G[k]) !== names(E[k]))
-    .join(),
-);
-ok(
-  "every Igbo line is in standard letter form (ị ọ ụ ṅ are single letters)",
-  Object.values(G).every((v) => v === v.normalize("NFC")),
-);
-ok(
-  "Igbo has no unused _one lines, because it has no singular form",
-  Object.keys(G).every((k) => !k.endsWith("_one")),
-);
+for (const [code, dict] of Object.entries(L)) {
+  const cats = new Set(
+    new Intl.PluralRules(code).resolvedOptions().pluralCategories,
+  );
+  const needed = Object.keys(E).filter((k) => {
+    const m = /_(zero|one|two|few|many|other)$/.exec(k);
+    return !m || cats.has(m[1] as Intl.LDMLPluralRule);
+  });
+  ok(
+    `${code}: every line the language needs is there`,
+    needed.every((k) => k in dict),
+    needed.filter((k) => !(k in dict)).join(),
+  );
+  ok(
+    `${code}: no line exists that English does not have (no typos in keys)`,
+    Object.keys(dict).every((k) => k in E),
+  );
+  ok(
+    `${code}: every line keeps exactly the same {blanks} as English`,
+    Object.keys(dict).every((k) => names(dict[k]) === names(E[k])),
+    Object.keys(dict)
+      .filter((k) => names(dict[k]) !== names(E[k]))
+      .join(),
+  );
+  ok(
+    `${code}: every line is in standard letter form`,
+    Object.values(dict).every((v) => v === v.normalize("NFC")),
+  );
+  ok(
+    `${code}: no empty line and no stray spaces`,
+    Object.values(dict).every((v) => v.trim() === v && v.length > 0),
+  );
+  if (!cats.has("one"))
+    ok(
+      `${code}: no unused _one lines, because it has no singular form`,
+      Object.keys(dict).every((k) => !k.endsWith("_one")),
+    );
+}
 ok(
   "every English plural has both forms",
   Object.keys(E)
@@ -141,7 +214,17 @@ ok(
 );
 ok(
   "the Igbo letters are really there",
-  ["ị", "ọ", "ụ"].every((c) => Object.values(G).some((v) => v.includes(c))),
+  ["ị", "ọ", "ụ"].every((c) => Object.values(L.ig).some((v) => v.includes(c))),
+);
+ok(
+  "the Hausa hooked letters are really there",
+  ["ɓ", "ɗ", "ƙ"].every((c) => Object.values(L.ha).some((v) => v.includes(c))),
+);
+ok(
+  "the Yoruba dot-below and tone marks are really there",
+  ["ẹ", "ọ", "ṣ", "\u0300", "\u0301"].every((c) =>
+    Object.values(L.yo).some((v) => v.includes(c)),
+  ),
 );
 
 /* ---- logic that returns messages, not sentences ---- */
@@ -180,10 +263,30 @@ ok(
     say({}, igbo).label === "E bulitela",
 );
 ok(
+  "the sync badge in Hausa",
+  say({}, hausa).label === "An daidaita" &&
+    say({ online: false, waiting: 3 }, hausa).label ===
+      "Babu intanet · an ajiye 3",
+);
+ok(
+  "the sync badge in Yoruba",
+  say({}, yoruba).label === "A ti gbé e sókè" &&
+    say({ failed: 2 }, yoruba).label === "2 nílò àbójútó",
+);
+ok(
   "the plan-limit message reads right for 1 and for 3",
   say({ failed: 1, parked: 1 }, eng).detail.startsWith("1 patient is saved") &&
     say({ failed: 3, parked: 3 }, eng).detail.startsWith(
       "3 patients are saved",
+    ),
+);
+ok(
+  "Hausa plan-limit message: one patient, three patients",
+  say({ failed: 1, parked: 1 }, hausa).detail.startsWith(
+    "An ajiye mara lafiya 1",
+  ) &&
+    say({ failed: 3, parked: 3 }, hausa).detail.startsWith(
+      "An ajiye marasa lafiya 3",
     ),
 );
 
@@ -195,9 +298,11 @@ ok(
   JSON.stringify(errs),
 );
 ok(
-  "a form error reads in Igbo",
+  "a form error reads in every language",
   igbo.t(errs.fullName!) === "Tinye aha onye ọrịa" &&
-    eng.t(errs.fullName!) === "Enter the patient's name",
+    eng.t(errs.fullName!) === "Enter the patient's name" &&
+    hausa.t(errs.fullName!) === "Shigar da sunan mara lafiya" &&
+    yoruba.t(errs.fullName!) === "Tẹ orúkọ aláìsàn",
 );
 
 console.log(failed ? `\n${failed} FAILED` : "\nALL PASSED");

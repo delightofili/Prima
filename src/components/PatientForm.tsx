@@ -6,7 +6,7 @@ import { config } from "../lib/config";
 import { calculateAge, isUnder5, isWomanOver12 } from "../lib/age";
 import { Users } from "lucide-react";
 import { GuardianPicker } from "./GuardianPicker";
-import { validateGuardianChoice, type GuardianChoice } from "../lib/guardians";
+import { guardianChoiceError, type GuardianChoice } from "../lib/guardians";
 import {
   findExactDuplicate,
   registerPatient,
@@ -29,6 +29,15 @@ import { useUnsavedWarning } from "../hooks/useUnsavedWarning";
 import { ComplaintHint } from "./ComplaintHint";
 import { StickyActions } from "./StickyActions";
 import { Link } from "react-router-dom";
+import { useI18n, type Key } from "../i18n";
+
+// Clinical names stay in English in every language, so records and reports read the same everywhere
+const GRAVIDA = "Gravida";
+const PARA = "Para";
+// Consent wording stays in English until the privacy review (Day 27): a legal text is not translated before it is final
+const SMS_CONSENT_TITLE = "Send appointment reminders by SMS";
+const SMS_CONSENT_TEXT =
+  "The patient agrees to receive reminders on this number. Messages never include health details.";
 
 type Hint =
   | { kind: "exact"; patient: Patient }
@@ -64,6 +73,7 @@ export function PatientForm({
   onSaved: (p: Patient) => void;
   patient?: Patient;
 }) {
+  const { t, tp, tv } = useI18n();
   const editing = !!patient;
   const {
     register,
@@ -90,7 +100,7 @@ export function PatientForm({
   const [picked, setPicked] = useState<Record<string, string>>({});
   const [hint, setHint] = useState<Hint>(null);
   const [guardian, setGuardian] = useState<GuardianChoice>({ kind: "none" });
-  const [guardianError, setGuardianError] = useState<string | null>(null);
+  const [guardianError, setGuardianError] = useState<Key | null>(null);
   const [confirmedForKey, setConfirmedForKey] = useState<string | null>(null);
   const [vaccineError, setVaccineError] = useState<string | null>(null);
   const [saveError, setSaveError] = useState<string | null>(null);
@@ -108,6 +118,9 @@ export function PatientForm({
   const validDob =
     !!dob && /^\d{4}-\d{2}-\d{2}$/.test(dob) && dob <= todayISO();
   const age = validDob ? calculateAge(dob) : null;
+  const ageText = age
+    ? tp(age.unit === "years" ? "age.years" : "age.months", age.value)
+    : "";
   const showObstetric = !!age && !!gender && isWomanOver12(gender, age);
   const showVaccines = !editing && !!age && isUnder5(age);
   const showGuardian =
@@ -170,7 +183,7 @@ export function PatientForm({
 
     setVaccineError(vErr);
     if (vErr) return;
-    const gErr = showGuardian ? validateGuardianChoice(guardian) : null;
+    const gErr = showGuardian ? guardianChoiceError(guardian) : null;
     setGuardianError(gErr);
     if (gErr) return;
     if (!confirmed) {
@@ -217,11 +230,11 @@ export function PatientForm({
       onSaved(saved);
     } catch (e) {
       if (e instanceof PlanLimitError) {
-        setSaveError(`${e.message} Upgrade to Basic to add more patients.`);
+        setSaveError(t("register.planFull"));
         return;
       }
       console.error(e);
-      setSaveError("Could not save this patient. Please try again.");
+      setSaveError(t("register.saveFailed"));
     }
   });
 
@@ -234,7 +247,7 @@ export function PatientForm({
       {/* 1. NEW ADMISSION */}
       <section className="card space-y-3 md:col-span-2">
         <label className="flex min-h-12 items-center justify-between gap-3 text-base font-semibold">
-          New admission? (first visit for a complaint)
+          {t("form.newAdmission")}
           <input
             type="checkbox"
             className="size-7 accent-prima-500"
@@ -243,14 +256,14 @@ export function PatientForm({
         </label>
         {isNewAdmission && (
           <Field
-            label="Chief complaint"
-            error={errors.initialChiefComplaint?.message}
+            label={t("form.chiefComplaint")}
+            error={tv(errors.initialChiefComplaint?.message)}
           >
             <textarea
               rows={3}
               maxLength={200}
               className="input h-auto py-2"
-              placeholder="e.g. fever and cough for 3 days"
+              placeholder={t("form.complaintExample")}
               {...register("initialChiefComplaint")}
             />
             <ComplaintHint
@@ -271,15 +284,21 @@ export function PatientForm({
 
       {/* 2. PATIENT */}
       <section className="card space-y-4">
-        <h2 className="text-lg font-bold">Patient</h2>
-        <Field label="Full name" error={errors.fullName?.message}>
+        <h2 className="text-lg font-bold">{t("patient.title")}</h2>
+        <Field
+          label={t("register.fullName")}
+          error={tv(errors.fullName?.message)}
+        >
           <input
             className="input"
             autoComplete="off"
             {...register("fullName")}
           />
         </Field>
-        <Field label="Date of birth" error={errors.dob?.message}>
+        <Field
+          label={t("register.dateOfBirth")}
+          error={tv(errors.dob?.message)}
+        >
           <input
             type="date"
             className="input"
@@ -287,10 +306,14 @@ export function PatientForm({
             {...dobRegistration}
             onChange={handleDobChange}
           />
-          {age && <span className="block text-subtext">Age: {age.label}</span>}
+          {age && (
+            <span className="block text-subtext">
+              {t("form.ageLine", { age: ageText })}
+            </span>
+          )}
         </Field>
         <div className="space-y-1">
-          <span className="text-base font-semibold">Gender</span>
+          <span className="text-base font-semibold">{t("patient.gender")}</span>
           <div className="grid grid-cols-2 gap-3">
             {(["FEMALE", "MALE"] as const).map((g) => (
               <label key={g}>
@@ -301,7 +324,7 @@ export function PatientForm({
                   {...register("gender")}
                 />
                 <span className="flex h-12 items-center justify-center rounded-xl border-2 border-line bg-white text-base font-semibold peer-checked:border-prima-500 peer-checked:bg-prima-50 peer-focus-visible:ring-2 peer-focus-visible:ring-prima-500">
-                  {g === "FEMALE" ? "Female" : "Male"}
+                  {t(g === "FEMALE" ? "register.female" : "register.male")}
                 </span>
               </label>
             ))}
@@ -311,11 +334,14 @@ export function PatientForm({
               role="alert"
               className="block text-sm font-medium text-danger"
             >
-              {errors.gender.message}
+              {tv(errors.gender.message)}
             </span>
           )}
         </div>
-        <Field label="Phone (optional)" error={errors.phone?.message}>
+        <Field
+          label={t("register.phoneOptional")}
+          error={tv(errors.phone?.message)}
+        >
           <input
             type="tel"
             inputMode="numeric"
@@ -332,19 +358,16 @@ export function PatientForm({
               {...register("smsConsent")}
             />
             <span>
-              <span className="block font-semibold">
-                Send appointment reminders by SMS
-              </span>
+              <span className="block font-semibold">{SMS_CONSENT_TITLE}</span>
               <span className="block text-sm text-subtext">
-                The patient agrees to receive reminders on this number. Messages
-                never include health details.
+                {SMS_CONSENT_TEXT}
               </span>
               {errors.smsConsent && (
                 <span
                   role="alert"
                   className="block text-sm font-medium text-danger"
                 >
-                  {errors.smsConsent.message}
+                  {tv(errors.smsConsent.message)}
                 </span>
               )}
             </span>
@@ -354,29 +377,38 @@ export function PatientForm({
 
       {/* 3. ADDRESS */}
       <section className="card space-y-4">
-        <h2 className="text-lg font-bold">Address</h2>
-        <Field label="Village / Town" error={errors.village?.message}>
+        <h2 className="text-lg font-bold">{t("patient.address")}</h2>
+        <Field
+          label={t("form.villageTown")}
+          error={tv(errors.village?.message)}
+        >
           <input
             className="input"
             autoComplete="off"
             {...register("village")}
           />
         </Field>
-        <Field label="LGA" error={errors.lga?.message}>
+        <Field label={t("facility.lga")} error={tv(errors.lga?.message)}>
           <input className="input" {...register("lga")} />
         </Field>
-        <Field label="State" error={errors.state?.message}>
+        <Field label={t("facility.state")} error={tv(errors.state?.message)}>
           <input className="input" {...register("state")} />
         </Field>
       </section>
 
       {/* 4. NEXT OF KIN */}
       <section className="card space-y-4">
-        <h2 className="text-lg font-bold">Next of kin</h2>
-        <Field label="Name" error={errors.nextOfKinName?.message}>
+        <h2 className="text-lg font-bold">{t("record.nextOfKin")}</h2>
+        <Field
+          label={t("patient.kinName")}
+          error={tv(errors.nextOfKinName?.message)}
+        >
           <input className="input" {...register("nextOfKinName")} />
         </Field>
-        <Field label="Phone" error={errors.nextOfKinPhone?.message}>
+        <Field
+          label={t("patient.phone")}
+          error={tv(errors.nextOfKinPhone?.message)}
+        >
           <input
             type="tel"
             inputMode="numeric"
@@ -389,13 +421,16 @@ export function PatientForm({
 
       {/* 5. OPTIONAL MEDICAL */}
       <section className="card space-y-4">
-        <h2 className="text-lg font-bold">Medical (optional)</h2>
-        <Field label="NHIS number" error={errors.nhisNumber?.message}>
+        <h2 className="text-lg font-bold">{t("form.medicalOptional")}</h2>
+        <Field label={t("patient.nhis")} error={tv(errors.nhisNumber?.message)}>
           <input className="input" {...register("nhisNumber")} />
         </Field>
-        <Field label="Blood group" error={errors.bloodGroup?.message}>
+        <Field
+          label={t("patient.bloodGroup")}
+          error={tv(errors.bloodGroup?.message)}
+        >
           <select className="input" {...register("bloodGroup")}>
-            <option value="">Not known</option>
+            <option value="">{t("form.notKnown")}</option>
             {BLOOD_GROUPS.map((b) => (
               <option key={b} value={b}>
                 {b}
@@ -403,11 +438,14 @@ export function PatientForm({
             ))}
           </select>
         </Field>
-        <Field label="Known allergies" error={errors.allergies?.message}>
+        <Field
+          label={t("form.allergies")}
+          error={tv(errors.allergies?.message)}
+        >
           <textarea
             rows={2}
             className="input h-auto py-2"
-            placeholder="e.g. Penicillin"
+            placeholder={t("form.allergyExample")}
             {...register("allergies")}
           />
         </Field>
@@ -416,9 +454,9 @@ export function PatientForm({
       {/* 6. WOMEN OVER 12 ONLY */}
       {showObstetric && (
         <section className="space-y-4 rounded-2xl border-2 border-prima-500/30 bg-prima-50 p-4 md:col-span-2">
-          <h2 className="text-lg font-bold">Obstetric history</h2>
+          <h2 className="text-lg font-bold">{t("form.obstetric")}</h2>
           <div className="grid grid-cols-2 gap-3">
-            <Field label="Gravida" error={errors.gravida?.message}>
+            <Field label={GRAVIDA} error={tv(errors.gravida?.message)}>
               <input
                 inputMode="numeric"
                 className="input"
@@ -428,7 +466,7 @@ export function PatientForm({
                 })}
               />
             </Field>
-            <Field label="Para" error={errors.para?.message}>
+            <Field label={PARA} error={tv(errors.para?.message)}>
               <input
                 inputMode="numeric"
                 className="input"
@@ -445,14 +483,14 @@ export function PatientForm({
               className="size-7 accent-prima-500"
               {...register("isPregnant")}
             />
-            Currently pregnant
+            {t("form.currentlyPregnant")}
           </label>
           {errors.isPregnant && (
             <span
               role="alert"
               className="block text-sm font-medium text-danger"
             >
-              {errors.isPregnant.message}
+              {tv(errors.isPregnant.message)}
             </span>
           )}
         </section>
@@ -466,19 +504,16 @@ export function PatientForm({
       )}
       {vaccineError && (
         <p role="alert" className="font-medium text-danger md:col-span-2">
-          {vaccineError}
+          {tv(vaccineError)}
         </p>
       )}
       {showGuardian && (
         <section className="card space-y-3 md:col-span-2">
           <h2 className="flex items-center gap-2 text-lg font-bold">
-            <Users size={20} className="text-prima-500" /> Guardian (optional)
+            <Users size={20} className="text-prima-500" />{" "}
+            {t("form.guardianTitle")}
           </h2>
-          <p className="text-subtext">
-            Adding a guardian lets Prima call the right person for vaccines and
-            follow-ups. Search first: a mother with several children is one
-            guardian.
-          </p>
+          <p className="text-subtext">{t("form.guardianHelp")}</p>
           <GuardianPicker
             value={guardian}
             onChange={setGuardian}
@@ -486,7 +521,7 @@ export function PatientForm({
           />
           {guardianError && (
             <p role="alert" className="font-medium text-danger">
-              {guardianError}
+              {tv(guardianError)}
             </p>
           )}
         </section>
@@ -501,13 +536,10 @@ export function PatientForm({
           />
           <span>
             <span className="block font-semibold">
-              Privacy notice explained
+              {t("register.noticeTitle")}
             </span>
             <span className="block text-sm text-subtext">
-              I told the patient (or their guardian) how their information is
-              used, and that they can ask to see, correct or remove it. If this
-              was not possible now, leave it unticked and record it later from
-              the profile.
+              {t("form.noticeText")}
             </span>
           </span>
         </label>
@@ -521,20 +553,22 @@ export function PatientForm({
         >
           {hint.kind === "exact" ? (
             <p className="font-semibold">
-              Already registered? {hint.patient.fullName} (
-              {hint.patient.cardNumber}) has the same name, date of birth and
-              village.
+              {t("form.dupExact", {
+                name: hint.patient.fullName,
+                card: hint.patient.cardNumber,
+              })}
             </p>
           ) : (
             <>
-              <p className="font-semibold">
-                Similar names with the same date of birth:
-              </p>
+              <p className="font-semibold">{t("form.dupSimilar")}</p>
               <ul className="list-disc pl-5">
                 {hint.items.map((i) => (
                   <li key={i.patient.id}>
-                    {i.patient.fullName} · {i.patient.cardNumber} ·{" "}
-                    {Math.round(i.score)}% match
+                    {t("form.dupMatch", {
+                      name: i.patient.fullName,
+                      card: i.patient.cardNumber,
+                      score: Math.round(i.score),
+                    })}
                   </li>
                 ))}
               </ul>
@@ -549,7 +583,7 @@ export function PatientForm({
                 setConfirmedForKey(e.target.checked ? key : null)
               }
             />
-            This is a different person
+            {t("register.differentPerson")}
           </label>
         </div>
       )}
@@ -562,7 +596,7 @@ export function PatientForm({
 
       <StickyActions
         className="md:col-span-2"
-        note={isDirty ? "Unsaved changes" : undefined}
+        note={isDirty ? t("register.unsaved") : undefined}
       >
         <Link
           to={`/patients`}
@@ -571,12 +605,12 @@ export function PatientForm({
             if (
               isDirty &&
               !isSubmitSuccessful &&
-              !window.confirm("Leave without registering this patient?")
+              !window.confirm(t("form.leaveConfirm"))
             )
               e.preventDefault();
           }}
         >
-          Cancel
+          {t("common.cancel")}
         </Link>
         <button
           type="submit"
@@ -584,10 +618,10 @@ export function PatientForm({
           disabled={isSubmitting || (hint !== null && !confirmed)}
         >
           {isSubmitting
-            ? "Saving…"
+            ? t("register.saving")
             : editing
-              ? "Save changes"
-              : "Register patient"}
+              ? t("form.saveChanges")
+              : t("register.title")}
         </button>
       </StickyActions>
     </form>

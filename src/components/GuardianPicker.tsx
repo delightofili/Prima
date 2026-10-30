@@ -4,13 +4,19 @@ import { useGuardians } from "../hooks/useGuardians";
 import { usePatients } from "../hooks/usePatients";
 import {
   RELATIONSHIPS,
-  relationshipLabel,
+  relationshipKey,
   searchGuardians,
   type GuardianChoice,
 } from "../lib/guardians";
 import { formatPhone, normalize, toE164 } from "../lib/utils";
 import type { Relationship } from "../types";
 import { GuardianCard } from "./GuardianCard";
+import { useI18n } from "../i18n";
+
+// Consent wording stays in English until the privacy review (Day 27): a legal text is not translated before it is final
+const SMS_CONSENT_TITLE = "Send appointment reminders by SMS to this number";
+const SMS_CONSENT_TEXT =
+  "The guardian agrees to reminders for every child linked to them. Messages never include health details.";
 
 // Pressing Enter inside these boxes must not submit the whole patient form.
 const noEnter = (e: KeyboardEvent) => {
@@ -31,6 +37,7 @@ function NewGuardianForm({
   nextOfKin: NextOfKin;
   onBack: () => void;
 }) {
+  const { t } = useI18n();
   const { results: patients, patientMap } = usePatients("");
   const [find, setFind] = useState("");
   const linked = value.patientId ? patientMap.get(value.patientId) : undefined;
@@ -56,18 +63,20 @@ function NewGuardianForm({
   return (
     <div className="space-y-3 rounded-2xl border-2 border-line bg-page p-4">
       <div className="flex items-center justify-between gap-2">
-        <p className="font-semibold">New guardian</p>
+        <p className="font-semibold">{t("guardian.new")}</p>
         <button
           type="button"
           className="min-h-11 px-2 font-semibold text-prima-500"
           onClick={onBack}
         >
-          Back to search
+          {t("guardian.backToSearch")}
         </button>
       </div>
 
       <label className="block space-y-1">
-        <span className="text-base font-semibold">Full name</span>
+        <span className="text-base font-semibold">
+          {t("register.fullName")}
+        </span>
         <input
           className="input"
           value={value.fullName}
@@ -78,7 +87,7 @@ function NewGuardianForm({
 
       <label className="block space-y-1">
         <span className="text-base font-semibold">
-          Relationship to the patient
+          {t("guardian.relationshipTo")}
         </span>
         <select
           className="input"
@@ -89,14 +98,16 @@ function NewGuardianForm({
         >
           {RELATIONSHIPS.map((r) => (
             <option key={r.value} value={r.value}>
-              {r.label}
+              {t(relationshipKey(r.value))}
             </option>
           ))}
         </select>
       </label>
 
       <label className="block space-y-1">
-        <span className="text-base font-semibold">Phone (optional)</span>
+        <span className="text-base font-semibold">
+          {t("register.phoneOptional")}
+        </span>
         <input
           type="tel"
           inputMode="numeric"
@@ -119,12 +130,9 @@ function NewGuardianForm({
             }
           />
           <span>
-            <span className="block font-semibold">
-              Send appointment reminders by SMS to this number
-            </span>
+            <span className="block font-semibold">{SMS_CONSENT_TITLE}</span>
             <span className="block text-sm text-subtext">
-              The guardian agrees to reminders for every child linked to them.
-              Messages never include health details.
+              {SMS_CONSENT_TEXT}
             </span>
           </span>
         </label>
@@ -142,14 +150,12 @@ function NewGuardianForm({
             })
           }
         >
-          Use next of kin: {nextOfKin.name}
+          {t("guardian.useKin", { name: nextOfKin.name })}
         </button>
       )}
 
       <div className="space-y-2">
-        <p className="text-base font-semibold">
-          Is this person also a patient here? (optional)
-        </p>
+        <p className="text-base font-semibold">{t("guardian.alsoPatient")}</p>
         {linked ? (
           <div className="flex items-center justify-between gap-2 rounded-xl bg-prima-50 p-3">
             <span className="font-medium">
@@ -157,7 +163,7 @@ function NewGuardianForm({
             </span>
             <button
               type="button"
-              aria-label="Remove link"
+              aria-label={t("family.removeLink")}
               className="p-2"
               onClick={() => onChange({ ...value, patientId: undefined })}
             >
@@ -173,7 +179,7 @@ function NewGuardianForm({
               />
               <input
                 className="input pl-10"
-                placeholder="Search name, phone or card number"
+                placeholder={t("guardian.searchPatient")}
                 value={find}
                 onKeyDown={noEnter}
                 onChange={(e) => setFind(e.target.value)}
@@ -198,10 +204,7 @@ function NewGuardianForm({
           </>
         )}
         {value.relationship === "MOTHER" && (
-          <p className="text-sm text-subtext">
-            Linking the mother's record shows her antenatal visits on the baby's
-            profile.
-          </p>
+          <p className="text-sm text-subtext">{t("guardian.motherNote")}</p>
         )}
       </div>
     </div>
@@ -217,6 +220,7 @@ export function GuardianPicker({
   onChange: (v: GuardianChoice) => void;
   nextOfKin: NextOfKin;
 }) {
+  const { t, tp } = useI18n();
   const { guardians, guardianMap, childrenOf } = useGuardians();
   const [query, setQuery] = useState("");
   const matches = useMemo(
@@ -233,7 +237,7 @@ export function GuardianPicker({
           className="btn btn-secondary"
           onClick={() => onChange({ kind: "none" })}
         >
-          Guardian not found. Choose again
+          {t("guardian.notFound")}
         </button>
       );
     }
@@ -248,7 +252,7 @@ export function GuardianPicker({
             className="btn btn-secondary"
             onClick={() => onChange({ kind: "none" })}
           >
-            Choose a different guardian
+            {t("guardian.choose")}
           </button>
         }
       />
@@ -277,7 +281,7 @@ export function GuardianPicker({
         />
         <input
           className="input pl-10"
-          placeholder="Search guardian by phone or name"
+          placeholder={t("guardian.search")}
           value={query}
           onKeyDown={noEnter}
           onChange={(e) => setQuery(e.target.value)}
@@ -296,12 +300,12 @@ export function GuardianPicker({
             <span>
               <span className="block font-semibold">{g.fullName}</span>
               <span className="block text-sm text-subtext">
-                {relationshipLabel(g.relationship)}
+                {t(relationshipKey(g.relationship))}
                 {g.phone ? ` · ${formatPhone(g.phone)}` : ""}
               </span>
             </span>
             <span className="shrink-0 text-sm font-semibold text-prima-500">
-              {count} {count === 1 ? "child" : "children"}
+              {tp("guardian.childCount", count)}
             </span>
           </button>
         );
@@ -320,7 +324,7 @@ export function GuardianPicker({
           })
         }
       >
-        <UserPlus size={20} className="mr-2" /> Add a new guardian
+        <UserPlus size={20} className="mr-2" /> {t("guardian.addNew")}
       </button>
     </div>
   );

@@ -83,3 +83,19 @@ export const formatDate = (
   style: "short" | "medium" | "long" = "medium",
 ) =>
   new Intl.DateTimeFormat(localeFor(lang), { dateStyle: style }).format(date);
+// Naira, no kobo: prices in Prima are whole naira (₦2,500, ₦50,000)
+export const formatMoney = (n: number, lang: string) =>
+  new Intl.NumberFormat(localeFor(lang), {
+    style: "currency",
+    currency: "NGN",
+    maximumFractionDigits: 0,
+  }).format(n);
+
+export const formatIsoDate = (
+  iso: string,
+  lang: string,
+  style: "short" | "medium" | "long" = "medium",
+) => {
+  const [y, m, d] = iso.split("-").map(Number);
+  return formatDate(new Date(y, (m || 1) - 1, d || 1), lang, style);
+};

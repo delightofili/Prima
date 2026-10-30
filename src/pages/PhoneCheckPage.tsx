@@ -3,7 +3,7 @@ import { Copy, Play } from "lucide-react";
 import { db } from "../db";
 import { Field } from "../components/FormBits";
 import { GloveToggle } from "../components/GloveToggle";
-import { IgboFontTest } from "../components/IgboFontTest";
+import { LettersTest } from "../components/LettersTest";
 import { PageHeader } from "../components/PageHeader";
 import { TimingCard } from "../components/TimingCard";
 import { usePageTitle } from "../hooks/common";
@@ -371,7 +371,7 @@ export function PhoneCheckPage() {
             </Field>
           </section>
 
-          <IgboFontTest />
+          <LettersTest />
 
           <TimingCard />
 

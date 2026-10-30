@@ -14,7 +14,10 @@
     "landing:deploy": "node landing/build.mjs && node landing/check.mjs && npx wrangler pages deploy landing/dist --project-name prima-landing --branch main",
     "i18n:check": "npx tsx scripts/i18n-check.ts",
     "i18n:test": "npx tsx scripts/i18n-tests.ts",
-    "verify:deploy": "node scripts/verify-deploy.mjs"
+    "verify:deploy": "node scripts/verify-deploy.mjs",
+    "i18n:export": "npx tsx scripts/i18n-export.ts",
+    "i18n:import": "npx tsx scripts/i18n-import.ts",
+    "i18n:scan": "npx tsx scripts/i18n-scan.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",

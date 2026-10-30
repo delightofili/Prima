@@ -14,8 +14,8 @@ export interface LanguageInfo {
 export const LANGUAGES: LanguageInfo[] = [
   { code: "en", english: "English", native: "English", status: "base" },
   { code: "ig", english: "Igbo", native: "Asụsụ Igbo", status: "draft" },
-  { code: "ha", english: "Hausa", native: "Harshen Hausa", status: "soon" },
-  { code: "yo", english: "Yoruba", native: "Èdè Yorùbá", status: "soon" },
+  { code: "ha", english: "Hausa", native: "Harshen Hausa", status: "draft" },
+  { code: "yo", english: "Yoruba", native: "Èdè Yorùbá", status: "draft" },
 ];
 
 export const isLangCode = (v: unknown): v is LangCode =>

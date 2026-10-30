@@ -8,13 +8,14 @@ import { usePatients } from "../hooks/usePatients";
 import { useToast } from "../hooks/useToast";
 import { calculateAge } from "../lib/age";
 import { detachGuardian, setGuardianOf } from "../lib/guardians";
-import { formatDate } from "../lib/utils";
 import type { Patient } from "../types";
 import { GuardianCard } from "./GuardianCard";
 import { GuardianDialog, GuardianEditDialog } from "./GuardianDialog";
 import { isAncCode } from "../lib/serviceCodes";
+import { useI18n } from "../i18n";
 
 export function FamilySection({ patient }: { patient: Patient }) {
+  const { t, tp, isoDate } = useI18n();
   const toast = useToast();
   const { guardianMap, childrenOf } = useGuardians();
   const { patientMap } = usePatients("");
@@ -60,6 +61,10 @@ export function FamilySection({ patient }: { patient: Patient }) {
     return [...byId.values()];
   }, [guardianRecords, childrenOf, patient.id]);
 
+  const ageOf = (dob: string) => {
+    const a = calculateAge(dob);
+    return tp(a.unit === "years" ? "age.years" : "age.months", a.value);
+  };
   const age = calculateAge(patient.dob);
   const isMinor = age.unit === "months" || age.value < 18;
   if (!guardian && !isMinor && children.length === 0) return null;
@@ -67,8 +72,8 @@ export function FamilySection({ patient }: { patient: Patient }) {
   const remove = async () => {
     const previous = patient.guardianId;
     await detachGuardian(patient.id);
-    toast("Guardian link removed", "ok", {
-      label: "Undo",
+    toast(t("guardian.linkRemoved"), "ok", {
+      label: t("common.undo"),
       onClick: () => void setGuardianOf(patient.id, previous),
     });
   };
@@ -78,7 +83,7 @@ export function FamilySection({ patient }: { patient: Patient }) {
       {(guardian || isMinor) && (
         <section className="space-y-3">
           <h2 className="flex items-center gap-2 text-lg font-bold">
-            <Users size={20} className="text-prima-500" /> Guardian
+            <Users size={20} className="text-prima-500" /> {t("guardian.title")}
           </h2>
 
           {guardian ? (
@@ -93,16 +98,22 @@ export function FamilySection({ patient }: { patient: Patient }) {
                         to={`/patients/${mother.id}`}
                         className="font-semibold text-prima-900 underline"
                       >
-                        Mother's record: {mother.fullName} · {mother.cardNumber}
+                        {t("family.mothersRecord", {
+                          name: mother.fullName,
+                          card: mother.cardNumber,
+                        })}
                       </Link>
                       {anc && anc.count > 0 && anc.latest ? (
                         <p className="flex items-center gap-2 text-sm">
-                          <HeartPulse size={16} /> Antenatal visits: {anc.count}
-                          , latest {formatDate(anc.latest)}
+                          <HeartPulse size={16} />{" "}
+                          {t("family.anc", {
+                            count: anc.count,
+                            date: isoDate(anc.latest),
+                          })}
                         </p>
                       ) : (
                         <p className="text-sm text-subtext">
-                          No antenatal visits recorded for her yet.
+                          {t("family.noAnc")}
                         </p>
                       )}
                     </div>
@@ -113,21 +124,22 @@ export function FamilySection({ patient }: { patient: Patient }) {
                       className="btn btn-secondary sm:w-48"
                       onClick={() => setDialog("change")}
                     >
-                      Change guardian
+                      {t("family.change")}
                     </button>
                     <button
                       type="button"
                       className="btn btn-secondary sm:w-48"
                       onClick={() => setDialog("edit")}
                     >
-                      <Pencil size={18} className="mr-2" /> Edit details
+                      <Pencil size={18} className="mr-2" />{" "}
+                      {t("account.editDetails")}
                     </button>
                     <button
                       type="button"
                       className="min-h-12 px-3 font-semibold text-danger"
                       onClick={remove}
                     >
-                      Remove link
+                      {t("family.removeLink")}
                     </button>
                   </div>
                 </div>
@@ -135,16 +147,14 @@ export function FamilySection({ patient }: { patient: Patient }) {
             />
           ) : (
             <div className="card space-y-2 text-center">
-              <p className="font-semibold">No guardian linked</p>
-              <p className="text-subtext">
-                Link a guardian so reminders and calls reach the right person.
-              </p>
+              <p className="font-semibold">{t("family.none")}</p>
+              <p className="text-subtext">{t("family.noneHelp")}</p>
               <button
                 type="button"
                 className="btn btn-accent mx-auto sm:w-56"
                 onClick={() => setDialog("change")}
               >
-                <Plus size={20} className="mr-2" /> Add guardian
+                <Plus size={20} className="mr-2" /> {t("family.add")}
               </button>
             </div>
           )}
@@ -154,8 +164,8 @@ export function FamilySection({ patient }: { patient: Patient }) {
       {children.length > 0 && (
         <section className="card space-y-2">
           <h2 className="flex items-center gap-2 text-lg font-bold">
-            <Users size={20} className="text-prima-500" /> Children (
-            {children.length})
+            <Users size={20} className="text-prima-500" />{" "}
+            {t("family.children", { count: children.length })}
           </h2>
           <ul className="divide-y divide-line">
             {children.map((c) => (
@@ -166,7 +176,7 @@ export function FamilySection({ patient }: { patient: Patient }) {
                 >
                   <span className="font-semibold">{c.fullName}</span>
                   <span className="text-subtext">
-                    {calculateAge(c.dob).label} · {c.cardNumber}
+                    {ageOf(c.dob)} · {c.cardNumber}
                   </span>
                 </Link>
               </li>

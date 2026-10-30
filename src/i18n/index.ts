@@ -1,6 +1,8 @@
 import { useSyncExternalStore } from "react";
 import {
   formatDate as fmtDate,
+  formatIsoDate as fmtIsoDate,
+  formatMoney as fmtMoney,
   formatNumber as fmtNumber,
   makeTranslator,
   type Dict,
@@ -21,8 +23,8 @@ const STORAGE = "prima_lang";
 // English is built in. Every other language is a separate small file, fetched when chosen and kept for offline use.
 const loaders: Record<Exclude<LangCode, "en">, () => Promise<Dict>> = {
   ig: () => import("./locales/ig").then((m) => m.dict as Dict),
-  ha: () => Promise.reject(new Error("Hausa is not ready yet")),
-  yo: () => Promise.reject(new Error("Yoruba is not ready yet")),
+  ha: () => import("./locales/ha").then((m) => m.dict as Dict),
+  yo: () => import("./locales/yo").then((m) => m.dict as Dict),
 };
 
 const missing = new Set<string>();
@@ -41,8 +43,14 @@ export interface I18n {
   tp: (base: PluralBase, count: number, params?: Params) => string;
   tm: (message: Msg) => string;
   number: (n: number) => string;
+  money: (n: number) => string;
   date: (d: Date | number, style?: "short" | "medium" | "long") => string;
+  isoDate: (iso: string, style?: "short" | "medium" | "long") => string;
+  // Turns a message written by a form rule into words. See below.
+  tv: (message: string | undefined) => string | undefined;
 }
+
+const known = (key: string): key is Key => key in en;
 
 function build(lang: LangCode, dict: Dict): I18n {
   const { t, tp } = makeTranslator(dict, en as Dict, lang, onMissing);
@@ -53,7 +61,20 @@ function build(lang: LangCode, dict: Dict): I18n {
     tm: (m) =>
       "key" in m ? t(m.key, m.params) : tp(m.plural, m.count, m.params),
     number: (n) => fmtNumber(n, lang),
+    money: (n) => fmtMoney(n, lang),
     date: (d, style) => fmtDate(d, lang, style),
+    isoDate: (iso, style) => fmtIsoDate(iso, lang, style),
+    // A form rule (zod) cannot call the translator, so it writes either a plain sentence, or a dictionary key such as
+    // "err.dobRequired", or a key and a field name joined by | such as "err.fieldShort|register.fullName"
+    // (the sentence err.fieldShort, with {label} filled by the words for register.fullName). Anything else is shown as it is.
+    tv: (message) => {
+      if (message === undefined) return undefined;
+      const [key, label] = message.split("|");
+      if (!known(key)) return message;
+      return label === undefined
+        ? t(key)
+        : t(key, { label: known(label) ? t(label) : label });
+    },
   };
 }
 

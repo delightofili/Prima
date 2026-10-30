@@ -3,6 +3,7 @@ import { Lock, Search, X } from "lucide-react";
 import { frequentDiagnoses } from "../lib/diagnosisUsage";
 import { isSensitiveCode, searchDiagnoses, type Icd10 } from "../lib/icd10";
 import type { Diagnosis } from "../lib/visits";
+import { useI18n } from "../i18n";
 
 export function DiagnosisPicker({
   value,
@@ -11,6 +12,7 @@ export function DiagnosisPicker({
   value: Diagnosis;
   onChange: (d: Diagnosis) => void;
 }) {
+  const { t } = useI18n();
   const [open, setOpen] = useState(false);
   const [frequent, setFrequent] = useState<Icd10[]>([]);
   const typed = value.label.trim().length >= 2;
@@ -40,7 +42,7 @@ export function DiagnosisPicker({
         />
         <input
           className="input pl-10 pr-12"
-          placeholder="Type to search, e.g. malaria or sugar"
+          placeholder={t("diagnosis.placeholder")}
           autoComplete="off"
           role="combobox"
           aria-expanded={open && list.length > 0}
@@ -55,7 +57,7 @@ export function DiagnosisPicker({
         {value.label && (
           <button
             type="button"
-            aria-label="Clear diagnosis"
+            aria-label={t("diagnosis.clear")}
             className="absolute right-1 top-1/2 -translate-y-1/2 p-3 text-subtext"
             onClick={() => onChange({ label: "" })}
           >
@@ -71,7 +73,7 @@ export function DiagnosisPicker({
         >
           {!typed && (
             <li className="px-3 pt-2 text-sm font-semibold text-subtext">
-              Used most here
+              {t("diagnosis.frequent")}
             </li>
           )}
           {list.map((d) => (
@@ -100,21 +102,16 @@ export function DiagnosisPicker({
 
       {picked ? (
         <div className="mt-1 space-y-1 text-sm text-subtext">
-          <p>
-            ICD-10 code <strong>{value.code}</strong> will be saved.
-          </p>
+          <p>{t("diagnosis.codeSaved", { code: value.code ?? "" })}</p>
           {isSensitiveCode(value.code) && (
             <p className="flex items-start gap-1">
               <Lock size={16} className="mt-0.5 shrink-0" />
-              Sensitive diagnosis. It is left out of shared exports unless your
-              admin includes it.
+              {t("diagnosis.sensitive")}
             </p>
           )}
         </div>
       ) : value.label.trim() ? (
-        <p className="mt-1 text-sm text-subtext">
-          No code selected. This will be saved as free text.
-        </p>
+        <p className="mt-1 text-sm text-subtext">{t("diagnosis.freeText")}</p>
       ) : null}
     </div>
   );

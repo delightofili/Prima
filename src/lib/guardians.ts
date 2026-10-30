@@ -1,4 +1,5 @@
 import { db } from "../db";
+import { en, type Key } from "../i18n/locales/en";
 import { config } from "./config";
 import { pushPending } from "./syncService";
 import { normalize, toE164 } from "./utils";
@@ -19,6 +20,18 @@ const LABELS = new Map(RELATIONSHIPS.map((r) => [r.value, r.label] as const));
 export const relationshipLabel = (r: Relationship) =>
   LABELS.get(r) ?? "Guardian";
 
+// The same relationships as words in the dictionary, so a screen can show them in the person's language
+export const RELATIONSHIP_KEY: Record<Relationship, Key> = {
+  MOTHER: "rel.mother",
+  FATHER: "rel.father",
+  GRANDPARENT: "rel.grandparent",
+  SIBLING: "rel.sibling",
+  AUNT_UNCLE: "rel.auntUncle",
+  OTHER: "rel.other",
+};
+export const relationshipKey = (r: Relationship): Key =>
+  RELATIONSHIP_KEY[r] ?? "rel.guardian";
+
 export type GuardianChoice =
   | { kind: "none" }
   | { kind: "existing"; id: string }
@@ -33,16 +46,30 @@ export type GuardianChoice =
 
 type NewChoice = Extract<GuardianChoice, { kind: "new" }>;
 
-const SELF = "A person cannot be their own guardian.";
+// An error that carries a dictionary key, so the screen can show it in the person's language.
+// Its message is still the English sentence, for anything that only reads error.message.
+export class GuardianError extends Error {
+  key: Key;
+  constructor(key: Key) {
+    super(en[key]);
+    this.key = key;
+    this.name = "GuardianError";
+  }
+}
 
-export function validateGuardianChoice(c: GuardianChoice): string | null {
+// What is wrong with a guardian form, as a dictionary key (or null when it is fine)
+export function guardianChoiceError(c: GuardianChoice): Key | null {
   if (c.kind !== "new") return null;
-  if (c.fullName.trim().length < 2) return "Enter the guardian's name.";
-  if (c.phone.trim() && !toE164(c.phone))
-    return "Enter a valid Nigerian phone number for the guardian.";
-  if (c.smsConsent && !toE164(c.phone))
-    return "Enter the guardian's phone number to send SMS reminders.";
+  if (c.fullName.trim().length < 2) return "guardian.errName";
+  if (c.phone.trim() && !toE164(c.phone)) return "guardian.errPhone";
+  if (c.smsConsent && !toE164(c.phone)) return "guardian.errSmsPhone";
   return null;
+}
+
+// The same check as an English sentence, for code that has not been converted
+export function validateGuardianChoice(c: GuardianChoice): string | null {
+  const key = guardianChoiceError(c);
+  return key ? en[key] : null;
 }
 
 export function buildGuardian(c: NewChoice, now = Date.now()): Guardian {
@@ -100,10 +127,11 @@ export async function attachGuardian(patient: Patient, choice: GuardianChoice) {
   if (choice.kind === "none") return detachGuardian(patient.id);
 
   if (choice.kind === "new" && choice.patientId === patient.id)
-    throw new Error(SELF);
+    throw new GuardianError("guardian.errSelf");
   if (choice.kind === "existing") {
     const g = await db.guardians.get(choice.id);
-    if (g?.patientId === patient.id) throw new Error(SELF);
+    if (g?.patientId === patient.id)
+      throw new GuardianError("guardian.errSelf");
   }
 
   const now = Date.now();

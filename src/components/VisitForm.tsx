@@ -8,7 +8,7 @@ import {
   CalendarClock,
   ClipboardList,
   Save,
-  Stethoscope, 
+  Stethoscope,
   Thermometer,
   Weight,
 } from "lucide-react";
@@ -27,12 +27,13 @@ import { ComplaintHint } from "./ComplaintHint";
 import { Stepper } from "./Stepper";
 import { StickyActions } from "./StickyActions";
 import { useUnsavedWarning } from "../hooks/useUnsavedWarning";
+import { useI18n, type Key } from "../i18n";
 
-const QUICK = [
-  { label: "3 days", days: 3 },
-  { label: "1 week", days: 7 },
-  { label: "2 weeks", days: 14 },
-  { label: "1 month", days: 30 },
+const QUICK: { key: Key; days: number }[] = [
+  { key: "visit.in3days", days: 3 },
+  { key: "visit.in1week", days: 7 },
+  { key: "visit.in2weeks", days: 14 },
+  { key: "visit.in1month", days: 30 },
 ];
 
 export function VisitForm({
@@ -42,6 +43,7 @@ export function VisitForm({
   patient: Patient;
   visit?: Visit;
 }) {
+  const { t, tv } = useI18n();
   const navigate = useNavigate();
   const toast = useToast();
   const schema = useMemo(() => makeVisitSchema(patient.dob), [patient.dob]);
@@ -67,6 +69,7 @@ export function VisitForm({
         }
       : {
           visitDate: todayISO(),
+          // This is written into the record, so it stays English like every other note in the record
           complaints: patient.initialChiefComplaint
             ? `Follow-up for: ${patient.initialChiefComplaint}`
             : "",
@@ -105,11 +108,11 @@ export function VisitForm({
     try {
       if (visit) await updateVisit(visit, values, diagnosis);
       else await saveVisit(patient, values, diagnosis);
-      toast(visit ? "Visit updated" : "Visit saved");
+      toast(t(visit ? "visit.updated" : "visit.saved"));
       navigate(`/patients/${patient.id}`);
     } catch (e) {
       console.error(e);
-      setSaveError("Could not save this visit. Please try again.");
+      setSaveError(t("visit.saveFailed"));
     }
   });
 
@@ -120,8 +123,8 @@ export function VisitForm({
       className="grid gap-5 pb-24 md:grid-cols-2 md:pb-0"
     >
       <section className="card space-y-4 md:col-span-2">
-        <SectionTitle icon={ClipboardList} title="Visit" />
-        <Field label="Visit date" error={errors.visitDate?.message}>
+        <SectionTitle icon={ClipboardList} title={t("visit.title")} />
+        <Field label={t("visit.date")} error={tv(errors.visitDate?.message)}>
           <input
             type="date"
             className="input md:max-w-xs"
@@ -130,11 +133,11 @@ export function VisitForm({
           />
         </Field>
         <Field
-          label="Complaints"
-          error={errors.complaints?.message}
+          label={t("visit.complaints")}
+          error={tv(errors.complaints?.message)}
           hint={
             !visit && patient.initialChiefComplaint
-              ? "Pre-filled from first registration. Edit as needed."
+              ? t("visit.prefilled")
               : undefined
           }
         >
@@ -157,14 +160,14 @@ export function VisitForm({
       </section>
 
       <section className="card space-y-4">
-        <SectionTitle icon={Activity} title="Vitals" />
+        <SectionTitle icon={Activity} title={t("visit.vitals")} />
         <div className="grid gap-4 sm:grid-cols-2">
           <Controller
             control={control}
             name="systolic"
             render={({ field }) => (
               <Stepper
-                label="BP top number (systolic)"
+                label={t("visit.bpTop")}
                 unit="mmHg"
                 inputMode="numeric"
                 min={50}
@@ -174,7 +177,7 @@ export function VisitForm({
                 decimals={0}
                 value={field.value}
                 onChange={field.onChange}
-                error={errors.systolic?.message}
+                error={tv(errors.systolic?.message)}
               />
             )}
           />
@@ -183,7 +186,7 @@ export function VisitForm({
             name="diastolic"
             render={({ field }) => (
               <Stepper
-                label="BP bottom number (diastolic)"
+                label={t("visit.bpBottom")}
                 unit="mmHg"
                 inputMode="numeric"
                 min={30}
@@ -193,7 +196,7 @@ export function VisitForm({
                 decimals={0}
                 value={field.value}
                 onChange={field.onChange}
-                error={errors.diastolic?.message}
+                error={tv(errors.diastolic?.message)}
               />
             )}
           />
@@ -213,7 +216,7 @@ export function VisitForm({
             name="temperature"
             render={({ field }) => (
               <Stepper
-                label="Temperature"
+                label={t("visit.temperature")}
                 unit="°C"
                 min={30}
                 max={45}
@@ -222,7 +225,7 @@ export function VisitForm({
                 decimals={1}
                 value={field.value}
                 onChange={field.onChange}
-                error={errors.temperature?.message}
+                error={tv(errors.temperature?.message)}
               />
             )}
           />
@@ -231,7 +234,7 @@ export function VisitForm({
             name="weightKg"
             render={({ field }) => (
               <Stepper
-                label="Weight"
+                label={t("visit.weight")}
                 unit="kg"
                 min={0.5}
                 max={300}
@@ -240,7 +243,7 @@ export function VisitForm({
                 decimals={1}
                 value={field.value}
                 onChange={field.onChange}
-                error={errors.weightKg?.message}
+                error={tv(errors.weightKg?.message)}
               />
             )}
           />
@@ -256,35 +259,36 @@ export function VisitForm({
 
         <p className="flex items-start gap-2 text-sm text-subtext">
           <Weight size={16} className="mt-0.5 shrink-0" />
-          Flags are a guide, not a diagnosis. BP flags apply to patients 13 and
-          over.
+          {t("visit.flagsNote")}
         </p>
       </section>
 
       <section className="card space-y-4">
-        <SectionTitle icon={Stethoscope} title="Assessment" />
+        <SectionTitle icon={Stethoscope} title={t("visit.assessment")} />
         <div className="space-y-1">
-          <span className="text-base font-semibold">Diagnosis (optional)</span>
+          <span className="text-base font-semibold">
+            {t("visit.diagnosis")}
+          </span>
           <DiagnosisPicker value={diagnosis} onChange={setDiagnosis} />
         </div>
         <Field
-          label="Treatment / notes (optional)"
-          error={errors.treatment?.message}
+          label={t("visit.treatment")}
+          error={tv(errors.treatment?.message)}
         >
           <textarea
             rows={3}
             className="input h-auto py-2"
-            placeholder="e.g. Artemether-lumefantrine, advised fluids"
+            placeholder={t("visit.treatmentExample")}
             {...register("treatment")}
           />
         </Field>
       </section>
 
       <section className="card space-y-4 md:col-span-2">
-        <SectionTitle icon={CalendarClock} title="Follow-up" />
+        <SectionTitle icon={CalendarClock} title={t("visit.followUpTitle")} />
         <Field
-          label="Next visit date (optional)"
-          error={errors.nextDueDate?.message}
+          label={t("visit.nextDate")}
+          error={tv(errors.nextDueDate?.message)}
         >
           <input
             type="date"
@@ -296,7 +300,7 @@ export function VisitForm({
         <div className="flex flex-wrap gap-2">
           {QUICK.map((q) => (
             <button
-              key={q.label}
+              key={q.key}
               type="button"
               className="min-h-11 rounded-full border-2 border-prima-500 px-4 text-sm font-semibold text-prima-500 hover:bg-prima-50"
               onClick={() =>
@@ -307,7 +311,7 @@ export function VisitForm({
                 )
               }
             >
-              In {q.label}
+              {t(q.key)}
             </button>
           ))}
         </div>
@@ -321,7 +325,7 @@ export function VisitForm({
 
       <StickyActions
         className="md:col-span-2"
-        note={isDirty ? "Unsaved changes" : undefined}
+        note={isDirty ? t("register.unsaved") : undefined}
       >
         <Link
           to={`/patients/${patient.id}`}
@@ -330,12 +334,12 @@ export function VisitForm({
             if (
               isDirty &&
               !isSubmitSuccessful &&
-              !window.confirm("Leave without saving this visit?")
+              !window.confirm(t("visit.leaveConfirm"))
             )
               e.preventDefault();
           }}
         >
-          Cancel
+          {t("common.cancel")}
         </Link>
         <button
           type="submit"
@@ -343,7 +347,7 @@ export function VisitForm({
           disabled={isSubmitting}
         >
           <Save size={20} className="mr-2" />
-          {isSubmitting ? "Saving…" : "Save visit"}
+          {isSubmitting ? t("register.saving") : t("visit.save")}
         </button>
       </StickyActions>
     </form>

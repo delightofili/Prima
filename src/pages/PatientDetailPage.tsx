@@ -25,7 +25,7 @@ import { calculateAge, isUnder5, isWomanOver12 } from "../lib/age";
 import { setImmunizationDeleted } from "../lib/immunizations";
 import { setPatientDeleted } from "../lib/patients";
 import { setVisitDeleted } from "../lib/visits";
-import { formatDate, formatPhone, todayISO } from "../lib/utils";
+import { formatPhone, todayISO } from "../lib/utils";
 import { AddVaccineDialog } from "../components/AddVaccineDialog";
 import { PregnantBadge, Under5Badge } from "../components/Badges";
 import { ConfirmDialog } from "../components/ConfirmDialog";
@@ -35,6 +35,11 @@ import { SmsSection } from "../components/SmsSection";
 import { PrivacyCard } from "../components/PrivacyCard";
 import { useCan } from "../hooks/useCan";
 import { CompleteRecordCard } from "../components/CompleteRecordCard";
+import { useI18n } from "../i18n";
+
+// Clinical names stay in English in every language, so records and reports read the same everywhere
+const GRAVIDA = "Gravida";
+const PARA = "Para";
 
 type Pending =
   | { kind: "patient" }
@@ -90,6 +95,7 @@ function Row({
 }
 
 export function PatientDetailPage() {
+  const { t, tp, date, isoDate } = useI18n();
   const { id = "" } = useParams();
   const navigate = useNavigate();
   const toast = useToast();
@@ -115,21 +121,28 @@ export function PatientDetailPage() {
   }, [id]);
 
   const p = patientMap.get(id);
-  usePageTitle(p ? p.fullName : "Patient");
+  usePageTitle(p ? p.fullName : t("patient.title"));
 
   if (loading) return null;
   if (!p) {
     return (
       <div className="card mx-auto max-w-md space-y-3 text-center">
-        <p className="text-lg font-semibold">Patient not found</p>
+        <p className="text-lg font-semibold">{t("patient.notFound")}</p>
         <Link to="/patients" className="btn btn-secondary">
-          Back to patients
+          {t("patient.backToPatients")}
         </Link>
       </div>
     );
   }
 
   const age = calculateAge(p.dob);
+  const ageText = tp(
+    age.unit === "years" ? "age.years" : "age.months",
+    age.value,
+  );
+  const ageLine = p.dobEstimated
+    ? t("patient.ageEstimated", { age: ageText })
+    : ageText;
   const today = todayISO();
   const latestFollowUp = visits?.[0]?.nextDueDate;
   const followUpOverdue = !!latestFollowUp && latestFollowUp < today;
@@ -137,21 +150,19 @@ export function PatientDetailPage() {
 
   const dialog = {
     patient: {
-      title: `Delete ${p.fullName}?`,
-      message:
-        "They will be removed from lists and from every device. You can undo this right after.",
-      label: "Delete patient",
+      title: t("patient.deleteTitle", { name: p.fullName }),
+      message: t("patient.deleteMessage"),
+      label: t("patient.deleteLabel"),
     },
     visit: {
-      title: "Delete this visit?",
-      message:
-        "The visit will be removed from this patient's history. You can undo this right after.",
-      label: "Delete visit",
+      title: t("patient.visitDeleteTitle"),
+      message: t("patient.visitDeleteMessage"),
+      label: t("patient.visitDeleteLabel"),
     },
     vaccine: {
-      title: "Delete this vaccine record?",
-      message: "The record will be removed. You can undo this right after.",
-      label: "Delete record",
+      title: t("patient.vaccineDeleteTitle"),
+      message: t("patient.vaccineDeleteMessage"),
+      label: t("patient.vaccineDeleteLabel"),
     },
   };
 
@@ -162,21 +173,21 @@ export function PatientDetailPage() {
 
     if (target.kind === "patient") {
       await setPatientDeleted(p.id, true);
-      toast(`${p.fullName} deleted`, "ok", {
-        label: "Undo",
+      toast(t("patient.deleted", { name: p.fullName }), "ok", {
+        label: t("common.undo"),
         onClick: () => void setPatientDeleted(p.id, false),
       });
       navigate("/patients");
     } else if (target.kind === "visit") {
       await setVisitDeleted(target.id, true);
-      toast("Visit deleted", "ok", {
-        label: "Undo",
+      toast(t("patient.visitDeleted"), "ok", {
+        label: t("common.undo"),
         onClick: () => void setVisitDeleted(target.id, false),
       });
     } else {
       await setImmunizationDeleted(target.id, true);
-      toast("Vaccine record deleted", "ok", {
-        label: "Undo",
+      toast(t("patient.vaccineDeleted"), "ok", {
+        label: t("common.undo"),
         onClick: () => void setImmunizationDeleted(target.id, false),
       });
     }
@@ -188,7 +199,7 @@ export function PatientDetailPage() {
         to="/patients"
         className="inline-flex items-center gap-2 font-semibold text-prima-500"
       >
-        <ArrowLeft size={20} /> Patients
+        <ArrowLeft size={20} /> {t("nav.patients")}
       </Link>
 
       <section className="card space-y-3">
@@ -198,9 +209,9 @@ export function PatientDetailPage() {
               {p.fullName}
             </h1>
             <p className="flex items-center gap-1.5 text-subtext">
-              <MapPin size={16} /> {age.label} ·{" "}
-              {p.dobEstimated && " (estimated)"}
-              {p.gender === "FEMALE" ? "Female" : "Male"} · {p.village}
+              <MapPin size={16} /> {ageLine} ·{" "}
+              {t(p.gender === "FEMALE" ? "register.female" : "register.male")} ·{" "}
+              {p.village}
             </p>
           </div>
           <span className="rounded-lg bg-prima-50 px-3 py-1 text-lg font-bold tracking-wider text-prima-900">
@@ -220,8 +231,15 @@ export function PatientDetailPage() {
                   : "bg-accent-50 text-ink"
               }`}
             >
-              <CalendarClock size={16} /> Follow-up {formatDate(latestFollowUp)}
-              {followUpOverdue && " (overdue)"}
+              <CalendarClock size={16} />{" "}
+              {t(
+                followUpOverdue
+                  ? "patient.followUpOverdue"
+                  : "patient.followUp",
+                {
+                  date: isoDate(latestFollowUp),
+                },
+              )}
             </span>
           )}
         </div>
@@ -229,7 +247,7 @@ export function PatientDetailPage() {
         {p.initialChiefComplaint && (
           <div className="rounded-xl border-2 border-accent-500/40 bg-accent-50 p-3">
             <p className="text-sm font-semibold text-subtext">
-              Reason for first registration
+              {t("patient.firstReason")}
             </p>
             <p className="text-base font-medium">{p.initialChiefComplaint}</p>
           </div>
@@ -240,13 +258,13 @@ export function PatientDetailPage() {
             to={`/patients/${p.id}/visits/new`}
             className="btn btn-accent md:w-52"
           >
-            <Stethoscope size={20} className="mr-2" /> Add visit
+            <Stethoscope size={20} className="mr-2" /> {t("patient.addVisit")}
           </Link>
           <Link
             to={`/patients/${p.id}/edit`}
             className="btn btn-secondary md:w-40"
           >
-            <Pencil size={20} className="mr-2" /> Edit
+            <Pencil size={20} className="mr-2" /> {t("common.edit")}
           </Link>
           {can("deletePatient") && (
             <button
@@ -254,29 +272,26 @@ export function PatientDetailPage() {
               className="btn border-2 border-danger text-danger hover:bg-danger/10 md:w-40"
               onClick={() => setConfirm({ kind: "patient" })}
             >
-              <Trash2 size={20} className="mr-2" /> Delete
+              <Trash2 size={20} className="mr-2" /> {t("common.delete")}
             </button>
           )}
           <Link to={`/patients/${p.id}/card`} className="btn btn-secondary">
-            <CreditCard size={20} className="mr-2" /> Print card
+            <CreditCard size={20} className="mr-2" /> {t("saved.printCard")}
           </Link>
         </div>
       </section>
       <FamilySection patient={p} />
       <SmsSection patient={p} />
       <PrivacyCard patient={p} />
-      <CompleteRecordCard patient={p} />
       <section className="space-y-3">
         <h2 className="flex items-center gap-2 text-lg font-bold">
-          <Stethoscope size={20} className="text-prima-500" /> Visits (
-          {visits?.length ?? 0})
+          <Stethoscope size={20} className="text-prima-500" />{" "}
+          {t("patient.visitsTitle", { count: visits?.length ?? 0 })}
         </h2>
         {visits && visits.length === 0 ? (
           <div className="card text-center">
-            <p className="font-semibold">No visits recorded yet</p>
-            <p className="text-subtext">
-              Use “Add visit” to record complaints, vitals and diagnosis.
-            </p>
+            <p className="font-semibold">{t("patient.noVisits")}</p>
+            <p className="text-subtext">{t("patient.noVisitsHelp")}</p>
           </div>
         ) : (
           <div className="grid gap-3">
@@ -293,47 +308,50 @@ export function PatientDetailPage() {
       </section>
 
       <div className="grid gap-4 md:grid-cols-2">
-        <Card title="Personal" icon={User}>
-          <Row label="Date of birth" value={formatDate(p.dob)} />
+        <Card title={t("patient.cardPersonal")} icon={User}>
+          <Row label={t("register.dateOfBirth")} value={isoDate(p.dob)} />
           <Row
-            label="Gender"
-            value={p.gender === "FEMALE" ? "Female" : "Male"}
+            label={t("patient.gender")}
+            value={t(
+              p.gender === "FEMALE" ? "register.female" : "register.male",
+            )}
           />
           <Row
-            label="Phone"
+            label={t("patient.phone")}
             value={formatPhone(p.phone)}
             href={p.phone ? `tel:${p.phone}` : undefined}
           />
           <Row
-            label="Registered"
-            value={formatDate(
-              new Date(p.createdAt).toLocaleDateString("en-CA"),
-            )}
+            label={t("patient.registered")}
+            value={date(new Date(p.createdAt))}
           />
         </Card>
-        <Card title="Address" icon={MapPin}>
-          <Row label="Village" value={p.village} />
-          <Row label="LGA" value={p.lga} />
-          <Row label="State" value={p.state} />
+        <Card title={t("patient.address")} icon={MapPin}>
+          <Row label={t("patient.village")} value={p.village} />
+          <Row label={t("facility.lga")} value={p.lga} />
+          <Row label={t("facility.state")} value={p.state} />
         </Card>
-        <Card title="Next of kin" icon={Users}>
-          <Row label="Name" value={p.nextOfKinName} />
+        <Card title={t("record.nextOfKin")} icon={Users}>
+          <Row label={t("patient.kinName")} value={p.nextOfKinName} />
           <Row
-            label="Phone"
+            label={t("patient.phone")}
             value={formatPhone(p.nextOfKinPhone)}
             href={p.nextOfKinPhone ? `tel:${p.nextOfKinPhone}` : undefined}
           />
         </Card>
-        <Card title="Medical" icon={HeartPulse}>
-          <Row label="NHIS number" value={p.nhisNumber} />
-          <Row label="Blood group" value={p.bloodGroup} />
-          <Row label="Allergies" value={p.allergies} />
+        <Card title={t("patient.cardMedical")} icon={HeartPulse}>
+          <Row label={t("patient.nhis")} value={p.nhisNumber} />
+          <Row label={t("patient.bloodGroup")} value={p.bloodGroup} />
+          <Row label={t("patient.allergies")} value={p.allergies} />
         </Card>
         {isWomanOver12(p.gender, age) && (
-          <Card title="Obstetric" icon={Baby}>
-            <Row label="Gravida" value={p.gravida} />
-            <Row label="Para" value={p.para} />
-            <Row label="Pregnant" value={p.isPregnant ? "Yes" : "No"} />
+          <Card title={t("patient.obstetric")} icon={Baby}>
+            <Row label={GRAVIDA} value={p.gravida} />
+            <Row label={PARA} value={p.para} />
+            <Row
+              label={t("patient.pregnant")}
+              value={t(p.isPregnant ? "common.yes" : "common.no")}
+            />
           </Card>
         )}
 
@@ -341,18 +359,19 @@ export function PatientDetailPage() {
           <section className="card md:col-span-2">
             <div className="mb-2 flex items-center justify-between gap-2">
               <h2 className="flex items-center gap-2 text-lg font-bold">
-                <Syringe size={20} className="text-prima-500" /> Immunizations
+                <Syringe size={20} className="text-prima-500" />{" "}
+                {t("patient.immunizations")}
               </h2>
               <button
                 type="button"
                 className="inline-flex min-h-11 items-center gap-1.5 rounded-xl border-2 border-prima-500 px-3 text-sm font-semibold text-prima-500 hover:bg-prima-50"
                 onClick={() => setAddingVaccine(true)}
               >
-                <Plus size={18} /> Add vaccine
+                <Plus size={18} /> {t("patient.addVaccine")}
               </button>
             </div>
             {(shots?.length ?? 0) === 0 ? (
-              <p className="py-2 text-subtext">No vaccines recorded yet.</p>
+              <p className="py-2 text-subtext">{t("patient.noVaccines")}</p>
             ) : (
               <ul className="divide-y divide-line">
                 {shots!.map((s) => {
@@ -364,10 +383,15 @@ export function PatientDetailPage() {
                     >
                       <div>
                         <p className="font-semibold">
-                          {s.vaccineName} · dose {s.doseNumber}
+                          {t("patient.vaccineDose", {
+                            name: s.vaccineName,
+                            dose: s.doseNumber,
+                          })}
                         </p>
                         <p className="text-sm text-subtext">
-                          Given {formatDate(s.dateGiven)}
+                          {t("patient.vaccineGiven", {
+                            date: isoDate(s.dateGiven),
+                          })}
                           {s.nextDueDate && (
                             <span
                               className={
@@ -375,16 +399,26 @@ export function PatientDetailPage() {
                               }
                             >
                               {" · "}
-                              {s.nextVaccineLabel ?? "Next dose"} due{" "}
-                              {formatDate(s.nextDueDate)}
-                              {overdue && " (overdue)"}
+                              {t(
+                                overdue
+                                  ? "patient.vaccineDueOverdue"
+                                  : "patient.vaccineDue",
+                                {
+                                  label:
+                                    s.nextVaccineLabel ?? t("patient.nextDose"),
+                                  date: isoDate(s.nextDueDate),
+                                },
+                              )}
                             </span>
                           )}
                         </p>
                       </div>
                       <button
                         type="button"
-                        aria-label={`Delete ${s.vaccineName} dose ${s.doseNumber}`}
+                        aria-label={t("patient.vaccineDeleteAria", {
+                          name: s.vaccineName,
+                          dose: s.doseNumber,
+                        })}
                         className="inline-flex size-11 shrink-0 items-center justify-center rounded-xl text-subtext hover:bg-page hover:text-ink"
                         onClick={() =>
                           setConfirm({ kind: "vaccine", id: s.id })

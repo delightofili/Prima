@@ -5,22 +5,28 @@ import { PatientForm } from "../components/PatientForm";
 import { usePageTitle } from "../hooks/common";
 import { usePatients } from "../hooks/usePatients";
 import { useToast } from "../hooks/useToast";
+import { useI18n } from "../i18n";
 
 export function EditPatientPage() {
   const { id = "" } = useParams();
+  const { t } = useI18n();
   const { patientMap, loading } = usePatients("");
   const navigate = useNavigate();
   const toast = useToast();
   const p = patientMap.get(id);
-  usePageTitle(p ? `Edit · ${p.fullName}` : "Edit patient");
+  usePageTitle(
+    p
+      ? t("patient.editPageTitle", { name: p.fullName })
+      : t("patient.editTitle"),
+  );
 
   if (loading) return null;
   if (!p) {
     return (
       <div className="card mx-auto max-w-md space-y-3 text-center">
-        <p className="text-lg font-semibold">Patient not found</p>
+        <p className="text-lg font-semibold">{t("patient.notFound")}</p>
         <Link to="/patients" className="btn btn-secondary">
-          Back to patients
+          {t("patient.backToPatients")}
         </Link>
       </div>
     );
@@ -35,13 +41,13 @@ export function EditPatientPage() {
         <ArrowLeft size={20} /> {p.fullName}
       </Link>
       <PageHeader
-        title="Edit patient"
-        subtitle={`Card number ${p.cardNumber} cannot be changed.`}
+        title={t("patient.editTitle")}
+        subtitle={t("patient.cardFixed", { card: p.cardNumber })}
       />
       <PatientForm
         patient={p}
         onSaved={() => {
-          toast("Changes saved");
+          toast(t("common.changesSaved"));
           navigate(`/patients/${p.id}`);
         }}
       />

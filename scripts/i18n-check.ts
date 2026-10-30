@@ -27,16 +27,25 @@ function* walk(dir: string): Generator<string> {
       yield p;
   }
 }
-const KEY =
-  /"((?:lang|nav|common|age|register|err|complaint|saved|record|sync|syncErr|banner|power|update|account|facility|team|invite)\.[\w.]+)"/g;
+const GROUPS =
+  "lang|nav|common|age|register|err|complaint|saved|record|sync|syncErr|banner|power|update|account|facility|team|invite|patient|visit|form|rel|guardian|family|vaccine|diagnosis|badge";
+const KEY = new RegExp(`"((?:${GROUPS})\\.[\\w.]+)"`, "g");
+// Only a real call to the translator counts: t("nav.home") or tp("sync.attention", 3), with one of our word groups.
+// Your own data (a dashboard figure with key: "visits", a vaccine with key: "bcg", an audit action "team.invite") is not a translation line.
+// TypeScript checks every other place a key can be written, so a wrong key there stops the build anyway.
+const CALLS = new RegExp(`\\b(?:t|tp)\\(\\s*"((?:${GROUPS})\\.[\\w.]+)"`, "g");
 const used = new Set<string>();
-for (const file of walk(SRC))
-  for (const m of readFileSync(file, "utf8").matchAll(KEY)) used.add(m[1]);
+const asked = new Set<string>();
+for (const file of walk(SRC)) {
+  const text = readFileSync(file, "utf8");
+  for (const m of text.matchAll(KEY)) used.add(m[1]);
+  for (const m of text.matchAll(CALLS)) asked.add(m[1]);
+}
 const known = (k: string) =>
   k in english ||
   `${k}_other` in english ||
   Object.keys(english).some((e) => e.startsWith(`${k}.`));
-for (const k of used)
+for (const k of asked)
   if (!known(k))
     err(`the code asks for "${k}" but it is not in the English dictionary`);
 const usedBases = [...used];

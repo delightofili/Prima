@@ -4,14 +4,17 @@ import { X } from "lucide-react";
 import { useToast } from "../hooks/useToast";
 import {
   RELATIONSHIPS,
+  GuardianError,
   attachGuardian,
+  guardianChoiceError,
+  relationshipKey,
   updateGuardian,
-  validateGuardianChoice,
   type GuardianChoice,
 } from "../lib/guardians";
 import { formatPhone } from "../lib/utils";
 import type { Guardian, Patient, Relationship } from "../types";
 import { GuardianPicker } from "./GuardianPicker";
+import { useI18n } from "../i18n";
 
 function Shell({
   title,
@@ -22,6 +25,7 @@ function Shell({
   onClose: () => void;
   children: React.ReactNode;
 }) {
+  const { t } = useI18n();
   useEffect(() => {
     const onKey = (e: globalThis.KeyboardEvent) => {
       if (e.key === "Escape") onClose();
@@ -46,7 +50,7 @@ function Shell({
           <h2 className="text-lg font-bold">{title}</h2>
           <button
             type="button"
-            aria-label="Close"
+            aria-label={t("common.close")}
             className="p-2"
             onClick={onClose}
           >
@@ -67,6 +71,7 @@ export function GuardianDialog({
   patient: Patient;
   onClose: () => void;
 }) {
+  const { t } = useI18n();
   const toast = useToast();
   const [choice, setChoice] = useState<GuardianChoice>(
     patient.guardianId
@@ -77,24 +82,26 @@ export function GuardianDialog({
   const [busy, setBusy] = useState(false);
 
   const save = async () => {
-    const problem = validateGuardianChoice(choice);
+    const problem = guardianChoiceError(choice);
     if (problem) {
-      setError(problem);
+      setError(t(problem));
       return;
     }
     setBusy(true);
     try {
       await attachGuardian(patient, choice);
-      toast(choice.kind === "none" ? "Guardian removed" : "Guardian saved");
+      toast(t(choice.kind === "none" ? "guardian.removed" : "guardian.saved"));
       onClose();
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Could not save the guardian.");
+      setError(
+        e instanceof GuardianError ? t(e.key) : t("guardian.saveFailed"),
+      );
       setBusy(false);
     }
   };
 
   return (
-    <Shell title="Guardian" onClose={onClose}>
+    <Shell title={t("guardian.title")} onClose={onClose}>
       <GuardianPicker
         value={choice}
         onChange={(v) => {
@@ -117,7 +124,7 @@ export function GuardianDialog({
           className="btn btn-secondary md:w-36"
           onClick={onClose}
         >
-          Cancel
+          {t("common.cancel")}
         </button>
         <button
           type="button"
@@ -125,7 +132,7 @@ export function GuardianDialog({
           disabled={busy}
           onClick={save}
         >
-          Save
+          {t("common.save")}
         </button>
       </div>
     </Shell>
@@ -139,6 +146,7 @@ export function GuardianEditDialog({
   guardian: Guardian;
   onClose: () => void;
 }) {
+  const { t } = useI18n();
   const toast = useToast();
   const [fullName, setFullName] = useState(guardian.fullName);
   const [phone, setPhone] = useState(formatPhone(guardian.phone) ?? "");
@@ -148,7 +156,7 @@ export function GuardianEditDialog({
   const [error, setError] = useState<string | null>(null);
 
   const save = async () => {
-    const problem = validateGuardianChoice({
+    const problem = guardianChoiceError({
       kind: "new",
       fullName,
       phone,
@@ -156,21 +164,21 @@ export function GuardianEditDialog({
       smsConsent: false,
     });
     if (problem) {
-      setError(problem);
+      setError(t(problem));
       return;
     }
     await updateGuardian(guardian.id, { fullName, phone, relationship });
-    toast("Guardian updated");
+    toast(t("guardian.updated"));
     onClose();
   };
 
   return (
-    <Shell title="Edit guardian" onClose={onClose}>
-      <p className="text-subtext">
-        Changes apply to every child linked to this guardian.
-      </p>
+    <Shell title={t("guardian.editTitle")} onClose={onClose}>
+      <p className="text-subtext">{t("guardian.editNote")}</p>
       <label className="block space-y-1">
-        <span className="text-base font-semibold">Full name</span>
+        <span className="text-base font-semibold">
+          {t("register.fullName")}
+        </span>
         <input
           className="input"
           value={fullName}
@@ -178,7 +186,9 @@ export function GuardianEditDialog({
         />
       </label>
       <label className="block space-y-1">
-        <span className="text-base font-semibold">Relationship</span>
+        <span className="text-base font-semibold">
+          {t("guardian.relationship")}
+        </span>
         <select
           className="input"
           value={relationship}
@@ -186,13 +196,15 @@ export function GuardianEditDialog({
         >
           {RELATIONSHIPS.map((r) => (
             <option key={r.value} value={r.value}>
-              {r.label}
+              {t(relationshipKey(r.value))}
             </option>
           ))}
         </select>
       </label>
       <label className="block space-y-1">
-        <span className="text-base font-semibold">Phone (optional)</span>
+        <span className="text-base font-semibold">
+          {t("register.phoneOptional")}
+        </span>
         <input
           type="tel"
           inputMode="numeric"
@@ -212,14 +224,14 @@ export function GuardianEditDialog({
           className="btn btn-secondary md:w-36"
           onClick={onClose}
         >
-          Cancel
+          {t("common.cancel")}
         </button>
         <button
           type="button"
           className="btn btn-primary md:w-44"
           onClick={save}
         >
-          Save
+          {t("common.save")}
         </button>
       </div>
     </Shell>

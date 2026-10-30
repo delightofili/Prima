@@ -1,5 +1,6 @@
 import { VACCINES } from "../lib/vaccines";
 import { todayISO } from "../lib/utils";
+import { useI18n } from "../i18n";
 
 interface Props {
   value: Record<string, string>;
@@ -7,6 +8,7 @@ interface Props {
 }
 
 export function ImmunizationChecklist({ value, onChange }: Props) {
+  const { t } = useI18n();
   const toggle = (key: string, on: boolean) => {
     const next = { ...value };
     if (on) next[key] = todayISO();
@@ -17,10 +19,8 @@ export function ImmunizationChecklist({ value, onChange }: Props) {
   return (
     <section className="space-y-3 rounded-2xl border-2 border-accent-500/40 bg-accent-50 p-4">
       <div>
-        <h3 className="text-lg font-semibold">Immunizations already given</h3>
-        <p className="text-subtext">
-          Tick each vaccine the child has received and check the date.
-        </p>
+        <h3 className="text-lg font-semibold">{t("vaccine.alreadyGiven")}</h3>
+        <p className="text-subtext">{t("vaccine.tickHelp")}</p>
       </div>
       <ul className="space-y-2">
         {VACCINES.filter((v) => v.quick).map((v) => {

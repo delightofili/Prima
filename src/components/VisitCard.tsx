@@ -11,7 +11,8 @@ import {
 } from "lucide-react";
 import { calculateAge } from "../lib/age";
 import { bpReading, tempReading } from "../lib/vitals";
-import { formatDate, fromISO, todayISO } from "../lib/utils";
+import { fromISO, todayISO } from "../lib/utils";
+import { useI18n } from "../i18n";
 import type { Visit } from "../types";
 import { VitalChip } from "./VitalChip";
 
@@ -27,6 +28,7 @@ export function VisitCard({
   dob: string;
   onDelete: () => void;
 }) {
+  const { t, isoDate } = useI18n();
   const age = calculateAge(dob, fromISO(v.visitDate));
   const adult = age.unit === "years" && age.value >= 13;
   const bp =
@@ -41,19 +43,19 @@ export function VisitCard({
       <div className="flex items-center justify-between gap-2">
         <p className="flex items-center gap-2 font-bold">
           <Calendar size={18} className="text-prima-500" />{" "}
-          {formatDate(v.visitDate)}
+          {isoDate(v.visitDate)}
         </p>
         <div className="flex">
           <Link
             to={`/patients/${v.patientId}/visits/${v.id}/edit`}
-            aria-label="Edit visit"
+            aria-label={t("visit.editAria")}
             className={ICON_BTN}
           >
             <Pencil size={18} />
           </Link>
           <button
             type="button"
-            aria-label="Delete visit"
+            aria-label={t("patient.visitDeleteLabel")}
             className={ICON_BTN}
             onClick={onDelete}
           >
@@ -107,8 +109,10 @@ export function VisitCard({
         <p
           className={`flex items-center gap-2 font-semibold ${overdue ? "text-danger" : "text-prima-900"}`}
         >
-          <CalendarClock size={18} /> Follow-up {formatDate(v.nextDueDate)}
-          {overdue && " (overdue)"}
+          <CalendarClock size={18} />{" "}
+          {t(overdue ? "patient.followUpOverdue" : "patient.followUp", {
+            date: isoDate(v.nextDueDate),
+          })}
         </p>
       )}
     </article>

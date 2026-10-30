@@ -9,10 +9,13 @@ import { en } from "../i18n/locales/en";
 
 // For the person who checks a translation. English on the left, the translation on the right, and what needs a look.
 // This is a staff tool, so its own words stay in English.
-const FILES: Record<string, () => Promise<{ dict: Record<string, string> }>> = {
+type Code = "ig" | "ha" | "yo";
+const FILES: Record<Code, () => Promise<{ dict: Record<string, string> }>> = {
   ig: () => import("../i18n/locales/ig"),
+  ha: () => import("../i18n/locales/ha"),
+  yo: () => import("../i18n/locales/yo"),
 };
-const NAMES: Record<string, string> = { ig: "Igbo" };
+const NAMES: Record<Code, string> = { ig: "Igbo", ha: "Hausa", yo: "Yoruba" };
 
 type Flag = "missing" | "same" | "long";
 const english = en as Record<string, string>;
@@ -21,20 +24,26 @@ export function TranslationsPage() {
   usePageTitle("Translations");
   const toast = useToast();
   const { role } = useAuth();
-  const [lang] = useState("ig"); // Hausa and Yoruba join this list on Day 22
-  const [dict, setDict] = useState<Record<string, string> | null>(null);
+  const [lang, setLang] = useState<Code>("ig");
+  const [loaded, setLoaded] = useState<{
+    lang: Code;
+    dict: Record<string, string>;
+  } | null>(null);
   const [onlyCheck, setOnlyCheck] = useState(false);
   const [search, setSearch] = useState("");
 
   useEffect(() => {
     let alive = true;
     void FILES[lang]().then((m) => {
-      if (alive) setDict(m.dict);
+      if (alive) setLoaded({ lang, dict: m.dict });
     });
     return () => {
       alive = false;
     };
   }, [lang]);
+
+  // Only show a language's lines once that language's file has arrived
+  const dict = loaded?.lang === lang ? loaded.dict : null;
 
   const rows = useMemo(() => {
     if (!dict) return [];
@@ -106,14 +115,32 @@ export function TranslationsPage() {
       <section className="card space-y-4">
         <SectionTitle
           icon={Languages}
-          title={`${NAMES[lang]}: ${done} of ${rows.length} lines translated`}
+          title={
+            dict
+              ? `${NAMES[lang]}: ${done} of ${rows.length} lines translated`
+              : `${NAMES[lang]}: loading…`
+          }
         />
         <p className="text-subtext">
           To change a line, edit <code>src/i18n/locales/{lang}.ts</code> and
           keep every {"{blank}"} exactly as it is. Names of conditions,
-          complaints and medicines stay in English on purpose.
+          complaints and medicines stay in English on purpose. For a full review
+          spreadsheet with a comments column, run{" "}
+          <code>npm run i18n:export {lang}</code>.
         </p>
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+          <select
+            className="input sm:max-w-40"
+            aria-label="Language"
+            value={lang}
+            onChange={(e) => setLang(e.target.value as Code)}
+          >
+            {(Object.keys(NAMES) as Code[]).map((c) => (
+              <option key={c} value={c}>
+                {NAMES[c]}
+              </option>
+            ))}
+          </select>
           <input
             className="input sm:max-w-xs"
             placeholder="Search"
@@ -168,7 +195,9 @@ export function TranslationsPage() {
             </li>
           ))}
         </ul>
-        {shown.length === 0 && <p className="text-subtext">Nothing to show.</p>}
+        {dict && shown.length === 0 && (
+          <p className="text-subtext">Nothing to show.</p>
+        )}
       </section>
     </>
   );

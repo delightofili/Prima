@@ -67,6 +67,7 @@ const WHERE: Record<string, string> = {
   dash: "Dashboard",
   fu: "Follow-ups tab",
   dev: "Devices tab (who is behind)",
+  near: "Nearby phones tab (sync between two phones)",
 };
 
 const q = (s: string) => `"${s.replace(/"/g, '""')}"`;

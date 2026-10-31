@@ -789,4 +789,71 @@ export const dict: Partial<Record<Key, string>> = {
   "dev.signin": "Banye ọzọ iji hụ ngwaọrụ ndị ahụ.",
   "dev.failed": "Enweghị ike ibudata ngwaọrụ ndị ahụ. Nwaa ọzọ.",
   "dev.forbidden": "Naanị onye nchịkwa ụlọ ọgwụ nwere ike ịhụ ngwaọrụ ndị ahụ.",
+
+  // ----- the Nearby phones tab
+  "near.tab": "Ekwentị dị nso",
+  "near.title": "Kekọrịta ndekọ na ekwentị dị nso",
+  "near.help":
+    "Ịntanetị adịghị mkpa. Ekwentị abụọ nke ụlọ ọgwụ a, nọ nso ibe ha n'otu Wi-Fi, na-agbanwe ndekọ nke ibe ha na-enweghị. Ekwentị nwere ịntanetị ga-ebulite ihe niile n'igwe.",
+  "near.safe":
+    "Naanị ekwentị nke ụlọ ọgwụ a nwere ike isonye. Ndekọ ndị ahụ na-anọ n'Wi-Fi ụlọ ọgwụ ma nzọụkwụ a adịghị ezigara ha n'ịntanetị.",
+  "near.hostBtn": "Gosi koodu m",
+  "near.hostHelp": "Họrọ nke a n'ekwentị mbụ.",
+  "near.guestBtn": "Nyochaa koodu ha",
+  "near.guestHelp": "Họrọ nke a n'ekwentị nke abụọ.",
+  "near.step": "Nzọụkwụ {step} n'ime 2",
+  "near.hostShow": "Hapụ ekwentị nke ọzọ nyochaa koodu a",
+  "near.hostNext": "Ha nyochaara ya. Ugbu a nyochaa koodu ha",
+  "near.hostScan": "Nyochaa koodu e gosiri n'ekwentị nke ọzọ",
+  "near.guestScan": "Nyochaa koodu e gosiri n'ekwentị mbụ",
+  "near.guestShow": "Ugbu a hapụ ekwentị mbụ nyochaa koodu a",
+  "near.guestWait": "Na-eche ka ekwentị mbụ nyochaa koodu a…",
+  "near.connecting": "Na-ejikọta ekwentị abụọ ahụ…",
+  "near.compare": "Na-atụnyere ndekọ…",
+  "near.progress": "E zigara {sent}, natara {received}",
+  "near.keepClose":
+    "Debe ekwentị abụọ ahụ meghere ma nọrọ nso ibe ha ruo mgbe ọ ga-asị Emechara.",
+  "near.done": "Emechara",
+  "near.doneSummary": "E zigara {sent} ma natara {received} ndekọ na {name}.",
+  "near.doneSame": "Ekwentị abụọ ahụ nwere otu ndekọ.",
+  "near.doneUpload_other": "Ndekọ {count} na-eche ka e bulite ya n'igwe.",
+  "near.again": "Kekọrịta ọzọ",
+  "near.noCamera": "Enweghị igwefoto? Detuo ma ọ bụ tinye koodu ahụ",
+  "near.copy": "Detuo koodu",
+  "near.copied": "E detuola koodu",
+  "near.paste": "Tinye koodu ekwentị nke ọzọ ebe a",
+  "near.use": "Jiri koodu a",
+  "near.keyMissing":
+    "Ekwentị a anabataghị igodo ụlọ ọgwụ. Jikọọ ya na ịntanetị otu ugboro, wee laghachi.",
+  "near.keyGet": "Nweta igodo ugbu a",
+  "near.keyGetting": "Na-enweta igodo…",
+  "near.keyGot": "Anatala igodo ụlọ ọgwụ. Ị nwere ike ịmalite ugbu a.",
+  "near.keyOffline": "Enweghị ịntanetị ugbu a. Nwaa ọzọ mgbe ị nọ n'ịntanetị.",
+  "near.keyFailed": "Enweghị ike inweta igodo. Nwaa ọzọ ma emesia.",
+  "near.err.version":
+    "Ekwentị abụọ ahụ na-eji ụdị Prima dị iche. Melite abụọ, wee nwaa ọzọ.",
+  "near.err.facility": "Koodu ahụ sitere n'ụlọ ọgwụ ọzọ.",
+  "near.err.keyHere":
+    "Igodo ụlọ ọgwụ dị n'ekwentị a adịla ochie. Jikọọ ya na ịntanetị otu ugboro, wee nwaa ọzọ.",
+  "near.err.keyThere":
+    "Igodo ụlọ ọgwụ dị n'ekwentị nke ọzọ adịla ochie. Ọ ga-ejikọ na ịntanetị otu ugboro.",
+  "near.err.clock":
+    "Elekere nke ekwentị abụọ ahụ dị iche site na nkeji {minutes}. Tọọ ụbọchị na oge ka ọ bụrụ nke onwe ya n'abụọ, wee nwaa ọzọ.",
+  "near.err.auth":
+    "Ekwentị ndị ahụ enweghị ike igosi na ha bụ nke otu ụlọ ọgwụ. Nwaa ọzọ. Ọ bụrụ na ọ gara n'ihu, gwa onye nchịkwa gị.",
+  "near.err.protocol":
+    "Ihe adịghị mma mgbe ekwentị ndị ahụ na-ekwurịta okwu. Ọ dịghị ihe furu efu. Nwaa ọzọ.",
+  "near.err.tooBig":
+    "Ekwentị nke ọzọ zitere ihe karịrị nke a tụrụ anya ya, ya mere e kwụsịrị ya.",
+  "near.err.closed":
+    "Njikọ ahụ ada. Ndekọ ndị ruru echekwara. Nwaa ọzọ ka ọ gwụchaa.",
+  "near.err.timeout":
+    "Ekwentị nke ọzọ akwụsịla ịza. Ndekọ ndị ruru echekwara. Nwaa ọzọ.",
+  "near.err.cancelled": "E kwụsịrị ya.",
+  "near.err.link":
+    "Ekwentị ndị ahụ enweghị ike ịhụ ibe ha. Lelee na abụọ nọ n'otu Wi-Fi. Ụfọdụ ihe nrụnye Wi-Fi na-egbochi ekwentị ịgwa ibe ha okwu: nwaa hotspot nke otu ekwentị kama.",
+  "near.err.unsupported":
+    "Ihe nchọgharị a enweghị ike ijikọ ekwentị ozugbo. Jiri Chrome n'Android.",
+  "near.err.code":
+    "Nke ahụ abụghị koodu Prima. Nyochaa koodu e gosiri n'ekwentị nke ọzọ.",
 };

@@ -3,19 +3,28 @@ import { DashboardOverview } from "../components/DashboardOverview";
 import { DevicesView } from "../components/DevicesView";
 import { FollowUpsView } from "../components/FollowUpsView";
 import { LgaReportView } from "../components/LgaReportView";
+import { NearbyView } from "../components/NearbyView";
 import { PageHeader } from "../components/PageHeader";
 import { RemindersView } from "../components/RemindersView";
 import { usePageTitle } from "../hooks/common";
 import { useAuth } from "../hooks/useAuth";
 import { useI18n, type Key } from "../i18n";
 
-type Tab = "overview" | "followups" | "reminders" | "report" | "devices";
+type Tab =
+  | "overview"
+  | "followups"
+  | "reminders"
+  | "report"
+  | "nearby"
+  | "devices";
 
 const TABS: { id: Tab; label: Key }[] = [
   { id: "overview", label: "dash.tabOverview" },
   { id: "followups", label: "dash.tabFollowUps" },
   { id: "reminders", label: "dash.tabReminders" },
   { id: "report", label: "dash.tabReport" },
+  // Two phones swapping records over the clinic Wi-Fi: anyone on the team can do it
+  { id: "nearby", label: "near.tab" },
 ];
 
 // Which phones are behind is for the facility admin
@@ -56,6 +65,7 @@ export function DashboardPage() {
       {tab === "followups" && <FollowUpsView />}
       {tab === "reminders" && <RemindersView />}
       {tab === "report" && <LgaReportView />}
+      {tab === "nearby" && <NearbyView />}
       {tab === "devices" && <DevicesView />}
     </>
   );

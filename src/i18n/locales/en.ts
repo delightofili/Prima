@@ -801,6 +801,76 @@ export const en = {
   "dev.signin": "Sign in again to see the devices.",
   "dev.failed": "Could not load the devices. Try again.",
   "dev.forbidden": "Only a facility admin can see the devices.",
+
+  // ----- the Nearby phones tab
+  "near.tab": "Nearby phones",
+  "near.title": "Sync with a nearby phone",
+  "near.help":
+    "No internet needed. Two phones of this clinic, close together on the same Wi-Fi, swap the records the other one is missing. A phone with internet then uploads everything to the cloud.",
+  "near.safe":
+    "Only phones of this clinic can join. The records stay on the clinic's Wi-Fi and are not sent to the internet by this step.",
+  "near.hostBtn": "Show my code",
+  "near.hostHelp": "Choose this on the first phone.",
+  "near.guestBtn": "Scan their code",
+  "near.guestHelp": "Choose this on the second phone.",
+  "near.step": "Step {step} of 2",
+  "near.hostShow": "Let the other phone scan this code",
+  "near.hostNext": "They scanned it. Now scan their code",
+  "near.hostScan": "Scan the code shown on the other phone",
+  "near.guestScan": "Scan the code shown on the first phone",
+  "near.guestShow": "Now let the first phone scan this code",
+  "near.guestWait": "Waiting for the first phone to scan this code…",
+  "near.connecting": "Connecting the two phones…",
+  "near.compare": "Comparing records…",
+  "near.progress": "Sent {sent}, received {received}",
+  "near.keepClose":
+    "Keep both phones open and close together until it says Done.",
+  "near.done": "Done",
+  "near.doneSummary":
+    "Sent {sent} and received {received} records with {name}.",
+  "near.doneSame": "Both phones already had the same records.",
+  "near.doneUpload_one": "{count} record is waiting to upload to the cloud.",
+  "near.doneUpload_other":
+    "{count} records are waiting to upload to the cloud.",
+  "near.again": "Sync again",
+  "near.noCamera": "No camera? Copy or paste the code instead",
+  "near.copy": "Copy code",
+  "near.copied": "Code copied",
+  "near.paste": "Paste the other phone's code here",
+  "near.use": "Use this code",
+  "near.keyMissing":
+    "This phone has not received the clinic key yet. Connect it to the internet once, then come back.",
+  "near.keyGet": "Get the key now",
+  "near.keyGetting": "Getting the key…",
+  "near.keyGot": "Clinic key received. You can start now.",
+  "near.keyOffline": "No internet right now. Try again when you are online.",
+  "near.keyFailed": "Could not get the key. Try again later.",
+  "near.err.version":
+    "The two phones run different versions of Prima. Update both, then try again.",
+  "near.err.facility": "That code is from another clinic.",
+  "near.err.keyHere":
+    "This phone's clinic key is out of date. Connect it to the internet once, then try again.",
+  "near.err.keyThere":
+    "The other phone's clinic key is out of date. It needs to connect to the internet once.",
+  "near.err.clock":
+    "The clocks of the two phones are {minutes} minutes apart. Set the date and time to automatic on both, then try again.",
+  "near.err.auth":
+    "The phones could not prove that they belong to the same clinic. Try again. If it keeps happening, tell your admin.",
+  "near.err.protocol":
+    "Something went wrong while the phones were talking. Nothing was lost. Try again.",
+  "near.err.tooBig":
+    "The other phone sent far more than expected, so the sync was stopped.",
+  "near.err.closed":
+    "The connection dropped. Records that had arrived are saved. Try again to finish.",
+  "near.err.timeout":
+    "The other phone stopped answering. Records that had arrived are saved. Try again.",
+  "near.err.cancelled": "Stopped.",
+  "near.err.link":
+    "The phones could not reach each other. Check that both are on the same Wi-Fi. Some routers stop phones from talking to each other: try one phone's hotspot instead.",
+  "near.err.unsupported":
+    "This browser cannot connect phones directly. Use Chrome on Android.",
+  "near.err.code":
+    "That is not a Prima code. Scan the code shown on the other phone.",
 } as const;
 
 export type Key = keyof typeof en;

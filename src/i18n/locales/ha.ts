@@ -830,4 +830,73 @@ export const dict: Partial<Record<Key, string>> = {
   "dev.signin": "Sake shiga don ganin na'urorin.",
   "dev.failed": "Ba a iya ɗauko na'urorin ba. Gwada sake.",
   "dev.forbidden": "Mai kula da asibiti ne kawai zai iya ganin na'urorin.",
+
+  // ----- the Nearby phones tab
+  "near.tab": "Wayoyi na kusa",
+  "near.title": "Musayar bayanai da waya ta kusa",
+  "near.help":
+    "Ba a buƙatar intanet. Wayoyi biyu na wannan asibiti, kusa da juna a Wi-Fi ɗaya, suna musayar bayanan da ɗayan ba shi da su. Waya mai intanet za ta ɗora komai a gajimare.",
+  "near.safe":
+    "Wayoyin wannan asibiti ne kawai za su iya shiga. Bayanan suna zama a Wi-Fi ɗin asibiti kuma wannan matakin ba ya aika su zuwa intanet.",
+  "near.hostBtn": "Nuna kod ɗina",
+  "near.hostHelp": "Zaɓi wannan a waya ta farko.",
+  "near.guestBtn": "Duba kod ɗinsu",
+  "near.guestHelp": "Zaɓi wannan a waya ta biyu.",
+  "near.step": "Mataki na {step} cikin 2",
+  "near.hostShow": "Bari ɗayan wayar ta duba wannan kod",
+  "near.hostNext": "Sun duba shi. Yanzu duba kod ɗinsu",
+  "near.hostScan": "Duba kod ɗin da ke nuni a ɗayan wayar",
+  "near.guestScan": "Duba kod ɗin da ke nuni a waya ta farko",
+  "near.guestShow": "Yanzu bari waya ta farko ta duba wannan kod",
+  "near.guestWait": "Ana jiran waya ta farko ta duba wannan kod…",
+  "near.connecting": "Ana haɗa wayoyin biyu…",
+  "near.compare": "Ana kwatanta bayanai…",
+  "near.progress": "An aika {sent}, an karɓa {received}",
+  "near.keepClose":
+    "Ka bar wayoyin biyu a buɗe kuma kusa da juna har sai ya ce An gama.",
+  "near.done": "An gama",
+  "near.doneSummary":
+    "An aika {sent} kuma an karɓi bayanai {received} da {name}.",
+  "near.doneSame": "Wayoyin biyu sun riga sun da bayanai iri ɗaya.",
+  "near.doneUpload_one": "Bayani {count} yana jiran a ɗora shi a gajimare.",
+  "near.doneUpload_other": "Bayanai {count} suna jiran a ɗora su a gajimare.",
+  "near.again": "Sake musayar",
+  "near.noCamera": "Ba ka da kyamara? Kwafi ko liƙa kod ɗin maimakon haka",
+  "near.copy": "Kwafi kod",
+  "near.copied": "An kwafi kod",
+  "near.paste": "Liƙa kod ɗin ɗayan wayar a nan",
+  "near.use": "Yi amfani da wannan kod",
+  "near.keyMissing":
+    "Wannan waya ba ta karɓi mabuɗin asibiti ba tukuna. Haɗa ta da intanet sau ɗaya, sannan ka dawo.",
+  "near.keyGet": "Karɓi mabuɗin yanzu",
+  "near.keyGetting": "Ana karɓar mabuɗin…",
+  "near.keyGot": "An karɓi mabuɗin asibiti. Za ka iya farawa yanzu.",
+  "near.keyOffline": "Babu intanet a yanzu. Sake gwadawa idan ka samu intanet.",
+  "near.keyFailed": "Ba a iya karɓar mabuɗin ba. Sake gwadawa nan gaba.",
+  "near.err.version":
+    "Wayoyin biyu suna amfani da sigogin Prima daban-daban. Sabunta duka biyun, sannan ka sake gwadawa.",
+  "near.err.facility": "Wannan kod daga wani asibiti ne.",
+  "near.err.keyHere":
+    "Mabuɗin asibiti na wannan waya ya tsufa. Haɗa ta da intanet sau ɗaya, sannan ka sake gwadawa.",
+  "near.err.keyThere":
+    "Mabuɗin asibiti na ɗayan wayar ya tsufa. Yana buƙatar haɗawa da intanet sau ɗaya.",
+  "near.err.clock":
+    "Agogon wayoyin biyu ya bambanta da mintuna {minutes}. Saita kwanan wata da lokaci su zama na atomatik a duka biyun, sannan ka sake gwadawa.",
+  "near.err.auth":
+    "Wayoyin ba su iya tabbatar da cewa suna na asibiti ɗaya ba. Sake gwadawa. Idan ya ci gaba, gaya wa mai kula da ku.",
+  "near.err.protocol":
+    "Wani abu ya faru yayin da wayoyin ke magana. Ba a rasa komai ba. Sake gwadawa.",
+  "near.err.tooBig":
+    "Ɗayan wayar ta aika abin da ya wuce yadda ake tsammani, saboda haka an dakatar da musayar.",
+  "near.err.closed":
+    "Haɗin ya yanke. Bayanan da suka isa an ajiye su. Sake gwadawa don kammalawa.",
+  "near.err.timeout":
+    "Ɗayan wayar ta daina amsawa. Bayanan da suka isa an ajiye su. Sake gwadawa.",
+  "near.err.cancelled": "An dakatar.",
+  "near.err.link":
+    "Wayoyin ba su iya kai wa juna ba. Duba cewa duka biyun suna kan Wi-Fi ɗaya. Wasu na'urorin Wi-Fi suna hana wayoyi yin magana da juna: gwada hotspot na waya ɗaya maimakon haka.",
+  "near.err.unsupported":
+    "Wannan burauzar ba ta iya haɗa wayoyi kai tsaye ba. Yi amfani da Chrome a Android.",
+  "near.err.code":
+    "Wannan ba kod ɗin Prima ba ne. Duba kod ɗin da ke nuni a ɗayan wayar.",
 };

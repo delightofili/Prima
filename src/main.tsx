@@ -7,15 +7,18 @@ import { AuthProvider } from "./components/AuthProvider";
 import { ToastProvider } from "./components/Toast";
 import { UpdatePrompt } from "./components/UpdatePrompt";
 import { applyGlove, readGlove } from "./hooks/useGloveMode";
+import { getCurrentFacility } from "./lib/config";
+import { startDeviceReports } from "./lib/deviceStatus";
 import { initInstall } from "./lib/install";
 import { initPower } from "./lib/power";
+import { startClinicKeyRefresh } from "./lib/syncKey";
 import { initI18n } from "./i18n";
-import { startDeviceReports } from "./lib/deviceStatus";
 
 applyGlove(readGlove());
 initInstall(); // must listen before React starts: the browser fires its install event early
 initPower();
 startDeviceReports();
+startClinicKeyRefresh(() => getCurrentFacility()?.id ?? null); // keeps the clinic key fresh, so phones can sync with no internet
 
 void initI18n().finally(() => {
   createRoot(document.getElementById("root")!).render(

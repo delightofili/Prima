@@ -785,4 +785,73 @@ export const dict: Partial<Record<Key, string>> = {
   "dev.signin": "Tún wọlé láti rí àwọn ẹ̀rọ náà.",
   "dev.failed": "A kò lè gbé àwọn ẹ̀rọ náà wá. Gbìyànjú lẹ́ẹ̀kan sí i.",
   "dev.forbidden": "Alábòójútó ilé ìwòsàn nìkan ló lè rí àwọn ẹ̀rọ náà.",
+
+  // ----- the Nearby phones tab
+  "near.tab": "Fóònù tó wà nítòsí",
+  "near.title": "Pààrọ̀ àkọsílẹ̀ pẹ̀lú fóònù tó wà nítòsí",
+  "near.help":
+    "A kò nílò íńtánẹ́ẹ̀tì. Fóònù méjì ti ilé ìwòsàn yìí, tó wà nítòsí ara wọn lórí Wi-Fi kan náà, ń pààrọ̀ àwọn àkọsílẹ̀ tí èkejì kò ní. Fóònù tó ní íńtánẹ́ẹ̀tì yóò gbé gbogbo rẹ̀ sókè sí àwọsánmà.",
+  "near.safe":
+    "Àwọn fóònù ilé ìwòsàn yìí nìkan ló lè darapọ̀. Àwọn àkọsílẹ̀ náà wà lórí Wi-Fi ilé ìwòsàn, ìgbésẹ̀ yìí kò sì fi wọ́n ránṣẹ́ sí íńtánẹ́ẹ̀tì.",
+  "near.hostBtn": "Fi kóòdù mi hàn",
+  "near.hostHelp": "Yan èyí lórí fóònù àkọ́kọ́.",
+  "near.guestBtn": "Ṣàyẹ̀wò kóòdù wọn",
+  "near.guestHelp": "Yan èyí lórí fóònù kejì.",
+  "near.step": "Ìgbésẹ̀ {step} nínú 2",
+  "near.hostShow": "Jẹ́ kí fóònù èkejì ṣàyẹ̀wò kóòdù yìí",
+  "near.hostNext": "Wọ́n ti ṣàyẹ̀wò rẹ̀. Báyìí ṣàyẹ̀wò kóòdù wọn",
+  "near.hostScan": "Ṣàyẹ̀wò kóòdù tó wà lórí fóònù èkejì",
+  "near.guestScan": "Ṣàyẹ̀wò kóòdù tó wà lórí fóònù àkọ́kọ́",
+  "near.guestShow": "Báyìí jẹ́ kí fóònù àkọ́kọ́ ṣàyẹ̀wò kóòdù yìí",
+  "near.guestWait": "Ń dúró de fóònù àkọ́kọ́ láti ṣàyẹ̀wò kóòdù yìí…",
+  "near.connecting": "Ń so àwọn fóònù méjèèjì pọ̀…",
+  "near.compare": "Ń fi àwọn àkọsílẹ̀ wéra…",
+  "near.progress": "A ti fi {sent} ránṣẹ́, a gbà {received}",
+  "near.keepClose":
+    "Jẹ́ kí àwọn fóònù méjèèjì ṣí sílẹ̀ kí wọ́n sì wà nítòsí ara wọn títí yóò fi sọ pé A ti parí.",
+  "near.done": "A ti parí",
+  "near.doneSummary":
+    "A fi {sent} ránṣẹ́, a sì gba àkọsílẹ̀ {received} pẹ̀lú {name}.",
+  "near.doneSame": "Àwọn fóònù méjèèjì ti ní àkọsílẹ̀ kan náà.",
+  "near.doneUpload_other": "Àkọsílẹ̀ {count} ń dúró láti gbé sókè sí àwọsánmà.",
+  "near.again": "Pààrọ̀ lẹ́ẹ̀kan sí i",
+  "near.noCamera": "Kò sí kámẹ́rà? Ṣe àdàkọ tàbí lẹ̀ kóòdù náà dípò rẹ̀",
+  "near.copy": "Ṣe àdàkọ kóòdù",
+  "near.copied": "A ti ṣe àdàkọ kóòdù",
+  "near.paste": "Lẹ̀ kóòdù fóònù èkejì síbí",
+  "near.use": "Lo kóòdù yìí",
+  "near.keyMissing":
+    "Fóònù yìí kò tíì gba kọ́kọ́rọ́ ilé ìwòsàn. So ó pọ̀ mọ́ íńtánẹ́ẹ̀tì lẹ́ẹ̀kan, kí o sì padà wá.",
+  "near.keyGet": "Gba kọ́kọ́rọ́ báyìí",
+  "near.keyGetting": "Ń gba kọ́kọ́rọ́…",
+  "near.keyGot": "A ti gba kọ́kọ́rọ́ ilé ìwòsàn. O lè bẹ̀rẹ̀ báyìí.",
+  "near.keyOffline":
+    "Kò sí íńtánẹ́ẹ̀tì lọ́wọ́lọ́wọ́. Tún gbìyànjú nígbà tí o bá wà lórí íńtánẹ́ẹ̀tì.",
+  "near.keyFailed": "A kò lè gba kọ́kọ́rọ́. Tún gbìyànjú lẹ́yìn náà.",
+  "near.err.version":
+    "Àwọn fóònù méjèèjì ń lo ẹ̀dà Prima tó yàtọ̀. Ṣe àtúnṣe méjèèjì, kí o sì tún gbìyànjú.",
+  "near.err.facility": "Kóòdù yẹn wá láti ilé ìwòsàn mìíràn.",
+  "near.err.keyHere":
+    "Kọ́kọ́rọ́ ilé ìwòsàn tó wà lórí fóònù yìí ti di àtijọ́. So ó pọ̀ mọ́ íńtánẹ́ẹ̀tì lẹ́ẹ̀kan, kí o sì tún gbìyànjú.",
+  "near.err.keyThere":
+    "Kọ́kọ́rọ́ ilé ìwòsàn tó wà lórí fóònù èkejì ti di àtijọ́. Ó nílò láti so pọ̀ mọ́ íńtánẹ́ẹ̀tì lẹ́ẹ̀kan.",
+  "near.err.clock":
+    "Aago àwọn fóònù méjèèjì yàtọ̀ síra ní ìṣẹ́jú {minutes}. Ṣètò ọjọ́ àti àkókò sí àdánidá lórí méjèèjì, kí o sì tún gbìyànjú.",
+  "near.err.auth":
+    "Àwọn fóònù náà kò lè fi hàn pé wọ́n jẹ́ ti ilé ìwòsàn kan náà. Tún gbìyànjú. Tó bá ń ṣẹlẹ̀ léraléra, sọ fún alábòójútó rẹ.",
+  "near.err.protocol":
+    "Nǹkan kan ṣẹlẹ̀ nígbà tí àwọn fóònù ń bá ara wọn sọ̀rọ̀. Kò sí ohun tó sọnù. Tún gbìyànjú.",
+  "near.err.tooBig":
+    "Fóònù èkejì fi ohun tó pọ̀ ju bí a ṣe retí lọ ránṣẹ́, nítorí náà a dá a dúró.",
+  "near.err.closed":
+    "Ìsopọ̀ já. Àwọn àkọsílẹ̀ tó ti dé wà ní ìpamọ́. Tún gbìyànjú láti parí rẹ̀.",
+  "near.err.timeout":
+    "Fóònù èkejì ti dáwọ́ ìdáhùn dúró. Àwọn àkọsílẹ̀ tó ti dé wà ní ìpamọ́. Tún gbìyànjú.",
+  "near.err.cancelled": "A ti dá a dúró.",
+  "near.err.link":
+    "Àwọn fóònù náà kò lè dé ara wọn. Ṣàyẹ̀wò pé méjèèjì wà lórí Wi-Fi kan náà. Àwọn ẹ̀rọ Wi-Fi kan máa ń dá àwọn fóònù dúró láti bá ara wọn sọ̀rọ̀: gbìyànjú hotspot ti fóònù kan dípò rẹ̀.",
+  "near.err.unsupported":
+    "Ẹ̀rọ aṣàwákiri yìí kò lè so àwọn fóònù pọ̀ tààrà. Lo Chrome lórí Android.",
+  "near.err.code":
+    "Ìyẹn kì í ṣe kóòdù Prima. Ṣàyẹ̀wò kóòdù tó wà lórí fóònù èkejì.",
 };

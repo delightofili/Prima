@@ -66,6 +66,7 @@ const WHERE: Record<string, string> = {
   session: "Sign in again banner",
   dash: "Dashboard",
   fu: "Follow-ups tab",
+  dev: "Devices tab (who is behind)",
 };
 
 const q = (s: string) => `"${s.replace(/"/g, '""')}"`;

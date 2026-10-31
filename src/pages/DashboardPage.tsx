@@ -1,13 +1,15 @@
 import { useSearchParams } from "react-router-dom";
 import { DashboardOverview } from "../components/DashboardOverview";
+import { DevicesView } from "../components/DevicesView";
 import { FollowUpsView } from "../components/FollowUpsView";
 import { LgaReportView } from "../components/LgaReportView";
 import { PageHeader } from "../components/PageHeader";
 import { RemindersView } from "../components/RemindersView";
 import { usePageTitle } from "../hooks/common";
+import { useAuth } from "../hooks/useAuth";
 import { useI18n, type Key } from "../i18n";
 
-type Tab = "overview" | "followups" | "reminders" | "report";
+type Tab = "overview" | "followups" | "reminders" | "report" | "devices";
 
 const TABS: { id: Tab; label: Key }[] = [
   { id: "overview", label: "dash.tabOverview" },
@@ -16,18 +18,26 @@ const TABS: { id: Tab; label: Key }[] = [
   { id: "report", label: "dash.tabReport" },
 ];
 
+// Which phones are behind is for the facility admin
+const DEVICES_TAB: { id: Tab; label: Key } = {
+  id: "devices",
+  label: "dev.tab",
+};
+
 export function DashboardPage() {
   const { t } = useI18n();
+  const { role } = useAuth();
   usePageTitle(t("nav.dashboard"));
   const [params, setParams] = useSearchParams();
   const raw = params.get("tab");
-  const tab: Tab = TABS.some((x) => x.id === raw) ? (raw as Tab) : "overview";
+  const tabs = role === "admin" ? [...TABS, DEVICES_TAB] : TABS;
+  const tab: Tab = tabs.some((x) => x.id === raw) ? (raw as Tab) : "overview";
 
   return (
     <>
       <PageHeader title={t("nav.dashboard")} subtitle={t("dash.subtitle")} />
       <div className="mb-5 flex gap-2 overflow-x-auto pb-1">
-        {TABS.map((x) => (
+        {tabs.map((x) => (
           <button
             key={x.id}
             type="button"
@@ -46,6 +56,7 @@ export function DashboardPage() {
       {tab === "followups" && <FollowUpsView />}
       {tab === "reminders" && <RemindersView />}
       {tab === "report" && <LgaReportView />}
+      {tab === "devices" && <DevicesView />}
     </>
   );
 }

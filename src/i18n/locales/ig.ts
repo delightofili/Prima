@@ -729,4 +729,64 @@ export const dict: Partial<Record<Key, string>> = {
   "fu.upgradeTitle": "Lee onye kwesịrị, kpọkwa ya",
   "fu.upgradeText":
     "Atụmatụ Pro na-edepụta onye ọrịa ọ bụla nwere nleta ọzọ ma ọ bụ ọgwụ mgbochi gafere oge ma ọ bụ na-abịa, na otu mmetụ iji kpọọ onye ọrịa ma ọ bụ onye na-elekọta ya.",
+
+  // ----- the Devices tab
+  "dev.tab": "Ngwaọrụ",
+  "dev.title": "Ekwentị na tablet",
+  "dev.help":
+    "Ekwentị ọ bụla ma ọ bụ tablet na-eji ụlọ ọgwụ a na-akọ ka ebulite ya si aga. A na-ezipụ naanị ọnụọgụgụ na oge, ọ bụghị ozi ọ bụla gbasara ndị ọrịa.",
+  "dev.refresh": "Megharịa",
+  "dev.refreshing": "Na-emegharị…",
+  "dev.updated": "E melitere {span} gara aga",
+  "dev.updatedNow": "E melitere ugbu a",
+  "dev.sumDevices": "Ngwaọrụ",
+  "dev.ok": "Dị ọhụrụ",
+  "dev.sumWarn": "Na-eso azụ ma ọ bụ na-eche",
+  "dev.sumBad": "Chọrọ nlekọta",
+  "dev.sumWaiting": "Ndekọ na-eche",
+  "dev.thisDevice": "Ngwaọrụ a",
+  "dev.lastSeen": "Mkpakọrịta ikpeazụ: {span} gara aga",
+  "dev.lastSeenNow": "Mkpakọrịta ikpeazụ: ugbu a",
+  "dev.lastSync": "Ebulite ikpeazụ gara nke ọma: {span} gara aga",
+  "dev.lastSyncNever": "Ọ dịbeghị ebulite gara nke ọma e kọọrọ",
+  "dev.waitingNone": "Ọ nweghị ihe na-eche ibulite",
+  "dev.usedBy": "Onye jiri ya ikpeazụ: {name}",
+  "dev.version": "Ụdị {build}",
+  "dev.battery": "Batrị {percent}%",
+  "dev.batteryCharging": "Batrị {percent}%, na-etinye ọkụ",
+  "dev.flag.failed_other": "Ndekọ {count} chọrọ nlekọta",
+  "dev.flag.unseen": "A hụghị ya ruo {span}",
+  "dev.flag.stuck_other": "Ndekọ {count} echere {span} ka a bulite ya",
+  "dev.flag.behind_other": "Ndekọ ọhụrụ {count} ebudatabeghị",
+  "dev.flag.behindMany": "Ndekọ ọhụrụ dị ọtụtụ ebudatabeghị",
+  "dev.flag.never": "Ebudatabeghị ihe ọ bụla",
+  "dev.flag.clock":
+    "Elekere dị n'ngwaọrụ a ezighi ezi site na {span}. Tọọ ụbọchị na oge n'ekwentị.",
+  "dev.flag.oldApp": "Ụdị Prima ochie. Meghee ya na ịntanetị ka ọ melite.",
+  "dev.flag.lowBattery": "Batrị dị ala ({percent}%)",
+  "dev.flag.powerSaving":
+    "Ọnọdụ batrị dị ala na-arụ ọrụ, ya mere ọ na-ebulite naanị mgbe mmadụ kpaa aka ebulite ya.",
+  "dev.span.minutes_other": "nkeji {count}",
+  "dev.span.hours_other": "awa {count}",
+  "dev.span.days_other": "ụbọchị {count}",
+  "dev.rename": "Gbanwee aha",
+  "dev.renameTitle": "Kpọọ ngwaọrụ a aha",
+  "dev.renameHelp":
+    "Jiri aha ndị mmadụ ga-amata, dị ka “Tablet nke tebụl ọnụ ụzọ”. Hapụ ya efu iji aha n'onwe ya.",
+  "dev.renameField": "Aha ngwaọrụ",
+  "dev.renamed": "Echekwara aha",
+  "dev.remove": "Wepụ n'ndepụta",
+  "dev.removeTitle": "Wepụ {name} n'ndepụta?",
+  "dev.removeText":
+    "A naghị ehichapụ ihe ọ bụla n'ngwaọrụ ahụ ma ọ bụ n'ndekọ onye ọrịa ọ bụla. Ọ bụrụ na e jiri ngwaọrụ ahụ ọzọ, ọ ga-apụta ọzọ.",
+  "dev.removed": "E wepụrụ {name}",
+  "dev.none":
+    "Ọ dịbeghị ngwaọrụ ọzọ kọọrọ. Meghee Prima n'ekwentị ọzọ, ọ ga-apụta ebe a n'ime nkeji ole na ole.",
+  "dev.offline":
+    "Ị chọrọ ịntanetị iji hụ ngwaọrụ ndị ọzọ. Na-egosi naanị ngwaọrụ a.",
+  "dev.setup":
+    "Ebe nchekwa igwe chọrọ mmelite Ụbọchị 23 tupu e depụta ngwaọrụ. Gwa onye na-elekọta ọrụ Supabase ka o gbaa supabase/day23.sql.",
+  "dev.signin": "Banye ọzọ iji hụ ngwaọrụ ndị ahụ.",
+  "dev.failed": "Enweghị ike ibudata ngwaọrụ ndị ahụ. Nwaa ọzọ.",
+  "dev.forbidden": "Naanị onye nchịkwa ụlọ ọgwụ nwere ike ịhụ ngwaọrụ ndị ahụ.",
 };

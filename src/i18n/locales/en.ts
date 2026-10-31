@@ -735,6 +735,72 @@ export const en = {
   "fu.upgradeTitle": "See who is due, and call them",
   "fu.upgradeText":
     "The Pro plan lists every patient with an overdue or upcoming follow-up or vaccine, with one tap to call the patient or caregiver.",
+
+  // ----- the Devices tab
+  "dev.tab": "Devices",
+  "dev.title": "Phones and tablets",
+  "dev.help":
+    "Every phone or tablet that uses this facility reports how its sync is going. Only counts and times are sent, never patient information.",
+  "dev.refresh": "Refresh",
+  "dev.refreshing": "Refreshing…",
+  "dev.updated": "Updated {span} ago",
+  "dev.updatedNow": "Updated just now",
+  "dev.sumDevices": "Devices",
+  "dev.ok": "Up to date",
+  "dev.sumWarn": "Behind or waiting",
+  "dev.sumBad": "Need attention",
+  "dev.sumWaiting": "Records waiting",
+  "dev.thisDevice": "This device",
+  "dev.lastSeen": "Last contact: {span} ago",
+  "dev.lastSeenNow": "Last contact: just now",
+  "dev.lastSync": "Last successful sync: {span} ago",
+  "dev.lastSyncNever": "No successful sync reported yet",
+  "dev.waitingNone": "Nothing waiting to upload",
+  "dev.usedBy": "Last used by {name}",
+  "dev.version": "Version {build}",
+  "dev.battery": "Battery {percent}%",
+  "dev.batteryCharging": "Battery {percent}%, charging",
+  "dev.flag.failed_one": "{count} record needs attention",
+  "dev.flag.failed_other": "{count} records need attention",
+  "dev.flag.unseen": "Not seen for {span}",
+  "dev.flag.stuck_one": "{count} record has waited {span} to upload",
+  "dev.flag.stuck_other": "{count} records have waited {span} to upload",
+  "dev.flag.behind_one": "{count} newer record not downloaded yet",
+  "dev.flag.behind_other": "{count} newer records not downloaded yet",
+  "dev.flag.behindMany": "Many newer records are not downloaded yet",
+  "dev.flag.never": "Has not downloaded anything yet",
+  "dev.flag.clock":
+    "The clock on this device is {span} wrong. Set the date and time on the phone.",
+  "dev.flag.oldApp": "Older version of Prima. Open it with internet to update.",
+  "dev.flag.lowBattery": "Battery is low ({percent}%)",
+  "dev.flag.powerSaving":
+    "Low Battery Mode is on, so it uploads only when someone syncs by hand.",
+  "dev.span.minutes_one": "{count} minute",
+  "dev.span.minutes_other": "{count} minutes",
+  "dev.span.hours_one": "{count} hour",
+  "dev.span.hours_other": "{count} hours",
+  "dev.span.days_one": "{count} day",
+  "dev.span.days_other": "{count} days",
+  "dev.rename": "Rename",
+  "dev.renameTitle": "Name this device",
+  "dev.renameHelp":
+    "Use a name people will recognise, like “Front desk tablet”. Leave it empty to use the automatic name.",
+  "dev.renameField": "Device name",
+  "dev.renamed": "Name saved",
+  "dev.remove": "Remove from list",
+  "dev.removeTitle": "Remove {name} from the list?",
+  "dev.removeText":
+    "Nothing is deleted from the device or from any patient record. If the device is used again, it appears again.",
+  "dev.removed": "{name} removed",
+  "dev.none":
+    "No other devices have reported yet. Open Prima on another phone and it will appear here within a few minutes.",
+  "dev.offline":
+    "You need internet to see the other devices. Showing this device only.",
+  "dev.setup":
+    "The cloud database needs the Day 23 update before devices can be listed. Ask whoever looks after the Supabase project to run supabase/day23.sql.",
+  "dev.signin": "Sign in again to see the devices.",
+  "dev.failed": "Could not load the devices. Try again.",
+  "dev.forbidden": "Only a facility admin can see the devices.",
 } as const;
 
 export type Key = keyof typeof en;

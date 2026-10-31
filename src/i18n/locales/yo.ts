@@ -725,4 +725,64 @@ export const dict: Partial<Record<Key, string>> = {
   "fu.upgradeTitle": "Wo ẹni tó tó, kí o sì pè wọ́n",
   "fu.upgradeText":
     "Ètò Pro ń ṣe àtòjọ gbogbo aláìsàn tó ní àbẹ̀wò àtẹ̀lé tàbí abẹ́rẹ́ àjẹsára tó ti kọjá àkókò tàbí tó ń bọ̀, pẹ̀lú ìfọwọ́kan kan láti pe aláìsàn tàbí olùtọ́jú.",
+
+  // ----- the Devices tab
+  "dev.tab": "Àwọn ẹ̀rọ",
+  "dev.title": "Àwọn fóònù àti tábìlẹ́ẹ̀tì",
+  "dev.help":
+    "Gbogbo fóònù tàbí tábìlẹ́ẹ̀tì tó ń lo ilé ìwòsàn yìí ń ròyìn bí ìgbéra-sókè rẹ̀ ṣe ń lọ. Nọ́mbà àti àkókò nìkan ni a ń fi ránṣẹ́, kì í ṣe ìwífún aláìsàn.",
+  "dev.refresh": "Tún gbé wá",
+  "dev.refreshing": "Ń tún gbé wá…",
+  "dev.updated": "A ṣe àtúnṣe {span} sẹ́yìn",
+  "dev.updatedNow": "A ṣe àtúnṣe ní àìpẹ́ yìí",
+  "dev.sumDevices": "Àwọn ẹ̀rọ",
+  "dev.ok": "Tó wà lọ́jọ́",
+  "dev.sumWarn": "Tó ń lẹ́yìn tàbí tó ń dúró",
+  "dev.sumBad": "Nílò àbójútó",
+  "dev.sumWaiting": "Àwọn àkọsílẹ̀ tó ń dúró",
+  "dev.thisDevice": "Ẹ̀rọ yìí",
+  "dev.lastSeen": "Ìbáraẹnisọ̀rọ̀ kẹ́yìn: {span} sẹ́yìn",
+  "dev.lastSeenNow": "Ìbáraẹnisọ̀rọ̀ kẹ́yìn: ní àìpẹ́ yìí",
+  "dev.lastSync": "Ìgbéra-sókè kẹ́yìn tó yọrí: {span} sẹ́yìn",
+  "dev.lastSyncNever": "A kò tíì ròyìn ìgbéra-sókè tó yọrí",
+  "dev.waitingNone": "Kò sí ohun tó ń dúró láti gbé sókè",
+  "dev.usedBy": "Ẹni tó lò ó kẹ́yìn: {name}",
+  "dev.version": "Ẹ̀dà {build}",
+  "dev.battery": "Bátìrì {percent}%",
+  "dev.batteryCharging": "Bátìrì {percent}%, ń gba iná",
+  "dev.flag.failed_other": "Àkọsílẹ̀ {count} nílò àbójútó",
+  "dev.flag.unseen": "A kò rí i fún {span}",
+  "dev.flag.stuck_other": "Àkọsílẹ̀ {count} ti dúró fún {span} láti gbé sókè",
+  "dev.flag.behind_other": "Àkọsílẹ̀ tuntun {count} kò tíì wálẹ̀",
+  "dev.flag.behindMany": "Ọ̀pọ̀lọpọ̀ àkọsílẹ̀ tuntun kò tíì wálẹ̀",
+  "dev.flag.never": "Kò tíì gbà nǹkan kan wálẹ̀",
+  "dev.flag.clock":
+    "Aago ẹ̀rọ yìí kò tọ́ ní {span}. Ṣètò ọjọ́ àti àkókò lórí fóònù náà.",
+  "dev.flag.oldApp": "Ẹ̀dà Prima àtijọ́. Ṣí i pẹ̀lú íńtánẹ́ẹ̀tì láti ṣe àtúnṣe.",
+  "dev.flag.lowBattery": "Bátìrì ti kéré ({percent}%)",
+  "dev.flag.powerSaving":
+    "Ipò bátìrì kéré wà ní títàn, nítorí náà ó ń gbé sókè nígbà tí ẹnìkan bá ṣe é fúnra rẹ̀ nìkan.",
+  "dev.span.minutes_other": "ìṣẹ́jú {count}",
+  "dev.span.hours_other": "wákàtí {count}",
+  "dev.span.days_other": "ọjọ́ {count}",
+  "dev.rename": "Fún lórúkọ mìíràn",
+  "dev.renameTitle": "Fún ẹ̀rọ yìí lórúkọ",
+  "dev.renameHelp":
+    "Lo orúkọ tí àwọn ènìyàn yóò mọ̀, bíi “Tábìlẹ́ẹ̀tì ibi ìgbàlejò”. Fi í sílẹ̀ ní òfo láti lo orúkọ àdánidá.",
+  "dev.renameField": "Orúkọ ẹ̀rọ",
+  "dev.renamed": "A ti fi orúkọ pamọ́",
+  "dev.remove": "Yọ kúrò nínú àtòkọ",
+  "dev.removeTitle": "Yọ {name} kúrò nínú àtòkọ?",
+  "dev.removeText":
+    "A kò pa nǹkan kan rẹ́ lórí ẹ̀rọ náà tàbí nínú àkọsílẹ̀ aláìsàn kankan. Bí a bá tún lo ẹ̀rọ náà, yóò tún fara hàn.",
+  "dev.removed": "A ti yọ {name} kúrò",
+  "dev.none":
+    "Kò sí ẹ̀rọ mìíràn tó tíì ròyìn. Ṣí Prima lórí fóònù mìíràn, yóò sì fara hàn níbí láàrin ìṣẹ́jú díẹ̀.",
+  "dev.offline":
+    "O nílò íńtánẹ́ẹ̀tì láti rí àwọn ẹ̀rọ yòókù. Ẹ̀rọ yìí nìkan ni a fi hàn.",
+  "dev.setup":
+    "Ibi ìpamọ́ dátà àwọsánmà nílò àtúnṣe Ọjọ́ 23 kí a tó lè ṣe àtòkọ àwọn ẹ̀rọ. Bi ẹni tó ń bójútó iṣẹ́ Supabase láti ṣe supabase/day23.sql.",
+  "dev.signin": "Tún wọlé láti rí àwọn ẹ̀rọ náà.",
+  "dev.failed": "A kò lè gbé àwọn ẹ̀rọ náà wá. Gbìyànjú lẹ́ẹ̀kan sí i.",
+  "dev.forbidden": "Alábòójútó ilé ìwòsàn nìkan ló lè rí àwọn ẹ̀rọ náà.",
 };

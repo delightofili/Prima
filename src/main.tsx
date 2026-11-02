@@ -4,6 +4,7 @@ import { BrowserRouter } from "react-router-dom";
 import "./index.css";
 import App from "./App";
 import { AuthProvider } from "./components/AuthProvider";
+import { PeerLiveBadge } from "./components/PeerLiveBadge";
 import { ToastProvider } from "./components/Toast";
 import { UpdatePrompt } from "./components/UpdatePrompt";
 import { applyGlove, readGlove } from "./hooks/useGloveMode";
@@ -28,6 +29,7 @@ void initI18n().finally(() => {
           <AuthProvider>
             <App />
             <UpdatePrompt />
+            <PeerLiveBadge />
           </AuthProvider>
         </ToastProvider>
       </BrowserRouter>

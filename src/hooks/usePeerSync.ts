@@ -1,183 +1,64 @@
-import { useCallback, useEffect, useRef, useState } from "react";
-import { db } from "../db";
-import { logAudit } from "../lib/audit";
-import { deviceLabelFromAgent } from "../lib/deviceHealth";
-import { getDeviceId } from "../lib/deviceStatus";
-import { facilityTag } from "../lib/peerCodec";
 import {
-  joinAsGuest,
-  startHost,
-  type GuestSession,
-  type HostSession,
-  type Opened,
-} from "../lib/peerLink";
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+  useSyncExternalStore,
+} from "react";
+import { readBook } from "../lib/peerBookStore";
 import {
-  PeerError,
-  runPeerSync,
-  type PeerCode,
-  type Progress,
-  type Summary,
-} from "../lib/peerProtocol";
-import type { Role } from "../lib/peerAuth";
-import { makePeerStore } from "../lib/peerStore";
+  cancelPairing,
+  disconnect,
+  getSession,
+  resetSession,
+  shareNow,
+  startAsGuest,
+  startAsHost,
+  submitCode,
+  subscribeSession,
+  type NearbyState,
+} from "../lib/peerSession";
 import { fetchClinicKey, readClinicKey } from "../lib/syncKey";
-import { pushPending } from "../lib/syncService";
 import { useAuth } from "./useAuth";
 
-export type NearbyState =
-  | { step: "idle" }
-  | { step: "host-code"; code: string } // the first phone shows its code
-  | { step: "guest-scan" } // the second phone scans it
-  | { step: "guest-code"; code: string } // the second phone shows its answer
-  | { step: "connecting" }
-  | { step: "syncing"; progress: Progress }
-  | { step: "done"; summary: Summary; waiting: number }
-  | { step: "error"; code: PeerCode; detail?: number };
+export type { NearbyState, PeerInfo, Totals } from "../lib/peerSession";
 
+// The sharing session is not owned by this screen: it keeps running when the nurse goes to another page.
 export function usePeerSync() {
   const { facility, account } = useAuth();
-  const facilityId = facility?.id ?? "";
-  const userName = account?.name ?? "";
-  const [state, setState] = useState<NearbyState>({ step: "idle" });
+  const ctx = useMemo(
+    () => ({ facilityId: facility?.id ?? "", userName: account?.name ?? "" }),
+    [facility?.id, account?.name],
+  );
+  const snap = useSyncExternalStore(subscribeSession, getSession, getSession);
 
-  const host = useRef<HostSession | null>(null);
-  const guest = useRef<GuestSession | null>(null);
-  const abort = useRef<AbortController | null>(null);
-  const busy = useRef(false); // the camera reports the same code many times: only the first counts
-  const alive = useRef(true);
+  useEffect(() => cancelPairing, []); // leaving while a code is on display ends that attempt, and nothing else
 
-  const show = useCallback((s: NearbyState) => {
-    if (alive.current) setState(s);
-  }, []);
+  return {
+    state: snap.state as NearbyState,
+    bookVersion: snap.bookVersion,
+    startAsHost: useCallback(() => startAsHost(ctx), [ctx]),
+    startAsGuest: useCallback(() => startAsGuest(ctx), [ctx]),
+    submit: useCallback((text: string) => submitCode(ctx, text), [ctx]),
+    shareNow,
+    disconnect,
+    reset: resetSession,
+  };
+}
 
-  const stop = useCallback(() => {
-    abort.current?.abort();
-    host.current?.cancel();
-    guest.current?.cancel();
-    abort.current = null;
-    host.current = null;
-    guest.current = null;
-    busy.current = false;
-  }, []);
-
+// The phones this one has synced with (reloaded when `version` changes)
+export function usePeerBook(version: number) {
+  const [book, setBook] = useState<Awaited<ReturnType<typeof readBook>>>([]);
   useEffect(() => {
-    alive.current = true;
+    let on = true;
+    void readBook().then((b) => {
+      if (on) setBook(b);
+    });
     return () => {
-      alive.current = false;
-      stop(); // leaving the screen ends any link
+      on = false;
     };
-  }, [stop]);
-
-  const fail = useCallback(
-    (e: unknown) => {
-      const err = e instanceof PeerError ? e : new PeerError("protocol");
-      stop();
-      show({ step: "error", code: err.code, detail: err.detail });
-      // An out-of-date clinic key fixes itself the next time this phone is online, so try straight away
-      if (err.code === "key-here") void fetchClinicKey(facilityId);
-    },
-    [facilityId, show, stop],
-  );
-
-  const converse = useCallback(
-    async (opened: Opened, role: Role) => {
-      const key = await readClinicKey(facilityId);
-      if (!key) throw new PeerError("no-key");
-      const dev = await getDeviceId();
-      const controller = new AbortController();
-      abort.current = controller;
-      show({
-        step: "syncing",
-        progress: { phase: "hello", sent: 0, received: 0 },
-      });
-      const summary = await runPeerSync(
-        opened.link,
-        makePeerStore(facilityId),
-        {
-          role,
-          binding: opened.binding,
-          signal: controller.signal,
-          self: {
-            dev,
-            name: deviceLabelFromAgent(navigator.userAgent, dev),
-            user: userName,
-            fac: await facilityTag(facilityId),
-            kv: key.version,
-            key: key.key,
-          },
-          onProgress: (progress) => show({ step: "syncing", progress }),
-        },
-      );
-      const received = summary.received.added + summary.received.updated;
-      void logAudit(
-        "sync.peer",
-        "device",
-        summary.peer.dev,
-        `with ${summary.peer.name}: sent ${summary.sent}, received ${received}`,
-      );
-      void pushPending(); // if this phone has internet, what it just received starts on its way to the cloud
-      const waiting = await db.syncQueue
-        .filter((i) => i.status !== "failed")
-        .count();
-      show({ step: "done", summary, waiting });
-      busy.current = false;
-    },
-    [facilityId, show, userName],
-  );
-
-  const startAsHost = useCallback(async () => {
-    try {
-      stop();
-      if (!(await readClinicKey(facilityId))) throw new PeerError("no-key");
-      const session = await startHost(facilityId);
-      host.current = session;
-      show({ step: "host-code", code: session.code });
-    } catch (e) {
-      fail(e);
-    }
-  }, [facilityId, fail, show, stop]);
-
-  const startAsGuest = useCallback(async () => {
-    try {
-      stop();
-      if (!(await readClinicKey(facilityId))) throw new PeerError("no-key");
-      show({ step: "guest-scan" });
-    } catch (e) {
-      fail(e);
-    }
-  }, [facilityId, fail, show, stop]);
-
-  // The text of the other phone's code, from the camera or from the paste box
-  const submit = useCallback(
-    async (text: string) => {
-      if (busy.current) return;
-      busy.current = true;
-      try {
-        if (host.current) {
-          const session = host.current;
-          show({ step: "connecting" });
-          await converse(await session.accept(text), "host");
-        } else {
-          const session = await joinAsGuest(text, facilityId);
-          guest.current = session;
-          show({ step: "guest-code", code: session.code });
-          const opened = await session.connected();
-          show({ step: "connecting" });
-          await converse(opened, "guest");
-        }
-      } catch (e) {
-        fail(e);
-      }
-    },
-    [converse, facilityId, fail, show],
-  );
-
-  const reset = useCallback(() => {
-    stop();
-    show({ step: "idle" });
-  }, [show, stop]);
-
-  return { state, startAsHost, startAsGuest, submit, reset };
+  }, [version]);
+  return book;
 }
 
 // Whether this phone holds the clinic key, and a way to get it while online

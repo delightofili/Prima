@@ -854,4 +854,57 @@ export const dict: Partial<Record<Key, string>> = {
     "Ẹ̀rọ aṣàwákiri yìí kò lè so àwọn fóònù pọ̀ tààrà. Lo Chrome lórí Android.",
   "near.err.code":
     "Ìyẹn kì í ṣe kóòdù Prima. Ṣàyẹ̀wò kóòdù tó wà lórí fóònù èkejì.",
+
+  // ----- live sharing, the book of phones, the changes file
+  "near.live": "A ti so pọ̀ mọ́ {name}",
+  "near.liveHelp":
+    "A ń pín àwọn àyípadà lórí fóònù èyíkéyìí fúnra rẹ̀. Jẹ́ kí àwọn fóònù méjèèjì ṣí sílẹ̀ kí wọ́n sì wà nítòsí ara wọn, lórí ojú ìwé yìí.",
+  "near.liveTotals":
+    "A ti pín títí di báyìí: a fi {sent} ránṣẹ́, a gbà {received}",
+  "near.liveBusy": "Ń pín…",
+  "near.liveLast": "A yẹ̀ ẹ́ wò kẹ́yìn {span} sẹ́yìn",
+  "near.liveLastNow": "A yẹ̀ ẹ́ wò kẹ́yìn ní àìpẹ́ yìí",
+  "near.shareNow": "Pín báyìí",
+  "near.disconnect": "Já ìsopọ̀",
+  "near.ended.you": "O ti já ìsopọ̀.",
+  "near.ended.them": "Fóònù èkejì ti já ìsopọ̀.",
+  "near.ended.quiet": "A ti já ìsopọ̀ lẹ́yìn ìṣẹ́jú 30 tí kò sí ohun tí a ó pín.",
+  "peers.title": "Àwọn fóònù tí o ti pààrọ̀ àkọsílẹ̀ pẹ̀lú wọn",
+  "peers.none":
+    "Kò tíì sí. Lẹ́yìn ìpààrọ̀ àkọ́kọ́ rẹ, a ó ṣe àtòkọ fóònù èkejì síbí.",
+  "peers.note":
+    "Ojú ìwé wẹ́ẹ̀bù kò lè wá àwọn fóònù lórí Wi-Fi, nítorí náà èyí ń ṣe àtòkọ àwọn fóònù tí o ti so pọ̀ nìkan. Láti tún pín, so wọ́n pọ̀ pẹ̀lú kóòdù méjèèjì.",
+  "peers.last": "Ìpààrọ̀ kẹ́yìn {span} sẹ́yìn",
+  "peers.lastNow": "Ìpààrọ̀ kẹ́yìn ní àìpẹ́ yìí",
+  "peers.totals": "A fi {sent} ránṣẹ́, a sì gba {received} lápapọ̀",
+  "peers.stale": "A kò tíì pààrọ̀ fún {span}. Tún so pọ̀ nígbà tí ẹ bá wà papọ̀.",
+  "file.title": "Kò sí Wi-Fi? Fi fáìlì ránṣẹ́",
+  "file.help":
+    "Bí àwọn fóònù kò bá lè dé ara wọn, ṣe fáìlì àyípadà síbí, fi ránṣẹ́ sí fóònù èkejì (WhatsApp, Bluetooth, okùn), kí o sì ṣí i níbẹ̀. Àwọn fóònù ilé ìwòsàn yìí nìkan ló lè kà á.",
+  "file.period": "Ẹ̀yìn tó tó báwo?",
+  "file.p7": "Ọjọ́ 7 sẹ́yìn",
+  "file.p30": "Ọjọ́ 30 sẹ́yìn",
+  "file.pall": "Gbogbo rẹ̀",
+  "file.make": "Ṣe kí o sì fi fáìlì ránṣẹ́",
+  "file.making": "Ń ṣe fáìlì náà…",
+  "file.open": "Ṣí fáìlì àyípadà",
+  "file.opening": "Ń ṣí fáìlì náà…",
+  "file.made_other": "Fáìlì ti ṣetán pẹ̀lú àkọsílẹ̀ {count}.",
+  "file.madeDownload":
+    "A ti fi pamọ́ sínú ohun tí a gbà wálẹ̀ lórí fóònù yìí. Fi ránṣẹ́ sí fóònù èkejì.",
+  "file.imported":
+    "A ti ṣí i. A fi kún {added}, a ṣe àtúnṣe {updated}, a fi sílẹ̀ {skipped}.",
+  "file.importedNone":
+    "Kò sí nǹkan tuntun: fóònù yìí ti ní gbogbo ohun tó wà nínú fáìlì náà.",
+  "file.rejected_other": "A kò gba àkọsílẹ̀ {count} tó wà nínú fáìlì náà.",
+  "file.err.notPrima": "Ìyẹn kì í ṣe fáìlì àyípadà Prima.",
+  "file.err.tooBig": "Fáìlì náà tóbi jù.",
+  "file.err.facility": "Fáìlì yẹn wá láti ilé ìwòsàn mìíràn.",
+  "file.err.keyHere":
+    "Kọ́kọ́rọ́ ilé ìwòsàn tó wà lórí fóònù yìí ti di àtijọ́. So ó pọ̀ mọ́ íńtánẹ́ẹ̀tì lẹ́ẹ̀kan, kí o sì tún ṣí fáìlì náà.",
+  "file.err.keyThere":
+    "A fi kọ́kọ́rọ́ ilé ìwòsàn àtijọ́ ṣe fáìlì náà. Sọ fún ẹni tó ṣe é kí ó so pọ̀ mọ́ íńtánẹ́ẹ̀tì lẹ́ẹ̀kan, kí ó sì ṣe fáìlì tuntun.",
+  "file.err.corrupt":
+    "A kò lè ṣí fáìlì náà. Ó lè ti bàjẹ́ lójú ọ̀nà. Béèrè fún ẹ̀dà tuntun.",
+  "file.err.failed": "Nǹkan kan ṣẹlẹ̀. A kò yí nǹkan kan padà.",
 };

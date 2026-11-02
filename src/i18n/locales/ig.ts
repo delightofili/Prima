@@ -856,4 +856,58 @@ export const dict: Partial<Record<Key, string>> = {
     "Ihe nchọgharị a enweghị ike ijikọ ekwentị ozugbo. Jiri Chrome n'Android.",
   "near.err.code":
     "Nke ahụ abụghị koodu Prima. Nyochaa koodu e gosiri n'ekwentị nke ọzọ.",
+
+  // ----- live sharing, the book of phones, the changes file
+  "near.live": "Ejikọtara na {name}",
+  "near.liveHelp":
+    "A na-ekekọrịta mgbanwe ọ bụla n'ekwentị abụọ ahụ n'onwe ya. Debe ekwentị abụọ ahụ meghere ma nọrọ nso ibe ha, n'ihuenyo a.",
+  "near.liveTotals":
+    "E kekọrịtala ruo ugbu a: e zigara {sent}, natara {received}",
+  "near.liveBusy": "Na-ekekọrịta…",
+  "near.liveLast": "A lelere ikpeazụ {span} gara aga",
+  "near.liveLastNow": "A lelere ikpeazụ ugbu a",
+  "near.shareNow": "Kekọrịta ugbu a",
+  "near.disconnect": "Kwụsị njikọ",
+  "near.ended.you": "I kwụsịrị njikọ.",
+  "near.ended.them": "Ekwentị nke ọzọ kwụsịrị njikọ.",
+  "near.ended.quiet":
+    "E kwụsịrị njikọ mgbe nkeji 30 gachara na enweghị ihe a ga-ekekọrịta.",
+  "peers.title": "Ekwentị i kekọrịtara ndekọ na ha",
+  "peers.none":
+    "Ọ dịbeghị. Mgbe mkpakọrịta mbụ gị gasịrị, a ga-edepụta ekwentị nke ọzọ ebe a.",
+  "peers.note":
+    "Ibe weebụ enweghị ike ịchọ ekwentị n'Wi-Fi, ya mere nke a na-edepụta naanị ekwentị ị jikọtara na mbụ. Ka ị kekọrịta ọzọ, jikọta ya na koodu abụọ ahụ.",
+  "peers.last": "Kekọrịta ikpeazụ {span} gara aga",
+  "peers.lastNow": "Kekọrịta ikpeazụ ugbu a",
+  "peers.totals": "E zigara {sent} ma natara {received} n'ozuzu",
+  "peers.stale": "Ekekọrịtaghị ruo {span}. Jikọta ọzọ mgbe unu nọ ọnụ.",
+  "file.title": "Enweghị Wi-Fi? Zipụ faịlụ",
+  "file.help":
+    "Ọ bụrụ na ekwentị ndị ahụ enweghị ike ịhụ ibe ha, mee faịlụ mgbanwe ebe a, zipụ ya n'ekwentị nke ọzọ (WhatsApp, Bluetooth, eriri), meghee ya n'ebe ahụ. Naanị ekwentị nke ụlọ ọgwụ a nwere ike ịgụ ya.",
+  "file.period": "Laghachi azụ ole?",
+  "file.p7": "Ụbọchị 7 gara aga",
+  "file.p30": "Ụbọchị 30 gara aga",
+  "file.pall": "Ihe niile",
+  "file.make": "Mee ma zipụ faịlụ",
+  "file.making": "Na-eme faịlụ…",
+  "file.open": "Meghee faịlụ mgbanwe",
+  "file.opening": "Na-emeghe faịlụ…",
+  "file.made_other": "Faịlụ dị njikere nwere ndekọ {count}.",
+  "file.madeDownload":
+    "E chekwara ya n'ihe ebudatara n'ekwentị a. Zipụ ya n'ekwentị nke ọzọ.",
+  "file.imported":
+    "Emeghere ya. Etinyere {added}, emelitere {updated}, ahapụrụ {skipped}.",
+  "file.importedNone":
+    "Ọ dịghị ihe ọhụrụ: ekwentị a nwere ihe niile dị n'ime faịlụ ahụ.",
+  "file.rejected_other": "Anabataghị ndekọ {count} dị n'ime faịlụ ahụ.",
+  "file.err.notPrima": "Nke ahụ abụghị faịlụ mgbanwe Prima.",
+  "file.err.tooBig": "Faịlụ ahụ buru ibu.",
+  "file.err.facility": "Faịlụ ahụ sitere n'ụlọ ọgwụ ọzọ.",
+  "file.err.keyHere":
+    "Igodo ụlọ ọgwụ dị n'ekwentị a adịla ochie. Jikọọ ya na ịntanetị otu ugboro, wee meghee faịlụ ahụ ọzọ.",
+  "file.err.keyThere":
+    "E ji igodo ụlọ ọgwụ ochie mee faịlụ ahụ. Gwa onye mere ya ka ọ jikọọ na ịntanetị otu ugboro ma mee faịlụ ọhụrụ.",
+  "file.err.corrupt":
+    "Enweghị ike imeghe faịlụ ahụ. Ọ nwere ike ịbụ na ọ mebiri n'ụzọ. Rịọ maka otu ọhụrụ.",
+  "file.err.failed": "Ihe adịghị mma. Ọ dịghị ihe e gbanwere.",
 };

@@ -899,4 +899,60 @@ export const dict: Partial<Record<Key, string>> = {
     "Wannan burauzar ba ta iya haɗa wayoyi kai tsaye ba. Yi amfani da Chrome a Android.",
   "near.err.code":
     "Wannan ba kod ɗin Prima ba ne. Duba kod ɗin da ke nuni a ɗayan wayar.",
+
+  // ----- live sharing, the book of phones, the changes file
+  "near.live": "An haɗa da {name}",
+  "near.liveHelp":
+    "Ana raba canje-canje na kowace waya ta atomatik. Ka bar wayoyin biyu a buɗe kuma kusa da juna, a wannan shafin.",
+  "near.liveTotals": "An raba har yanzu: an aika {sent}, an karɓa {received}",
+  "near.liveBusy": "Ana rabawa…",
+  "near.liveLast": "An duba na ƙarshe {span} da suka wuce",
+  "near.liveLastNow": "An duba na ƙarshe yanzu",
+  "near.shareNow": "Raba yanzu",
+  "near.disconnect": "Yanke haɗin",
+  "near.ended.you": "Ka yanke haɗin.",
+  "near.ended.them": "Ɗayan wayar ta yanke haɗin.",
+  "near.ended.quiet":
+    "An yanke haɗin bayan mintuna 30 ba tare da wani abu da za a raba ba.",
+  "peers.title": "Wayoyin da ka yi musayar bayanai da su",
+  "peers.none":
+    "Babu tukuna. Bayan musayarka ta farko, za a jera ɗayan wayar a nan.",
+  "peers.note":
+    "Shafin yanar gizo ba zai iya nemo wayoyi a Wi-Fi ba, don haka wannan yana lissafa wayoyin da ka riga ka haɗa su ne kawai. Don sake rabawa, haɗa su da kod biyun.",
+  "peers.last": "An yi musayar ta ƙarshe {span} da suka wuce",
+  "peers.lastNow": "An yi musayar ta ƙarshe yanzu",
+  "peers.totals": "An aika {sent} kuma an karɓa {received} gaba ɗaya",
+  "peers.stale":
+    "Ba a yi musayar ba tsawon {span}. Sake haɗawa idan kuna tare.",
+  "file.title": "Babu Wi-Fi? Aika fayil",
+  "file.help":
+    "Idan wayoyin ba su iya kai wa juna, yi fayil ɗin canje-canje a nan, aika shi zuwa ɗayan wayar (WhatsApp, Bluetooth, kebul), sannan ka buɗe shi a can. Wayoyin wannan asibiti ne kawai za su iya karanta shi.",
+  "file.period": "Har zuwa yaushe?",
+  "file.p7": "Kwanaki 7 da suka wuce",
+  "file.p30": "Kwanaki 30 da suka wuce",
+  "file.pall": "Komai",
+  "file.make": "Yi kuma aika fayil",
+  "file.making": "Ana yin fayil ɗin…",
+  "file.open": "Buɗe fayil ɗin canje-canje",
+  "file.opening": "Ana buɗe fayil ɗin…",
+  "file.made_one": "Fayil ɗin ya shirya da bayani {count}.",
+  "file.made_other": "Fayil ɗin ya shirya da bayanai {count}.",
+  "file.madeDownload":
+    "An ajiye shi a abubuwan da aka sauke a wannan waya. Aika shi zuwa ɗayan wayar.",
+  "file.imported":
+    "An buɗe. An ƙara {added}, an sabunta {updated}, an bar {skipped}.",
+  "file.importedNone":
+    "Babu sabon abu: wannan waya ta riga ta da duk abin da ke cikin fayil ɗin.",
+  "file.rejected_one": "Ba a karɓi bayani {count} da ke cikin fayil ɗin ba.",
+  "file.rejected_other": "Ba a karɓi bayanai {count} da ke cikin fayil ɗin ba.",
+  "file.err.notPrima": "Wannan ba fayil ɗin canje-canje na Prima ba ne.",
+  "file.err.tooBig": "Fayil ɗin ya yi girma da yawa.",
+  "file.err.facility": "Wannan fayil daga wani asibiti ne.",
+  "file.err.keyHere":
+    "Mabuɗin asibiti na wannan waya ya tsufa. Haɗa ta da intanet sau ɗaya, sannan ka sake buɗe fayil ɗin.",
+  "file.err.keyThere":
+    "An yi fayil ɗin da tsohon mabuɗin asibiti. Ka roƙi wanda ya yi shi ya haɗa da intanet sau ɗaya ya sake yin sabon fayil.",
+  "file.err.corrupt":
+    "Ba a iya buɗe fayil ɗin ba. Wataƙila ya lalace a hanya. Nemi sabon kwafi.",
+  "file.err.failed": "Wani abu ya faru. Ba a canza komai ba.",
 };

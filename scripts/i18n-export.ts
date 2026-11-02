@@ -68,6 +68,8 @@ const WHERE: Record<string, string> = {
   fu: "Follow-ups tab",
   dev: "Devices tab (who is behind)",
   near: "Nearby phones tab (sync between two phones)",
+  peers: "Phones you have synced with",
+  file: "Changes file (no Wi-Fi)",
 };
 
 const q = (s: string) => `"${s.replace(/"/g, '""')}"`;

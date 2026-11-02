@@ -871,6 +871,60 @@ export const en = {
     "This browser cannot connect phones directly. Use Chrome on Android.",
   "near.err.code":
     "That is not a Prima code. Scan the code shown on the other phone.",
+
+  // ----- live sharing, the book of phones, the changes file
+  "near.live": "Connected to {name}",
+  "near.liveHelp":
+    "Changes on either phone are shared automatically. Keep both phones open and together, on this screen.",
+  "near.liveTotals": "Shared so far: sent {sent}, received {received}",
+  "near.liveBusy": "Sharing…",
+  "near.liveLast": "Last checked {span} ago",
+  "near.liveLastNow": "Last checked just now",
+  "near.shareNow": "Share now",
+  "near.disconnect": "Disconnect",
+  "near.ended.you": "You disconnected.",
+  "near.ended.them": "The other phone disconnected.",
+  "near.ended.quiet": "Disconnected after 30 minutes with nothing to share.",
+  "peers.title": "Phones you have synced with",
+  "peers.none":
+    "None yet. After your first sync, the other phone is listed here.",
+  "peers.note":
+    "A web page cannot look for phones on the Wi-Fi, so this lists the phones you have already paired with. To share again, pair with the two codes.",
+  "peers.last": "Last synced {span} ago",
+  "peers.lastNow": "Last synced just now",
+  "peers.totals": "Sent {sent} and received {received} in total",
+  "peers.stale": "Not synced for {span}. Pair again when you are together.",
+  "file.title": "No Wi-Fi? Send a file",
+  "file.help":
+    "If the phones cannot reach each other, make a changes file here, send it to the other phone (WhatsApp, Bluetooth, a cable), and open it there. Only phones of this clinic can read it.",
+  "file.period": "How far back?",
+  "file.p7": "Last 7 days",
+  "file.p30": "Last 30 days",
+  "file.pall": "Everything",
+  "file.make": "Make and send a file",
+  "file.making": "Making the file…",
+  "file.open": "Open a changes file",
+  "file.opening": "Opening the file…",
+  "file.made_one": "File ready with {count} record.",
+  "file.made_other": "File ready with {count} records.",
+  "file.madeDownload":
+    "It was saved in this phone's downloads. Send it to the other phone.",
+  "file.imported":
+    "Opened. Added {added}, updated {updated}, left alone {skipped}.",
+  "file.importedNone":
+    "Nothing new: this phone already had everything in the file.",
+  "file.rejected_one": "{count} record in the file was not accepted.",
+  "file.rejected_other": "{count} records in the file were not accepted.",
+  "file.err.notPrima": "That is not a Prima changes file.",
+  "file.err.tooBig": "The file is too big.",
+  "file.err.facility": "That file is from another clinic.",
+  "file.err.keyHere":
+    "This phone's clinic key is out of date. Connect it to the internet once, then open the file again.",
+  "file.err.keyThere":
+    "The file was made with an older clinic key. Ask whoever made it to connect to the internet once and make a new file.",
+  "file.err.corrupt":
+    "The file could not be opened. It may have been damaged on the way. Ask for a new copy.",
+  "file.err.failed": "Something went wrong. Nothing was changed.",
 } as const;
 
 export type Key = keyof typeof en;

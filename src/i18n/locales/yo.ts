@@ -907,4 +907,77 @@ export const dict: Partial<Record<Key, string>> = {
   "file.err.corrupt":
     "A kò lè ṣí fáìlì náà. Ó lè ti bàjẹ́ lójú ọ̀nà. Béèrè fún ẹ̀dà tuntun.",
   "file.err.failed": "Nǹkan kan ṣẹlẹ̀. A kò yí nǹkan kan padà.",
+
+  // ----- the plan and payment tab
+  "bill.tab": "Ètò àti sísan owó",
+  "bill.title": "Ètò rẹ",
+  "bill.free": "Ọ̀fẹ́",
+  "bill.basic": "Basic",
+  "bill.pro": "Pro",
+  "bill.s.free": "O wà lórí ètò ọ̀fẹ́, tó gba aláìsàn tó tó {limit}.",
+  "bill.s.active_other": "A ti san owó títí di {date}. Ọjọ́ {count} ló kù.",
+  "bill.s.renews": "Ó ń sọ ara rẹ̀ di tuntun fúnra rẹ̀ pẹ̀lú káàdì rẹ.",
+  "bill.s.ends":
+    "Kì yóò sọ ara rẹ̀ di tuntun fúnra rẹ̀. San owó lẹ́ẹ̀kan sí i kí {date} tó dé kí o lè tọ́jú rẹ̀.",
+  "bill.s.pilot": "Ìfilọ́lẹ̀ ìdánwò: Pro jẹ́ ọ̀fẹ́ fún ọ títí di {date}.",
+  "bill.s.pastDue":
+    "Owó ìkẹyìn kò lọ. Ètò rẹ yóò wà títí di {date}. San báyìí kí o lè tọ́jú rẹ̀.",
+  "bill.s.expired":
+    "Ètò tí o san owó fún ti parí, o sì ti padà sí ọ̀fẹ́. Àwọn aláìsàn àti àkọsílẹ̀ rẹ wà ní ààbò.",
+  "bill.verifying": "Ń ṣàyẹ̀wò owó tí o san…",
+  "bill.paid": "A ti gba owó náà. O ṣé.",
+  "bill.waiting":
+    "Báńkì kò tíì jẹ́rìí sí i. Dúró ìṣẹ́jú kan, kí o sì tún yẹ̀ ẹ́ wò.",
+  "bill.checkAgain": "Tún yẹ̀ ẹ́ wò",
+  "bill.notPaid": "A kò parí sísan owó náà, nítorí náà ètò rẹ kò yí padà.",
+  "bill.refused":
+    "Owó wọlé, ṣùgbọ́n a kò lè so ó mọ́ ètò náà. A kò yí ètò rẹ padà. Jọ̀wọ́ kàn sí wa kí o sì fún wa ní nọ́mbà yìí: {reference}",
+  "bill.choose": "Yan ètò",
+  "bill.cycleMonthly": "Oṣooṣù",
+  "bill.cycleAnnual": "Ọdọọdún",
+  "bill.perMonth": "{price} lóṣù",
+  "bill.perYear": "{price} lọ́dún",
+  "bill.saving": "Oṣù méjì ní ọ̀fẹ́: o fi {amount} pamọ́ lọ́dún.",
+  "bill.current": "Ètò rẹ lọ́wọ́lọ́wọ́",
+  "bill.included": "Ohun tó wà nínú ètò kọ̀ọ̀kan",
+  "bill.how": "Báwo ni o ṣe fẹ́ san owó?",
+  "bill.once": "San lẹ́ẹ̀kan",
+  "bill.onceHelp": "Kò sí àtúnṣe fúnra rẹ̀. O ó tún san nígbà tí àkókò bá parí.",
+  "bill.auto": "Tún un ṣe fúnra rẹ̀",
+  "bill.autoHelp":
+    "A ó máa gba owó láti inú káàdì rẹ ní gbogbo ìgbà. O lè pa á ní àkókò èyíkéyìí.",
+  "bill.pay": "San {amount} nípasẹ̀ Paystack",
+  "bill.paying": "Ń ṣí Paystack…",
+  "bill.upgradeNote":
+    "Ìgbéga bẹ̀rẹ̀ lónìí. A fi àwọn ọjọ́ tí o kò lò ní ètò rẹ lọ́wọ́lọ́wọ́ kún un gẹ́gẹ́ bí ọjọ́ àfikún.",
+  "bill.lowerBlocked":
+    "O wà lórí Pro títí di {date}. Yan Pro láti fi àkókò kún un.",
+  "bill.adminOnly":
+    "Alábòójútó ilé ìwòsàn nìkan ló lè san owó. Bi alábòójútó rẹ.",
+  "bill.offline":
+    "O nílò íńtánẹ́ẹ̀tì láti san owó tàbí láti rí àwọn owó tí o ti san.",
+  "bill.test":
+    "Ipò ìdánwò: kò sí owó gidi tó ń lọ. Lo káàdì 4084 0840 8408 4081, ọjọ́ èyíkéyìí lọ́jọ́ iwájú, CVV 408. Tí a bá béèrè, PIN 408408 àti kóòdù 123456.",
+  "bill.err.signin": "Tún wọlé láti tẹ̀síwájú.",
+  "bill.err.paystack":
+    "A kò lè dé Paystack. A kò gba owó kankan. Tún gbìyànjú láàrin ìṣẹ́jú kan.",
+  "bill.err.server":
+    "Nǹkan kan ṣẹlẹ̀ lápá wa. A kò gba owó kankan. Tún gbìyànjú.",
+  "bill.err.noEmail":
+    "Àkántì rẹ kò ní àdírẹ́sì ímeèlì. Fi ọ̀kan kún àkántì rẹ, kí o sì tún gbìyànjú.",
+  "bill.err.noAuto": "Àtúnṣe fúnra rẹ̀ kò tíì wà. Yan San lẹ́ẹ̀kan.",
+  "bill.err.misconfigured": "À ń ṣètò sísan owó. Jọ̀wọ́ tún gbìyànjú lẹ́yìn náà.",
+  "bill.err.notAdmin": "Alábòójútó ilé ìwòsàn nìkan ló lè san owó.",
+  "bill.err.failed": "Ìyẹn kò ṣiṣẹ́. A kò gba owó kankan. Tún gbìyànjú.",
+  "bill.cancel": "Pa àtúnṣe fúnra rẹ̀",
+  "bill.cancelTitle": "Pa àtúnṣe fúnra rẹ̀?",
+  "bill.cancelText":
+    "Ètò rẹ yóò wà títí di {date}. Lẹ́yìn èyí yóò parí àyàfi tí o bá tún san owó.",
+  "bill.cancelled": "A ti pa àtúnṣe fúnra rẹ̀.",
+  "bill.history": "Àwọn owó tí o ti san",
+  "bill.noPayments": "Kò tíì sí owó tí o ti san.",
+  "bill.st.success": "A ti san",
+  "bill.st.pending": "Ń dúró",
+  "bill.st.failed": "A kò parí",
+  "bill.m.renewal": "Àtúnṣe fúnra rẹ̀",
 };

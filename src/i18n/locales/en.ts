@@ -925,6 +925,81 @@ export const en = {
   "file.err.corrupt":
     "The file could not be opened. It may have been damaged on the way. Ask for a new copy.",
   "file.err.failed": "Something went wrong. Nothing was changed.",
+
+  // ----- the plan and payment tab
+  "bill.tab": "Plan and payment",
+  "bill.title": "Your plan",
+  "bill.free": "Free",
+  "bill.basic": "Basic",
+  "bill.pro": "Pro",
+  "bill.s.free":
+    "You are on the Free plan, with room for up to {limit} patients.",
+  "bill.s.active_one": "Paid until {date}. {count} day left.",
+  "bill.s.active_other": "Paid until {date}. {count} days left.",
+  "bill.s.renews": "It renews automatically with your card.",
+  "bill.s.ends":
+    "It will not renew by itself. Pay again before {date} to keep it.",
+  "bill.s.pilot": "Pilot offer: Pro is free for you until {date}.",
+  "bill.s.pastDue":
+    "The last payment did not go through. Your plan stays on until {date}. Pay now to keep it.",
+  "bill.s.expired":
+    "Your paid plan has ended and you are back on Free. Your patients and records are safe.",
+  "bill.verifying": "Checking your payment…",
+  "bill.paid": "Payment received. Thank you.",
+  "bill.waiting":
+    "The bank has not confirmed the payment yet. Wait a minute, then check again.",
+  "bill.checkAgain": "Check again",
+  "bill.notPaid":
+    "The payment was not completed, so your plan was not changed.",
+  "bill.refused":
+    "A payment came in, but it could not be matched to the plan. Your plan was not changed. Please contact us and give this reference: {reference}",
+  "bill.choose": "Choose a plan",
+  "bill.cycleMonthly": "Monthly",
+  "bill.cycleAnnual": "Yearly",
+  "bill.perMonth": "{price} a month",
+  "bill.perYear": "{price} a year",
+  "bill.saving": "Two months free: you save {amount} a year.",
+  "bill.current": "Your plan now",
+  "bill.included": "What is included in each plan",
+  "bill.how": "How do you want to pay?",
+  "bill.once": "Pay once",
+  "bill.onceHelp": "No automatic renewal. You pay again when the time ends.",
+  "bill.auto": "Renew automatically",
+  "bill.autoHelp":
+    "Your card is charged each time. You can turn it off any time.",
+  "bill.pay": "Pay {amount} with Paystack",
+  "bill.paying": "Opening Paystack…",
+  "bill.upgradeNote":
+    "Upgrading starts today. The unused days of your current plan are added as extra days.",
+  "bill.lowerBlocked":
+    "You are on Pro until {date}. Choose Pro to add more time.",
+  "bill.adminOnly": "Only the facility admin can pay. Ask your admin.",
+  "bill.offline": "You need internet to pay or to see your payments.",
+  "bill.test":
+    "Test mode: no real money moves. Use card 4084 0840 8408 4081, any future date, CVV 408. If asked, PIN 408408 and code 123456.",
+  "bill.err.signin": "Sign in again to continue.",
+  "bill.err.paystack":
+    "Paystack could not be reached. Nothing was charged. Try again in a minute.",
+  "bill.err.server":
+    "Something went wrong on our side. Nothing was charged. Try again.",
+  "bill.err.noEmail":
+    "Your account has no email address. Add one in your account, then try again.",
+  "bill.err.noAuto": "Automatic renewal is not available yet. Choose Pay once.",
+  "bill.err.misconfigured":
+    "Payments are being set up. Please try again later.",
+  "bill.err.notAdmin": "Only the facility admin can pay.",
+  "bill.err.failed": "That did not work. Nothing was charged. Try again.",
+  "bill.cancel": "Turn off automatic renewal",
+  "bill.cancelTitle": "Turn off automatic renewal?",
+  "bill.cancelText":
+    "Your plan stays on until {date}. After that it ends unless you pay again.",
+  "bill.cancelled": "Automatic renewal is off.",
+  "bill.history": "Your payments",
+  "bill.noPayments": "No payments yet.",
+  "bill.st.success": "Paid",
+  "bill.st.pending": "Waiting",
+  "bill.st.failed": "Not completed",
+  "bill.m.renewal": "Automatic renewal",
 } as const;
 
 export type Key = keyof typeof en;

@@ -910,4 +910,74 @@ export const dict: Partial<Record<Key, string>> = {
   "file.err.corrupt":
     "Enweghị ike imeghe faịlụ ahụ. Ọ nwere ike ịbụ na ọ mebiri n'ụzọ. Rịọ maka otu ọhụrụ.",
   "file.err.failed": "Ihe adịghị mma. Ọ dịghị ihe e gbanwere.",
+
+  // ----- the plan and payment tab
+  "bill.tab": "Atụmatụ na ịkwụ ụgwọ",
+  "bill.title": "Atụmatụ gị",
+  "bill.free": "Efu",
+  "bill.basic": "Basic",
+  "bill.pro": "Pro",
+  "bill.s.free": "Ị nọ n'atụmatụ efu, nke nwere ohere ruo ndị ọrịa {limit}.",
+  "bill.s.active_other": "E kwụrụ ụgwọ ruo {date}. Ụbọchị {count} fọdụrụ.",
+  "bill.s.renews": "Ọ na-eme ọhụrụ n'onwe ya site na kaadị gị.",
+  "bill.s.ends":
+    "Ọ gaghị eme ọhụrụ n'onwe ya. Kwụọ ụgwọ ọzọ tupu {date} ka ọ nọgide.",
+  "bill.s.pilot": "Onyinye nnwale: Pro bụ nke efu maka gị ruo {date}.",
+  "bill.s.pastDue":
+    "Ụgwọ ikpeazụ agabeghị. Atụmatụ gị ga-anọgide ruo {date}. Kwụọ ugbu a ka ọ nọgide.",
+  "bill.s.expired":
+    "Atụmatụ ị kwụrụ ụgwọ ya agwụla, ị alọghachikwa na efu. Ndị ọrịa gị na ndekọ gị nọ n'udo.",
+  "bill.verifying": "Na-elele ụgwọ ị kwụrụ…",
+  "bill.paid": "Anatala ụgwọ. Daalụ.",
+  "bill.waiting": "Ụlọ akụ emeghị nkwenye ya. Chere nkeji, wee lelee ọzọ.",
+  "bill.checkAgain": "Lelee ọzọ",
+  "bill.notPaid": "E mechaghị ịkwụ ụgwọ ahụ, ya mere atụmatụ gị agbanwebeghị.",
+  "bill.refused":
+    "Ụgwọ batara, ma enweghị ike ijikọta ya na atụmatụ ahụ. Atụmatụ gị agbanwebeghị. Biko kpọtụrụ anyị were nọmba ntụaka a: {reference}",
+  "bill.choose": "Họrọ atụmatụ",
+  "bill.cycleMonthly": "Kwa ọnwa",
+  "bill.cycleAnnual": "Kwa afọ",
+  "bill.perMonth": "{price} n'ọnwa",
+  "bill.perYear": "{price} n'afọ",
+  "bill.saving": "Ọnwa abụọ n'efu: ị na-echekwa {amount} n'afọ.",
+  "bill.current": "Atụmatụ gị ugbu a",
+  "bill.included": "Ihe dị n'atụmatụ ọ bụla",
+  "bill.how": "Kedu ka ị chọrọ ịkwụ ụgwọ?",
+  "bill.once": "Kwụọ otu ugboro",
+  "bill.onceHelp": "Enweghị mmeghari n'onwe ya. Ị ga-akwụ ọzọ mgbe oge gwụrụ.",
+  "bill.auto": "Meghee ọhụrụ n'onwe ya",
+  "bill.autoHelp":
+    "A na-ewepụ ego na kaadị gị oge ọ bụla. Ị nwere ike ịkwụsị ya oge ọ bụla.",
+  "bill.pay": "Kwụọ {amount} site na Paystack",
+  "bill.paying": "Na-emeghe Paystack…",
+  "bill.upgradeNote":
+    "Mmelite na-amalite taa. A na-agbakwunye ụbọchị atụmatụ gị ugbu a na-ejighị dị ka ụbọchị ndị ọzọ.",
+  "bill.lowerBlocked": "Ị nọ na Pro ruo {date}. Họrọ Pro iji tinye oge ọzọ.",
+  "bill.adminOnly":
+    "Naanị onye nchịkwa ụlọ ọgwụ nwere ike ịkwụ ụgwọ. Gwa onye nchịkwa gị.",
+  "bill.offline": "Ị chọrọ ịntanetị iji kwụọ ụgwọ ma ọ bụ ịhụ ụgwọ ị kwụrụ.",
+  "bill.test":
+    "Ọnọdụ nnwale: ego ọ bụla anaghị akpa. Jiri kaadị 4084 0840 8408 4081, ụbọchị ọ bụla n'ọdịnihu, CVV 408. Ọ bụrụ na a jụọ, PIN 408408 na koodu 123456.",
+  "bill.err.signin": "Banye ọzọ ka ị gaa n'ihu.",
+  "bill.err.paystack":
+    "Enweghị ike ịkpọtụrụ Paystack. E wepụghị ego ọ bụla. Nwaa ọzọ n'ime nkeji.",
+  "bill.err.server":
+    "Ihe adịghị mma n'akụkụ anyị. E wepụghị ego ọ bụla. Nwaa ọzọ.",
+  "bill.err.noEmail":
+    "Akaụntụ gị enweghị adreesị imeelụ. Tinye otu n'akaụntụ gị, wee nwaa ọzọ.",
+  "bill.err.noAuto": "Mmeghari n'onwe ya adịbeghị. Họrọ Kwụọ otu ugboro.",
+  "bill.err.misconfigured": "A na-ahazi ịkwụ ụgwọ. Biko nwaa ọzọ ma emesia.",
+  "bill.err.notAdmin": "Naanị onye nchịkwa ụlọ ọgwụ nwere ike ịkwụ ụgwọ.",
+  "bill.err.failed": "Nke ahụ adịghị arụ ọrụ. E wepụghị ego ọ bụla. Nwaa ọzọ.",
+  "bill.cancel": "Kwụsị mmeghari n'onwe ya",
+  "bill.cancelTitle": "Kwụsị mmeghari n'onwe ya?",
+  "bill.cancelText":
+    "Atụmatụ gị ga-anọgide ruo {date}. Mgbe nke ahụ gasịrị ọ ga-agwụ ma ọ bụrụ na ị kwụghị ọzọ.",
+  "bill.cancelled": "Mmeghari n'onwe ya akwụsịla.",
+  "bill.history": "Ụgwọ ị kwụrụ",
+  "bill.noPayments": "Ọ dịbeghị ụgwọ ị kwụrụ.",
+  "bill.st.success": "Akwụọla",
+  "bill.st.pending": "Na-eche",
+  "bill.st.failed": "Emechaghị",
+  "bill.m.renewal": "Mmeghari n'onwe ya",
 };

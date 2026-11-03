@@ -70,6 +70,7 @@ const WHERE: Record<string, string> = {
   near: "Nearby phones tab (sync between two phones)",
   peers: "Phones you have synced with",
   file: "Changes file (no Wi-Fi)",
+  bill: "Plan and payment tab",
 };
 
 const q = (s: string) => `"${s.replace(/"/g, '""')}"`;

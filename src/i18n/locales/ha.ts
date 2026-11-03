@@ -955,4 +955,80 @@ export const dict: Partial<Record<Key, string>> = {
   "file.err.corrupt":
     "Ba a iya buɗe fayil ɗin ba. Wataƙila ya lalace a hanya. Nemi sabon kwafi.",
   "file.err.failed": "Wani abu ya faru. Ba a canza komai ba.",
+
+  // ----- the plan and payment tab
+  "bill.tab": "Tsari da biya",
+  "bill.title": "Tsarinka",
+  "bill.free": "Kyauta",
+  "bill.basic": "Basic",
+  "bill.pro": "Pro",
+  "bill.s.free":
+    "Kana kan tsarin kyauta, mai ɗaukar marasa lafiya har {limit}.",
+  "bill.s.active_one": "An biya har {date}. Saura kwana {count}.",
+  "bill.s.active_other": "An biya har {date}. Saura kwanaki {count}.",
+  "bill.s.renews": "Yana sabuntawa ta atomatik da katinka.",
+  "bill.s.ends":
+    "Ba zai sabunta kansa ba. Sake biya kafin {date} don ci gaba da shi.",
+  "bill.s.pilot": "Tayin gwaji: Pro kyauta ne a gare ka har {date}.",
+  "bill.s.pastDue":
+    "Biyan ƙarshe bai wuce ba. Tsarinka zai ci gaba har {date}. Biya yanzu don ci gaba da shi.",
+  "bill.s.expired":
+    "Tsarin da ka biya ya ƙare, ka koma kan kyauta. Marasa lafiyarka da bayananka suna lafiya.",
+  "bill.verifying": "Ana duba biyan da ka yi…",
+  "bill.paid": "An karɓi kuɗin. Na gode.",
+  "bill.waiting":
+    "Banki bai tabbatar da biyan ba tukuna. Jira minti ɗaya, sannan ka sake dubawa.",
+  "bill.checkAgain": "Sake dubawa",
+  "bill.notPaid": "Ba a kammala biyan ba, don haka ba a canza tsarinka ba.",
+  "bill.refused":
+    "Biya ya shigo, amma ba a iya haɗa shi da tsarin ba. Ba a canza tsarinka ba. Don Allah tuntuɓe mu da wannan lambar: {reference}",
+  "bill.choose": "Zaɓi tsari",
+  "bill.cycleMonthly": "Kowane wata",
+  "bill.cycleAnnual": "Kowace shekara",
+  "bill.perMonth": "{price} a wata",
+  "bill.perYear": "{price} a shekara",
+  "bill.saving": "Watanni biyu kyauta: kana adana {amount} a shekara.",
+  "bill.current": "Tsarinka a yanzu",
+  "bill.included": "Abin da ke cikin kowane tsari",
+  "bill.how": "Yaya kake son biya?",
+  "bill.once": "Biya sau ɗaya",
+  "bill.onceHelp":
+    "Babu sabuntawa ta atomatik. Za ka sake biya idan lokaci ya ƙare.",
+  "bill.auto": "Sabunta ta atomatik",
+  "bill.autoHelp":
+    "Ana cire kuɗi daga katinka kowane lokaci. Za ka iya kashe shi a kowane lokaci.",
+  "bill.pay": "Biya {amount} ta Paystack",
+  "bill.paying": "Ana buɗe Paystack…",
+  "bill.upgradeNote":
+    "Haɓakawa tana farawa yau. Ana ƙara kwanakin da ba a yi amfani da su ba na tsarinka na yanzu a matsayin ƙarin kwanaki.",
+  "bill.lowerBlocked": "Kana kan Pro har {date}. Zaɓi Pro don ƙara lokaci.",
+  "bill.adminOnly":
+    "Mai kula da asibiti ne kawai zai iya biya. Tambayi mai kula da ku.",
+  "bill.offline": "Kana buƙatar intanet don biya ko ganin biyanka.",
+  "bill.test":
+    "Yanayin gwaji: ba kuɗin gaske da ke motsawa. Yi amfani da kati 4084 0840 8408 4081, kowane kwanan wata na gaba, CVV 408. Idan an tambaya, PIN 408408 da lamba 123456.",
+  "bill.err.signin": "Sake shiga don ci gaba.",
+  "bill.err.paystack":
+    "Ba a iya kaiwa Paystack ba. Ba a cire kuɗi ba. Sake gwadawa nan da minti ɗaya.",
+  "bill.err.server":
+    "Wani abu ya faru a gefenmu. Ba a cire kuɗi ba. Sake gwadawa.",
+  "bill.err.noEmail":
+    "Asusunka ba shi da adireshin imel. Ƙara ɗaya a asusunka, sannan ka sake gwadawa.",
+  "bill.err.noAuto":
+    "Sabuntawa ta atomatik ba ta samu ba tukuna. Zaɓi Biya sau ɗaya.",
+  "bill.err.misconfigured":
+    "Ana saita biyan kuɗi. Don Allah sake gwadawa nan gaba.",
+  "bill.err.notAdmin": "Mai kula da asibiti ne kawai zai iya biya.",
+  "bill.err.failed": "Hakan bai yi aiki ba. Ba a cire kuɗi ba. Sake gwadawa.",
+  "bill.cancel": "Kashe sabuntawa ta atomatik",
+  "bill.cancelTitle": "Kashe sabuntawa ta atomatik?",
+  "bill.cancelText":
+    "Tsarinka zai ci gaba har {date}. Bayan haka zai ƙare sai dai ka sake biya.",
+  "bill.cancelled": "An kashe sabuntawa ta atomatik.",
+  "bill.history": "Biyanka",
+  "bill.noPayments": "Babu biya tukuna.",
+  "bill.st.success": "An biya",
+  "bill.st.pending": "Ana jira",
+  "bill.st.failed": "Ba a kammala ba",
+  "bill.m.renewal": "Sabuntawa ta atomatik",
 };

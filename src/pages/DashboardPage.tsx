@@ -1,4 +1,5 @@
 import { useSearchParams } from "react-router-dom";
+import { BillingView } from "../components/BillingView";
 import { DashboardOverview } from "../components/DashboardOverview";
 import { DevicesView } from "../components/DevicesView";
 import { FollowUpsView } from "../components/FollowUpsView";
@@ -16,6 +17,7 @@ type Tab =
   | "reminders"
   | "report"
   | "nearby"
+  | "billing"
   | "devices";
 
 const TABS: { id: Tab; label: Key }[] = [
@@ -25,6 +27,8 @@ const TABS: { id: Tab; label: Key }[] = [
   { id: "report", label: "dash.tabReport" },
   // Two phones swapping records over the clinic Wi-Fi: anyone on the team can do it
   { id: "nearby", label: "near.tab" },
+  // Everyone can see the plan; only the admin can pay
+  { id: "billing", label: "bill.tab" },
 ];
 
 // Which phones are behind is for the facility admin
@@ -66,6 +70,7 @@ export function DashboardPage() {
       {tab === "reminders" && <RemindersView />}
       {tab === "report" && <LgaReportView />}
       {tab === "nearby" && <NearbyView />}
+      {tab === "billing" && <BillingView />}
       {tab === "devices" && <DevicesView />}
     </>
   );

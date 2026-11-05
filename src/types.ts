@@ -162,3 +162,17 @@ export interface Reminder {
   createdAt: number;
   updatedAt: number;
 }
+
+/* 
+
+src/components/AppShell.tsx	so the navigation stays alive when one screen crashes, and for a “skip to content” link
+src/index.css	your colour tokens and focus styles, for the accessibility pass
+src/db.ts	demo mode needs a separate practice database that can never mix with real data
+src/components/AuthScreens.tsx, plus src/hooks/useAuth.ts or AuthProvider.tsx	the onboarding wizard goes after sign-up
+src/components/PrivacyCard.tsx (and wherever the privacy notice and SMS consent text live)	the legal wording review
+the current landing page index.html	I’ll update it from your file, not from my old copy, in case you changed it after I gave you prima-landing.zip
+
+Still outstanding from Day 26: PlansPage.tsx, PlanCard.tsx, lib/plan.ts, hooks/usePlan.ts.
+
+
+*/

@@ -980,4 +980,107 @@ export const dict: Partial<Record<Key, string>> = {
   "bill.st.pending": "Ń dúró",
   "bill.st.failed": "A kò parí",
   "bill.m.renewal": "Àtúnṣe fúnra rẹ̀",
+
+  // ----- the crash screen
+  "crash.title": "Nǹkan kan ṣẹlẹ̀ lórí ojú ìwé yìí",
+  "crash.safe": "Àwọn àkọsílẹ̀ tí o ti fi pamọ́ wà ní ààbò lórí fóònù yìí.",
+  "crash.unsaved":
+    "Ó ṣeé ṣe kí a má tíì fi ohun tí ò ń kọ lórí ojú ìwé yìí pamọ́.",
+  "crash.retry": "Tún gbìyànjú",
+  "crash.reload": "Tún Prima ṣí",
+  "crash.home": "Lọ sí Ilé",
+  "crash.copy": "Ṣàdàkọ àlàyé fún ìrànlọ́wọ́",
+  "crash.copied": "A ti ṣàdàkọ rẹ̀. O lè fi ránṣẹ́ sí ìrànlọ́wọ́.",
+  "crash.details": "Àlàyé ẹ̀rọ",
+  "crash.tip":
+    "Tí èyí bá ń ṣẹlẹ̀ léraléra, ṣàdàkọ àlàyé náà kí o sì fi ránṣẹ́ sí ìrànlọ́wọ́.",
+  "crash.staleTitle": "A ti ṣe àtúnṣe Prima",
+  "crash.staleText":
+    "Tún un ṣí láti rí ẹ̀dà tuntun. Àwọn àkọsílẹ̀ tí o ti fi pamọ́ wà ní ààbò.",
+
+  // ----- accessibility
+  "a11y.skip": "Fò lọ sí àkóónú pàtàkì",
+  "a11y.mainMenu": "Àkójọ àṣàyàn pàtàkì",
+  // ----- the first-sign-in wizard
+  "welcome.title": "Káàbọ̀ sí Prima",
+  "welcome.stepOf": "Ìgbésẹ̀ {n} nínú {total}",
+  "welcome.languageTitle": "Èdè wo ni o fẹ́ lò?",
+  "welcome.languageNote": "O lè yí i padà lẹ́yìn náà nínú Àkáǹtì.",
+  "welcome.intendedTitle": "Ohun tí Prima jẹ́, àti ohun tí kì í ṣe",
+  "welcome.confidentialTitle": "Pípa àṣírí ìwífún aláìsàn mọ́",
+  "welcome.readyTitle": "O ti ṣetán",
+  "welcome.tipRegister":
+    "Forúkọ aláìsàn sílẹ̀ láti àmì Forúkọsílẹ̀. Ó ń ṣiṣẹ́ láìsí íńtánẹ́ẹ̀tì.",
+  "welcome.tipLock": "Ṣètò PIN nínú Àkáǹtì, kí ẹlòmíràn má bàa ṣí Prima.",
+  "welcome.tipSync":
+    "Àwọn àkọsílẹ̀ máa ń gbéra fúnra wọn nígbà tí nẹ́tíwọ́ọ̀kì bá wà. Àmì ìkùukùu ń fi ohun tó ń dúró hàn.",
+  "welcome.next": "Tókàn",
+  "welcome.back": "Padà",
+  "welcome.finish": "Bẹ̀rẹ̀ lílo Prima",
+  "welcome.tickToContinue": "Ṣàmì sínú àpótí náà láti tẹ̀síwájú.",
+  "welcome.saved": "A ti kọ ìfohùnsí rẹ sílẹ̀.",
+  "welcome.savedLater":
+    "A ti fi ìfohùnsí rẹ pamọ́ sórí fóònù yìí. A ó kọ ọ́ sílẹ̀ lórí íńtánẹ́ẹ̀tì nígbà tí nẹ́tíwọ́ọ̀kì bá wà.",
+  "welcome.englishOnly": "Ọ̀rọ̀ yìí wà ní èdè Gẹ̀ẹ́sì fún ìsinsìnyí.",
+  // ----- the Plans page
+  "plans.title": "Àwọn Ètò",
+  "plans.subtitle":
+    "Owó tó rọrùn fún ilé ìwòsàn rẹ. Sanwó lóṣooṣù, tàbí sanwó oṣù mẹ́wàá kí o gba ọdún kan péré.",
+  "plans.pay": "Yan ètò kí o sì sanwó",
+  "plans.askAdmin":
+    "Alákòóso ilé ìwòsàn rẹ nìkan ló lè sanwó. Bi í kí ó ṣí Àwọn Ètò.",
+  "plans.f.free1": "Ilé ìwòsàn 1",
+  "plans.f.free2": "Títí dé aláìsàn 200",
+  "plans.f.free3": "Ìforúkọsílẹ̀, ìbẹ̀wò àti lílò láìsí íńtánẹ́ẹ̀tì",
+  "plans.f.basic1": "Aláìsàn láìní ààlà",
+  "plans.f.basic2": "Gbígbé CSV jáde àti ìròyìn LGA",
+  "plans.f.basic3": "Ìṣàfilọ́lẹ̀ tí a lè fi sórí fóònù (PWA)",
+  "plans.f.basic4": "Títí dé òṣìṣẹ́ 3",
+  "plans.f.basic5": "Ìsọ̀kan data láàrin àwọn ẹ̀rọ láìsí íńtánẹ́ẹ̀tì",
+  "plans.f.pro1": "Gbogbo ohun tó wà nínú Basic",
+  "plans.f.pro2": "Àtòkọ ìbẹ̀wò ìtọ́pinpin tó tó àkókò",
+  "plans.f.pro3": "Gbígbé FHIR àti DHIS2 jáde",
+  "plans.f.pro4": "Ìdàpọ̀ àwọn àkọsílẹ̀ méjì lọ́nà ọlọ́gbọ́n",
+  "plans.f.pro5": "Àtòkọ ìránnilétí SMS (fífiranṣẹ́ ń bọ̀ láìpẹ́)",
+  // ----- the plan and usage card
+  "plan.usageTitle": "Ètò àti lílò rẹ̀",
+  "plan.name": "Ètò {plan}",
+  "plan.patientsPhone": "Aláìsàn: {count} lórí fóònù yìí",
+  "plan.inCloud": "{count} nínú ìkùukùu",
+  "plan.limit": "ààlà {count}",
+  "plan.noLimit": "kò ní ààlà",
+  "plan.staff": "Àkáǹtì òṣìṣẹ́: {used} nínú {max}",
+  "plan.parked_other":
+    "Aláìsàn {count} ń dúró de àtúnṣe ètò kí a tó gbé wọn lọ.",
+  "plan.seePlans": "Wo àwọn ètò",
+
+  // ----- practice mode
+  "demo.label": "Ipò ìdánrawò",
+  "demo.banner":
+    "Ipò ìdánrawò: àwọn aláìsàn ibí yìí jẹ́ èyí tí a ṣẹ̀dá. A kò fi nǹkankan ránṣẹ́ sí ibikíbi tàbí kí a fi kún ilé ìwòsàn rẹ.",
+  "demo.leave": "Jáde kúrò ní ipò ìdánrawò",
+  "demo.reset": "Tún ìdánrawò bẹ̀rẹ̀",
+  "demo.try": "Gbìyànjú Prima pẹ̀lú àwọn aláìsàn ìdánrawò",
+  "demo.tryNote":
+    "O kò nílò àkáǹtì. Àwọn aláìsàn tí a ṣẹ̀dá, a kò sì fi nǹkankan ránṣẹ́ sí ibikíbi.",
+  "demo.noPay": "A ti pa sísanwó ní ipò ìdánrawò.",
+
+  // ----- near and over the Free plan limit, and a wrong phone clock
+  "limit.over":
+    "O ti kọjá ààlà ètò Ọ̀fẹ́ ti aláìsàn {limit}. A ṣì ń fi àwọn aláìsàn tuntun pamọ́, ṣùgbọ́n lórí fóònù yìí nìkan, títí o fi ṣe àtúnṣe ètò.",
+  "limit.backup":
+    "Ṣe ìpamọ́ ẹ̀dà nínú Àkáǹtì, kí wọ́n má bàa sọnù tí fóònù bá sọnù.",
+  "limit.near_other":
+    "Ààyè {count} péré ló ṣẹ́kù lórí ètò Ọ̀fẹ́. Lẹ́yìn náà, a ó máa fi àwọn aláìsàn tuntun pamọ́ lórí fóònù yìí nìkan títí o fi ṣe àtúnṣe ètò.",
+  "clock.ahead": "Aago fóònù rẹ ti sáré ju àkókò gidi lọ ní {amount}.",
+  "clock.behind": "Aago fóònù rẹ ti pẹ́ ju àkókò gidi lọ ní {amount}.",
+  "clock.why":
+    "Ọjọ́ tó wà lórí ìbẹ̀wò àti ìránnilétí lè jẹ́ àṣìṣe, àwọn àyípadà rẹ sì lè má gbéra tàbí kí wọ́n má ṣọ̀kan pẹ̀lú àwọn fóònù mìíràn.",
+  "clock.fix":
+    "Ṣí Ètò fóònù rẹ, lọ sí Ọjọ́ àti àkókò, kí o sì tan ọjọ́ àti àkókò aládàáṣe.",
+  "clock.check": "Tún ṣàyẹ̀wò",
+  "clock.checking": "Ń ṣàyẹ̀wò…",
+  "clock.minutes_other": "ìṣẹ́jú {count}",
+  "clock.hours_other": "wákàtí {count}",
+  "clock.days_other": "ọjọ́ {count}",
 };

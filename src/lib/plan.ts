@@ -1,5 +1,6 @@
 //FREE_PATIENT_LIMIT: // Mirrors the database function patient_limit();
 
+import type { Key } from "../i18n";
 import { getCurrentFacility } from "./config";
 
 export type Plan = "free" | "basic" | "pro";
@@ -23,7 +24,7 @@ const MIN_PLAN: Record<Feature, Plan> = {
   followUps: "pro",
   csvExport: "basic",
   lgaReport: "basic",
-  unlimitedPatients: "basic",
+  unlimitedPatients: "free",
   duplicateMerge: "pro",
   smsReminders: "pro",
   fhirExport: "pro",
@@ -33,6 +34,7 @@ const MIN_PLAN: Record<Feature, Plan> = {
 export const PRICES = { basic: 2500, pro: 5000 } as const;
 export const money = (n: number) => `₦${n.toLocaleString("en-NG")}`;
 
+// What each plan includes, in English, for the screens that are not translated yet (the upgrade window)
 export const PLANS: {
   id: Plan;
   name: string;
@@ -75,6 +77,31 @@ export const PLANS: {
   },
 ];
 
+// The same lists as dictionary keys, so the Plans page and the plan card speak the person's language.
+// Keep it in step with PLANS above: scripts/day27-plans-checks.ts fails if the two ever differ in length or a key is missing.
+export const PLAN_NAME_KEY: Record<Plan, Key> = {
+  free: "bill.free",
+  basic: "bill.basic",
+  pro: "bill.pro",
+};
+export const PLAN_FEATURES: Record<Plan, Key[]> = {
+  free: ["plans.f.free1", "plans.f.free2", "plans.f.free3"],
+  basic: [
+    "plans.f.basic1",
+    "plans.f.basic2",
+    "plans.f.basic3",
+    "plans.f.basic4",
+    "plans.f.basic5",
+  ],
+  pro: [
+    "plans.f.pro1",
+    "plans.f.pro2",
+    "plans.f.pro3",
+    "plans.f.pro4",
+    "plans.f.pro5",
+  ],
+};
+
 export class PlanLimitError extends Error {
   constructor() {
     super(`The Free plan is limited to ${FREE_PATIENT_LIMIT} patients.`);
@@ -116,3 +143,11 @@ export function clearPlanOverride() {
 
 export const canUse = (plan: Plan, feature: Feature) =>
   RANK[plan] >= RANK[MIN_PLAN[feature]];
+
+// Near the Free limit and past it: used to tell the person what is true, never to lock the form
+export const spotsLeft = (plan: Plan, active: number): number | null =>
+  plan === "free" ? Math.max(0, FREE_PATIENT_LIMIT - active) : null;
+export const isOverPlan = (plan: Plan, active: number) =>
+  plan === "free" && active >= FREE_PATIENT_LIMIT;
+export const isNearLimit = (plan: Plan, active: number) =>
+  plan === "free" && active >= LIMIT_WARNING && active < FREE_PATIENT_LIMIT;

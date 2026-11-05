@@ -2,6 +2,7 @@ import { db } from "../db";
 import { en, type Key } from "../i18n/locales/en";
 import type { FacilityInfo } from "./config";
 import { supabase } from "./supabase";
+import { isDemo, leaveDemo } from "./demo";
 
 export type Role = "admin" | "staff";
 
@@ -163,8 +164,19 @@ function clearCloudSessionStorage() {
   }
 }
 
+// In practice mode, "sign out" and "erase this phone" only ever mean "leave practice mode and delete the practice data".
+// They must not touch the real sign-in, which lives in the same browser storage.
+async function leavePractice() {
+  try {
+    await db.delete();
+  } finally {
+    leaveDemo();
+  }
+}
+
 // Signing out must work with no internet, so the session is also removed by hand.
 export async function signOutThisPhone() {
+  if (isDemo()) return leavePractice();
   try {
     await supabase.auth.signOut();
   } catch {
@@ -176,6 +188,7 @@ export async function signOutThisPhone() {
 }
 
 export async function eraseThisPhone() {
+  if (isDemo()) return leavePractice();
   try {
     await supabase.auth.signOut();
   } catch {

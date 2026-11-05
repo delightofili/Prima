@@ -6,6 +6,8 @@ import { db } from "../db";
 import { useOnline } from "../hooks/common";
 import { useAuth } from "../hooks/useAuth";
 import { usePatients } from "../hooks/usePatients";
+import { useI18n } from "../i18n";
+import { PLAN_NAME_KEY } from "../lib/plan";
 import { supabase } from "../lib/supabase";
 import { LIMIT_TAG } from "../lib/syncHealth";
 import { MAX_STAFF } from "../lib/team";
@@ -19,9 +21,8 @@ interface Usage {
   staff_limit: number;
 }
 
-const NAMES = { free: "Free", basic: "Basic", pro: "Pro" } as const;
-
 export function PlanCard() {
+  const { t, tp } = useI18n();
   const { facility, role } = useAuth();
   const { total } = usePatients("");
   const online = useOnline();
@@ -57,27 +58,31 @@ export function PlanCard() {
 
   return (
     <section className="card space-y-3 md:col-span-2">
-      <SectionTitle icon={Gauge} title="Plan and usage" />
-      <p className="text-lg font-bold">{NAMES[plan]} plan</p>
+      <SectionTitle icon={Gauge} title={t("plan.usageTitle")} />
+      <p className="text-lg font-bold">
+        {t("plan.name", { plan: t(PLAN_NAME_KEY[plan]) })}
+      </p>
       <ul className="space-y-1">
         <li>
-          Patients: {total} on this phone
-          {cloud ? ` · ${cloud.patients} in the cloud` : ""}
-          {limit ? ` · limit ${limit}` : " · no limit"}
+          {t("plan.patientsPhone", { count: total })}
+          {cloud ? ` · ${t("plan.inCloud", { count: cloud.patients })}` : ""}
+          {` · ${limit ? t("plan.limit", { count: limit }) : t("plan.noLimit")}`}
         </li>
         <li>
-          Staff accounts: {cloud ? cloud.staff : "?"} of {MAX_STAFF[plan]}
+          {t("plan.staff", {
+            used: cloud ? cloud.staff : "?",
+            max: MAX_STAFF[plan],
+          })}
         </li>
       </ul>
       {parked > 0 && (
         <p className="rounded-xl bg-accent-50 p-3 font-medium">
-          {parked} {parked === 1 ? "patient is" : "patients are"} waiting for a
-          plan upgrade before uploading.
+          {tp("plan.parked", parked)}
         </p>
       )}
       {role === "admin" && (
         <Link to="/plans" className="btn btn-secondary sm:w-48">
-          See plans
+          {t("plan.seePlans")}
         </Link>
       )}
     </section>

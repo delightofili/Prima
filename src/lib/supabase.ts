@@ -1,11 +1,14 @@
 import { createClient } from "@supabase/supabase-js";
 import { config } from "./config";
+import { isDemo } from "./demo";
 
 // Every request to the cloud gives up after 40 seconds. Without this, one request that never answers (a weak or
 // blocked connection, a paused project) keeps "Syncing…" on screen for ever, because nothing else ever ends it.
 const REQUEST_LIMIT_MS = 40_000;
 
 const fetchWithTimeout: typeof fetch = async (input, init) => {
+  // Practice mode: the cloud is out of reach, whatever else goes wrong (demoGuard.ts is the first lock, this is the second)
+  if (isDemo()) throw new TypeError("Failed to fetch");
   const controller = new AbortController();
   const timer = setTimeout(
     () =>

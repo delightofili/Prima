@@ -1031,4 +1031,112 @@ export const dict: Partial<Record<Key, string>> = {
   "bill.st.pending": "Ana jira",
   "bill.st.failed": "Ba a kammala ba",
   "bill.m.renewal": "Sabuntawa ta atomatik",
+
+  // ----- the crash screen
+  "crash.title": "Wani abu ya faru a wannan allon",
+  "crash.safe": "Bayanan da ka riga ka adana suna lafiya a wannan waya.",
+  "crash.unsaved":
+    "Wataƙila ba a adana duk abin da kake rubutawa a wannan allon ba.",
+  "crash.retry": "Sake gwadawa",
+  "crash.reload": "Sake buɗe Prima",
+  "crash.home": "Je Gida",
+  "crash.copy": "Kwafi bayani don tallafi",
+  "crash.copied": "An kwafa. Za ka iya aika shi zuwa tallafi.",
+  "crash.details": "Cikakken bayani na fasaha",
+  "crash.tip": "Idan hakan ya ci gaba, kwafi bayanin ka aika shi zuwa tallafi.",
+  "crash.staleTitle": "An sabunta Prima",
+  "crash.staleText":
+    "Sake buɗewa don samun sabon sigar. Bayanan da ka riga ka adana suna lafiya.",
+
+  // ----- accessibility
+  "a11y.skip": "Tsallake zuwa babban abun ciki",
+  "a11y.mainMenu": "Babban menu",
+  // ----- the first-sign-in wizard
+  "welcome.title": "Barka da zuwa Prima",
+  "welcome.stepOf": "Mataki na {n} cikin {total}",
+  "welcome.languageTitle": "Wane harshe kake son amfani da shi?",
+  "welcome.languageNote": "Za ka iya canza shi daga baya a Asusu.",
+  "welcome.intendedTitle": "Abin da Prima take, da abin da ba ita ba",
+  "welcome.confidentialTitle": "Kare sirrin bayanan marasa lafiya",
+  "welcome.readyTitle": "Ka shirya",
+  "welcome.tipRegister":
+    "Yi rajistar mara lafiya daga shafin Rajista. Yana aiki ba tare da intanet ba.",
+  "welcome.tipLock": "Saita PIN a Asusu, don kada wani ya buɗe Prima.",
+  "welcome.tipSync":
+    "Bayanai suna aikawa da kansu idan akwai sigina. Alamar gajimare tana nuna abin da ke jira.",
+  "welcome.next": "Na gaba",
+  "welcome.back": "Koma baya",
+  "welcome.finish": "Fara amfani da Prima",
+  "welcome.tickToContinue": "Saka alama a akwatin don ci gaba.",
+  "welcome.saved": "An adana yarjejeniyarka.",
+  "welcome.savedLater":
+    "An adana yarjejeniyarka a wannan waya. Za a rubuta ta a intanet idan akwai sigina.",
+  "welcome.englishOnly": "Wannan rubutu da Turanci ne a yanzu.",
+  // ----- the Plans page
+  "plans.title": "Tsare-tsare",
+  "plans.subtitle":
+    "Farashi mai sauƙi don asibitinka. Biya kowane wata, ko ka biya wata goma ka samu shekara duka.",
+  "plans.pay": "Zaɓi tsari ka biya",
+  "plans.askAdmin":
+    "Shugaban asibitinka kaɗai zai iya biya. Ka roƙe shi ya buɗe Tsare-tsare.",
+  "plans.f.free1": "Asibiti 1",
+  "plans.f.free2": "Har marasa lafiya 200",
+  "plans.f.free3": "Rajista, ziyara da amfani ba tare da intanet ba",
+  "plans.f.basic1": "Marasa lafiya ba iyaka",
+  "plans.f.basic2": "Fitar da CSV da rahoton LGA",
+  "plans.f.basic3": "Manhaja mai shigarwa (PWA)",
+  "plans.f.basic4": "Har ma'aikata 3",
+  "plans.f.basic5": "Daidaita bayanai tsakanin na'urori ba tare da intanet ba",
+  "plans.f.pro1": "Duk abin da ke cikin Basic",
+  "plans.f.pro2": "Jerin ziyarar bibiya da suka kai lokaci",
+  "plans.f.pro3": "Fitar da FHIR da DHIS2",
+  "plans.f.pro4": "Haɗa kwafi cikin sauƙi",
+  "plans.f.pro5": "Jerin tunatarwar SMS (aikawa na zuwa nan ba da jimawa ba)",
+  // ----- the plan and usage card
+  "plan.usageTitle": "Tsari da amfani",
+  "plan.name": "Tsarin {plan}",
+  "plan.patientsPhone": "Marasa lafiya: {count} a wannan waya",
+  "plan.inCloud": "{count} a gajimare",
+  "plan.limit": "iyaka {count}",
+  "plan.noLimit": "babu iyaka",
+  "plan.staff": "Asusun ma'aikata: {used} cikin {max}",
+  "plan.parked_one":
+    "{count} mara lafiya yana jiran haɓaka tsari kafin a aika.",
+  "plan.parked_other":
+    "{count} marasa lafiya suna jiran haɓaka tsari kafin a aika.",
+  "plan.seePlans": "Duba tsare-tsare",
+
+  // ----- practice mode
+  "demo.label": "Yanayin horo",
+  "demo.banner":
+    "Yanayin horo: marasa lafiyar nan na ƙirƙira ne. Ba a aika komai ko'ina ba, kuma ba a ƙara komai a asibitinka ba.",
+  "demo.leave": "Fita daga yanayin horo",
+  "demo.reset": "Sake fara horon",
+  "demo.try": "Gwada Prima da marasa lafiya na horo",
+  "demo.tryNote":
+    "Ba sai ka buɗe asusu ba. Marasa lafiya na ƙirƙira, kuma ba a aika komai ko'ina ba.",
+  "demo.noPay": "An kashe biyan kuɗi a yanayin horo.",
+
+  // ----- near and over the Free plan limit, and a wrong phone clock
+  "limit.over":
+    "Ka wuce iyakar tsarin Kyauta na marasa lafiya {limit}. Ana ci gaba da adana sababbin marasa lafiya, amma a wannan waya kawai, har sai ka haɓaka.",
+  "limit.backup": "Yi ajiya a Asusu, don kada su ɓace idan wayar ta ɓace.",
+  "limit.near_one":
+    "Wuri {count} kawai ya rage a tsarin Kyauta. Bayan haka, ana adana sababbin marasa lafiya a wannan waya kawai har sai ka haɓaka.",
+  "limit.near_other":
+    "Wurare {count} kawai suka rage a tsarin Kyauta. Bayan haka, ana adana sababbin marasa lafiya a wannan waya kawai har sai ka haɓaka.",
+  "clock.ahead": "Agogon wayarka ya wuce lokacin gaskiya da {amount}.",
+  "clock.behind": "Agogon wayarka ya baya da lokacin gaskiya da {amount}.",
+  "clock.why":
+    "Kwanakin ziyara da tunatarwa na iya zama kuskure, kuma canje-canjenka ba za su iya aikawa ko daidaita da sauran wayoyi ba.",
+  "clock.fix":
+    "Buɗe Saituna na wayarka, je zuwa Kwanan wata da lokaci, ka kunna kwanan wata da lokaci na atomatik.",
+  "clock.check": "Sake dubawa",
+  "clock.checking": "Ana dubawa…",
+  "clock.minutes_one": "minti {count}",
+  "clock.minutes_other": "mintuna {count}",
+  "clock.hours_one": "awa {count}",
+  "clock.hours_other": "awanni {count}",
+  "clock.days_one": "rana {count}",
+  "clock.days_other": "kwanaki {count}",
 };

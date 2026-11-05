@@ -6,6 +6,7 @@ import { Field } from "./FormBits";
 import { Logo } from "./Logo";
 import { Modal } from "./Modal";
 import { useI18n } from "../i18n";
+import { enterDemo } from "../lib/demo";
 
 // An example of what a facility name looks like, shown in the empty box
 const FACILITY_EXAMPLE = "Awka North PHC";
@@ -195,6 +196,16 @@ export function WelcomeScreen() {
         </button>
       </form>
       <p className="text-sm text-subtext">{t("auth.needInternet")}</p>
+      <div className="space-y-2 border-t-2 border-line pt-4">
+        <button
+          type="button"
+          className="btn btn-secondary"
+          onClick={() => enterDemo()}
+        >
+          {t("demo.try")}
+        </button>
+        <p className="text-sm text-subtext">{t("demo.tryNote")}</p>
+      </div>
     </Shell>
   );
 }

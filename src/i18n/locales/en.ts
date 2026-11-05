@@ -1000,6 +1000,115 @@ export const en = {
   "bill.st.pending": "Waiting",
   "bill.st.failed": "Not completed",
   "bill.m.renewal": "Automatic renewal",
+
+  // ----- the crash screen
+  "crash.title": "Something went wrong on this screen",
+  "crash.safe": "Records you already saved are safe on this phone.",
+  "crash.unsaved":
+    "Anything you were typing on this screen may not have been saved.",
+  "crash.retry": "Try again",
+  "crash.reload": "Reload Prima",
+  "crash.home": "Go to Home",
+  "crash.copy": "Copy details for support",
+  "crash.copied": "Copied. You can send it to support.",
+  "crash.details": "Technical details",
+  "crash.tip":
+    "If this keeps happening, copy the details and send them to support.",
+  "crash.staleTitle": "Prima has been updated",
+  "crash.staleText":
+    "Reload to get the new version. Records you already saved are safe.",
+
+  // ----- accessibility
+  "a11y.skip": "Skip to the main content",
+  "a11y.mainMenu": "Main menu",
+  // ----- the first-sign-in wizard
+  "welcome.title": "Welcome to Prima",
+  "welcome.stepOf": "Step {n} of {total}",
+  "welcome.languageTitle": "Which language do you want to use?",
+  "welcome.languageNote": "You can change it later in Account.",
+  "welcome.intendedTitle": "What Prima is, and what it is not",
+  "welcome.confidentialTitle": "Keeping patients' information private",
+  "welcome.readyTitle": "You are ready",
+  "welcome.tipRegister":
+    "Register a patient from the Register tab. It works with no internet.",
+  "welcome.tipLock": "Set a PIN in Account, so nobody else can open Prima.",
+  "welcome.tipSync":
+    "Records upload by themselves when there is signal. The cloud icon shows what is waiting.",
+  "welcome.next": "Next",
+  "welcome.back": "Back",
+  "welcome.finish": "Start using Prima",
+  "welcome.tickToContinue": "Tick the box to continue.",
+  "welcome.saved": "Your agreement has been recorded.",
+  "welcome.savedLater":
+    "Your agreement is saved on this phone. It will be recorded online when there is signal.",
+  "welcome.englishOnly": "This statement is in English for now.",
+  // ----- the Plans page
+  "plans.title": "Plans",
+  "plans.subtitle":
+    "Simple pricing for your facility. Pay monthly, or pay for ten months and get a whole year.",
+  "plans.pay": "Choose a plan and pay",
+  "plans.askAdmin": "Only your facility admin can pay. Ask them to open Plans.",
+  "plans.f.free1": "1 facility",
+  "plans.f.free2": "Up to 200 patients",
+  "plans.f.free3": "Registration, visits and offline use",
+  "plans.f.basic1": "Unlimited patients",
+  "plans.f.basic2": "CSV export and LGA report",
+  "plans.f.basic3": "Installable app (PWA)",
+  "plans.f.basic4": "Up to 3 staff",
+  "plans.f.basic5": "Offline sync across devices",
+  "plans.f.pro1": "Everything in Basic",
+  "plans.f.pro2": "Follow-up due list",
+  "plans.f.pro3": "FHIR and DHIS2 export",
+  "plans.f.pro4": "Smart duplicate merge",
+  "plans.f.pro5": "SMS reminder queue (sending coming soon)",
+  // ----- the plan and usage card
+  "plan.usageTitle": "Plan and usage",
+  "plan.name": "{plan} plan",
+  "plan.patientsPhone": "Patients: {count} on this phone",
+  "plan.inCloud": "{count} in the cloud",
+  "plan.limit": "limit {count}",
+  "plan.noLimit": "no limit",
+  "plan.staff": "Staff accounts: {used} of {max}",
+  "plan.parked_one":
+    "{count} patient is waiting for a plan upgrade before uploading.",
+  "plan.parked_other":
+    "{count} patients are waiting for a plan upgrade before uploading.",
+  "plan.seePlans": "See plans",
+
+  // ----- practice mode
+  "demo.label": "Practice mode",
+  "demo.banner":
+    "Practice mode: the patients here are made up. Nothing is sent anywhere or added to your clinic.",
+  "demo.leave": "Leave practice mode",
+  "demo.reset": "Start the practice again",
+  "demo.try": "Try Prima with practice patients",
+  "demo.tryNote":
+    "No account needed. Made-up patients, and nothing is sent anywhere.",
+  "demo.noPay": "Payment is switched off in practice mode.",
+
+  // ----- near and over the Free plan limit, and a wrong phone clock
+  "limit.over":
+    "You are over the Free plan limit of {limit} patients. New patients are still saved, but only on this phone, until you upgrade.",
+  "limit.backup":
+    "Make a backup in Account, so they are not lost if the phone is lost.",
+  "limit.near_one":
+    "Only {count} place left on the Free plan. After that, new patients are saved only on this phone until you upgrade.",
+  "limit.near_other":
+    "Only {count} places left on the Free plan. After that, new patients are saved only on this phone until you upgrade.",
+  "clock.ahead": "Your phone's clock is {amount} ahead of the real time.",
+  "clock.behind": "Your phone's clock is {amount} behind the real time.",
+  "clock.why":
+    "Dates on visits and reminders can be wrong, and your changes may not upload or sync with other phones.",
+  "clock.fix":
+    "Open your phone's Settings, go to Date and time, and switch on automatic date and time.",
+  "clock.check": "Check again",
+  "clock.checking": "Checking…",
+  "clock.minutes_one": "{count} minute",
+  "clock.minutes_other": "{count} minutes",
+  "clock.hours_one": "{count} hour",
+  "clock.hours_other": "{count} hours",
+  "clock.days_one": "{count} day",
+  "clock.days_other": "{count} days",
 } as const;
 
 export type Key = keyof typeof en;

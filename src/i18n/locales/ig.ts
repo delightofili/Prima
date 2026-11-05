@@ -980,4 +980,106 @@ export const dict: Partial<Record<Key, string>> = {
   "bill.st.pending": "Na-eche",
   "bill.st.failed": "Emechaghị",
   "bill.m.renewal": "Mmeghari n'onwe ya",
+
+  // ----- the crash screen
+  "crash.title": "Ihe adịghị mma n'ihuenyo a",
+  "crash.safe": "Ndekọ ị chekwaralarị nọ n'udo n'ekwentị a.",
+  "crash.unsaved": "Ihe ọ bụla ị na-ede n'ihuenyo a nwere ike ọ chekwaghị.",
+  "crash.retry": "Nwaa ọzọ",
+  "crash.reload": "Megharịa Prima",
+  "crash.home": "Gaa n'Ụlọ",
+  "crash.copy": "Detuo nkọwa maka nkwado",
+  "crash.copied": "E detụrụ ya. Ị nwere ike izipu ya n'otu nkwado.",
+  "crash.details": "Nkọwa teknụzụ",
+  "crash.tip":
+    "Ọ bụrụ na nke a na-aga n'ihu, detuo nkọwa ahụ ma zipụ ya n'otu nkwado.",
+  "crash.staleTitle": "A melitela Prima",
+  "crash.staleText":
+    "Megharịa iji nweta ụdị ọhụrụ. Ndekọ ị chekwaralarị nọ n'udo.",
+
+  // ----- accessibility
+  "a11y.skip": "Gafee gaa n'isi ọdịnaya",
+  "a11y.mainMenu": "Isi ndepụta",
+  // ----- the first-sign-in wizard
+  "welcome.title": "Nnọọ na Prima",
+  "welcome.stepOf": "Nzọụkwụ {n} n'ime {total}",
+  "welcome.languageTitle": "Asụsụ ole ka ịchọrọ iji?",
+  "welcome.languageNote": "Ị nwere ike ịgbanwe ya mgbe e mesịrị na Akaụntụ.",
+  "welcome.intendedTitle": "Ihe Prima bụ, na ihe ọ bụghị",
+  "welcome.confidentialTitle": "Ichebe ozi ndị ọrịa n'ihe nzuzo",
+  "welcome.readyTitle": "Ị dị njikere",
+  "welcome.tipRegister":
+    "Debanye onye ọrịa site na taabụ Debanye. Ọ na-arụ ọrụ na-enweghị ịntanetị.",
+  "welcome.tipLock": "Tọọ PIN na Akaụntụ, ka onye ọzọ ghara imeghe Prima.",
+  "welcome.tipSync":
+    "Ndekọ na-ebugo onwe ha mgbe netwọk dị. Akara igwe ojii na-egosi ihe na-echere.",
+  "welcome.next": "Ọzọ",
+  "welcome.back": "Laghachi",
+  "welcome.finish": "Bido iji Prima",
+  "welcome.tickToContinue": "Tinye akara n'igbe iji gaa n'ihu.",
+  "welcome.saved": "E dekọla nkwenye gị.",
+  "welcome.savedLater":
+    "A chekwara nkwenye gị n'ekwentị a. A ga-edekọ ya n'ịntanetị mgbe netwọk dị.",
+  "welcome.englishOnly": "Ederede a bụ n'Asụsụ Bekee ugbu a.",
+  // ----- the Plans page
+  "plans.title": "Atụmatụ",
+  "plans.subtitle":
+    "Ọnụ ahịa dị mfe maka ụlọ ọgwụ gị. Kwụọ kwa ọnwa, ma ọ bụ kwụọ ọnwa iri ma nweta afọ dum.",
+  "plans.pay": "Họrọ atụmatụ ma kwụọ ụgwọ",
+  "plans.askAdmin":
+    "Naanị onye isi ụlọ ọgwụ gị nwere ike ikwụ ụgwọ. Gwa ya meghee Atụmatụ.",
+  "plans.f.free1": "Ụlọ ọgwụ 1",
+  "plans.f.free2": "Ruo ndị ọrịa 200",
+  "plans.f.free3": "Ndebanye aha, nleta na ojiji na-enweghị ịntanetị",
+  "plans.f.basic1": "Ndị ọrịa na-enweghị oke",
+  "plans.f.basic2": "Mbupụ CSV na akụkọ LGA",
+  "plans.f.basic3": "Ngwa a pụrụ ịtụnye (PWA)",
+  "plans.f.basic4": "Ruo ndị ọrụ 3",
+  "plans.f.basic5": "Mmekọrịta data n'etiti ekwentị na-enweghị ịntanetị",
+  "plans.f.pro1": "Ihe niile dị na Basic",
+  "plans.f.pro2": "Ndepụta nleta nlekọta na-abịa",
+  "plans.f.pro3": "Mbupụ FHIR na DHIS2",
+  "plans.f.pro4": "Ijikọta ndekọ abụọ n'ụzọ ihe ọmụma",
+  "plans.f.pro5": "Ndepụta ncheta SMS (izipu na-abịa n'oge na-adịghị anya)",
+  // ----- the plan and usage card
+  "plan.usageTitle": "Atụmatụ na iji ya",
+  "plan.name": "Atụmatụ {plan}",
+  "plan.patientsPhone": "Ndị ọrịa: {count} n'ekwentị a",
+  "plan.inCloud": "{count} n'igwe ojii",
+  "plan.limit": "oke {count}",
+  "plan.noLimit": "enweghị oke",
+  "plan.staff": "Akaụntụ ndị ọrụ: {used} n'ime {max}",
+  "plan.parked_other":
+    "Ndị ọrịa {count} na-eche mmelite atụmatụ tupu e bugoro ha.",
+  "plan.seePlans": "Hụ atụmatụ",
+
+  // ----- practice mode
+  "demo.label": "Ọnọdụ ọzụzụ",
+  "demo.banner":
+    "Ọnọdụ ọzụzụ: ndị ọrịa ebe a bụ ndị e chepụtara. A naghị ezipụ ihe ọ bụla ebe ọ bụla ma ọ bụ tinye ya n'ụlọ ọgwụ gị.",
+  "demo.leave": "Pụọ n'ọnọdụ ọzụzụ",
+  "demo.reset": "Malitegharịa ọzụzụ",
+  "demo.try": "Jiri ndị ọrịa ọzụzụ nwaa Prima",
+  "demo.tryNote":
+    "Ịchọghị akaụntụ. Ndị ọrịa e chepụtara, a naghịkwa ezipụ ihe ọ bụla ebe ọ bụla.",
+  "demo.noPay": "E mechiri ịkwụ ụgwọ n'ọnọdụ ọzụzụ.",
+
+  // ----- near and over the Free plan limit, and a wrong phone clock
+  "limit.over":
+    "Ị gafeela oke atụmatụ Efu nke ndị ọrịa {limit}. A ka na-echekwa ndị ọrịa ọhụrụ, mana naanị n'ekwentị a, ruo mgbe ị melitere.",
+  "limit.backup":
+    "Mee nchekwa ndabere na Akaụntụ, ka ha ghara ịla n'iyi ma ọ bụrụ na ekwentị furu efu.",
+  "limit.near_other":
+    "Naanị ebe {count} fọdụrụ na atụmatụ Efu. Mgbe nke ahụ gasịrị, a ga-echekwa ndị ọrịa ọhụrụ naanị n'ekwentị a ruo mgbe ị melitere.",
+  "clock.ahead": "Elekere ekwentị gị dị {amount} n'ihu oge ezi.",
+  "clock.behind": "Elekere ekwentị gị dị {amount} n'azụ oge ezi.",
+  "clock.why":
+    "Ụbọchị dị na nleta na ncheta nwere ike ịbụ ihe na-ezighi ezi, ma mgbanwe gị nwere ike ọ gaghị abanye n'ịntanetị ma ọ bụ mekọrịta na ekwentị ndị ọzọ.",
+  "clock.fix":
+    "Meghee Ntọala ekwentị gị, gaa na Ụbọchị na oge, ma gbanye ụbọchị na oge nke onwe ya.",
+  "clock.check": "Lelee ọzọ",
+  "clock.checking": "Na-elele…",
+  "clock.minutes_other": "nkeji {count}",
+  "clock.hours_other": "awa {count}",
+  "clock.days_other": "ụbọchị {count}",
 };

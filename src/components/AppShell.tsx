@@ -1,4 +1,5 @@
-import { NavLink, Outlet, Link } from "react-router-dom";
+import { useEffect, useRef } from "react";
+import { NavLink, Outlet, Link, useLocation } from "react-router-dom";
 import {
   ChartColumn,
   House,
@@ -12,6 +13,11 @@ import { SessionBanner } from "./SessionBanner";
 import { GloveToggle } from "./GloveToggle";
 import { Logo } from "./Logo";
 import { SyncBadge } from "./SyncBadge";
+import { OnboardingWizard } from "./OnboardingWizard";
+import { DemoBar } from "./DemoBar";
+import { ClockBanner } from "./ClockBanner";
+import { OverPlanNotice } from "./OverPlanNotice";
+import { RouteBoundary } from "./ErrorBoundary";
 import { config } from "../lib/config";
 import { useLock } from "../hooks/useLock";
 import { StatusBanner } from "./StatusBanner";
@@ -28,13 +34,34 @@ const NAV: { to: string; label: Key; icon: LucideIcon; end: boolean }[] = [
 export function AppShell() {
   const { lockNow } = useLock();
   const { t } = useI18n();
+  const { pathname } = useLocation();
+  const main = useRef<HTMLElement>(null);
+  const first = useRef(true);
+
+  // Moving to another screen moves keyboard and screen reader focus to the top of the new screen
+  // (not on the very first draw, so the page does not grab focus when the app opens)
+  useEffect(() => {
+    if (first.current) {
+      first.current = false;
+      return;
+    }
+    main.current?.focus({ preventScroll: true });
+  }, [pathname]);
+
   return (
     <div className="min-h-screen md:flex">
+      <a href="#main" className="skip-link">
+        {t("a11y.skip")}
+      </a>
+
       {/* Sidebar: tablets and laptops */}
       <aside className="sticky top-0 hidden h-screen w-64 shrink-0 flex-col border-r-2 border-line bg-white p-4 md:flex">
         <Logo />
         <p className="mt-1 text-sm text-subtext">{config.facilityName}</p>
-        <nav className="mt-6 flex flex-col gap-1">
+        <nav
+          aria-label={t("a11y.mainMenu")}
+          className="mt-6 flex flex-col gap-1"
+        >
           {NAV.map(({ to, label, icon: Icon, end }) => (
             <NavLink
               key={to}
@@ -48,7 +75,7 @@ export function AppShell() {
                 }`
               }
             >
-              <Icon size={22} /> {t(label)}
+              <Icon size={22} aria-hidden /> {t(label)}
             </NavLink>
           ))}
         </nav>
@@ -57,7 +84,7 @@ export function AppShell() {
           onClick={lockNow}
           className="mt-1 flex h-12 w-full items-center gap-3 rounded-xl px-3 text-base font-semibold text-ink hover:bg-page"
         >
-          <Lock size={22} /> {t("nav.lock")}
+          <Lock size={22} aria-hidden /> {t("nav.lock")}
         </button>
         <NavLink
           to="/account"
@@ -67,7 +94,7 @@ export function AppShell() {
             }`
           }
         >
-          <CircleUser size={22} /> {t("nav.account")}
+          <CircleUser size={22} aria-hidden /> {t("nav.account")}
         </NavLink>
         <div className="mt-auto space-y-3">
           <GloveToggle />
@@ -86,7 +113,7 @@ export function AppShell() {
               aria-label={t("nav.account")}
               className="p-2 text-white"
             >
-              <CircleUser size={26} />
+              <CircleUser size={26} aria-hidden />
             </Link>
             <button
               type="button"
@@ -94,21 +121,35 @@ export function AppShell() {
               className="p-2 text-white"
               onClick={lockNow}
             >
-              <Lock size={24} />
+              <Lock size={24} aria-hidden />
             </button>
           </div>
         </header>
 
-        <main className="mx-auto w-full max-w-5xl flex-1 px-4 pb-28 pt-5 md:px-8 md:pb-10 md:pt-8">
+        <main
+          id="main"
+          ref={main}
+          tabIndex={-1}
+          className="mx-auto w-full max-w-5xl flex-1 px-4 pb-28 pt-5 outline-none md:px-8 md:pb-10 md:pt-8"
+        >
+          <DemoBar />
+          <OverPlanNotice />
+          <ClockBanner />
           <SessionBanner />
           <StatusBanner />
           <PowerBanner />
-          <Outlet />
+          {/* If this screen crashes, only this part is replaced: the menus stay, and moving to another screen clears it */}
+          <RouteBoundary>
+            <Outlet />
+          </RouteBoundary>
         </main>
       </div>
 
       {/* Bottom tabs: phones */}
-      <nav className="fixed inset-x-0 bottom-0 z-10 grid grid-cols-4 border-t-2 border-line bg-white pb-[env(safe-area-inset-bottom)] md:hidden">
+      <nav
+        aria-label={t("a11y.mainMenu")}
+        className="fixed inset-x-0 bottom-0 z-10 grid grid-cols-4 border-t-2 border-line bg-white pb-[env(safe-area-inset-bottom)] md:hidden"
+      >
         {NAV.map(({ to, label, icon: Icon, end }) => (
           <NavLink
             key={to}
@@ -120,10 +161,12 @@ export function AppShell() {
               }`
             }
           >
-            <Icon size={24} /> {t(label)}
+            <Icon size={24} aria-hidden /> {t(label)}
           </NavLink>
         ))}
       </nav>
+
+      <OnboardingWizard />
     </div>
   );
 }

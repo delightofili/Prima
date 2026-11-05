@@ -1,5 +1,6 @@
 import Dexie, { type Table, type Transaction } from "dexie";
 import { getCurrentFacility } from "./lib/config";
+import { dbName, isDemo } from "./lib/demo";
 import { toE164 } from "./lib/utils";
 import { nextLabelFor } from "./lib/vaccines";
 import { buildAudit } from "./lib/auditCore";
@@ -32,7 +33,7 @@ class PrimaDB extends Dexie {
   audit!: Table<AuditEntry, string>;
 
   constructor() {
-    super("prima");
+    super(dbName()); // practice mode opens its own database, so it can never touch the real one
     this.version(1).stores({
       patients:
         "id, &cardNumber, name, phone, nhisNumber, dob, gender, createdAt, [name+dob+villageKey]",
@@ -108,7 +109,7 @@ function enqueue(
   recordId: string,
   trans: Transaction,
 ) {
-  if ((trans as unknown as TxFlags).remote) return;
+  if ((trans as unknown as TxFlags).remote || isDemo()) return; // practice records are never queued for upload
   const item: SyncItem = {
     table,
     recordId,

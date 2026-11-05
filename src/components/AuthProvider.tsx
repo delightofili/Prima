@@ -42,6 +42,7 @@ import { setAuditActor } from "../lib/auditCore";
 import { logAudit } from "../lib/audit";
 import { SecurityGate } from "./SecurityGate";
 import { retryFailed } from "../lib/syncService";
+import { isDemo } from "../lib/demo";
 
 const nameOf = (u: User) =>
   (u.user_metadata?.full_name as string | undefined) ??
@@ -150,7 +151,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   // 4. Whenever we are online: is this person still on the team, and did their role or facility change?
   useEffect(() => {
-    if (status !== "ready" || !account) return;
+    if (status !== "ready" || !account || isDemo()) return; // practice mode asks the cloud nothing
     let alive = true;
     const run = async () => {
       if (!navigator.onLine) return;
@@ -251,7 +252,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [account]);
 
   useEffect(() => {
-    if (status !== "ready") return;
+    if (status !== "ready" || isDemo()) return;
     let last = Date.now();
     const onVisible = () => {
       if (document.visibilityState !== "visible" || !navigator.onLine) return;
@@ -308,6 +309,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       {status === "ready" &&
         (accessEnded ? (
           <AccessEndedScreen />
+        ) : isDemo() ? (
+          <>{children}</>
         ) : (
           <SecurityGate>{children}</SecurityGate>
         ))}

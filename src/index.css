@@ -8,10 +8,10 @@
   --color-accent-500: #f59e0b;
   --color-page: #fffbeb;
   --color-ink: #111827;
-  --color-subtext: #6b7280;
+  --color-subtext: #5b6472;
   --color-line: #e5e7eb;
-  --color-danger: #dc2626;
-  --color-ok: #059669;
+  --color-danger: #b91c1c;
+  --color-ok: #047857;
   --color-male: #2563eb;
   --color-pregnant: #db2777;
   --font-sans: system-ui, "Segoe UI", Roboto, sans-serif;
@@ -215,4 +215,48 @@ html[data-glove="on"] .stepper-btn {
 .card {
   min-width: 0;
   overflow-wrap: anywhere;
+}
+
+/* Day 27: accessibility */
+
+/* A keyboard user's first Tab shows a link that jumps past the menus to the screen's content */
+.skip-link {
+  position: absolute;
+  left: 0.75rem;
+  top: -5rem;
+  z-index: 100;
+  padding: 0.75rem 1rem;
+  border-radius: 0.75rem;
+  background: var(--color-prima-900);
+  color: #fff;
+  font-weight: 600;
+  text-decoration: underline;
+}
+.skip-link:focus {
+  top: 0.75rem;
+}
+
+/* Wherever the keyboard is, the person can see it. Inputs had no ring at all (only a border colour). */
+:focus-visible {
+  outline: 3px solid var(--color-prima-900);
+  outline-offset: 2px;
+}
+.input:focus-visible {
+  outline: 3px solid var(--color-prima-900);
+  outline-offset: 1px;
+}
+html[data-power="low"] :focus-visible {
+  outline-color: #5eead4;
+}
+
+/* People who ask their phone for less motion get none */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

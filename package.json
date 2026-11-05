@@ -17,7 +17,8 @@
     "verify:deploy": "node scripts/verify-deploy.mjs",
     "i18n:export": "npx tsx scripts/i18n-export.ts",
     "i18n:import": "npx tsx scripts/i18n-import.ts",
-    "i18n:scan": "npx tsx scripts/i18n-scan.ts"
+    "i18n:scan": "npx tsx scripts/i18n-scan.ts",
+    "gate": "tsx scripts/gate-checks.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",

@@ -1,0 +1,246 @@
+kind,name,fingerprint
+function,"public.accept_notice(p_kind text, p_version text, p_language te",85e24d5385e6cb9e674d437e57d647c3
+function,"public.apply_payment(p_reference text, p_amount_kobo integer, p",7947a7a9524102bf05c2d1cc3ebb936e
+function,"public.apply_renewal(p_customer_code text, p_plan_code text, p_",933a950b9c8bc955f2a00f55ba071066
+function,public.audit_events(),f652cd30fcf8a2a8d752a033b408cb9b
+function,public.audit_stamp(),d2ecfd53bffa1630c9acf2583fbb2421
+function,"public.begin_payment(p_user uuid, p_code text, p_mode text, p_r",d19527cabb3c7d4c7f10bc20a3581fc6
+function,public.billing_grace_days(),f5d164ccae2c2ab413f9e78bb7290524
+function,"public.create_facility(p_name text, p_code text, p_lga text, p_",0a72afb2364f1254718b1360f148125f
+function,public.create_invite(p_role text),e88833899a3d73d963c58fed0e839b41
+function,public.cycle_days(c text),21e6f013422848c38472c5186284e67d
+function,public.cycle_interval(c text),92afed6895b1e57b825d3154f769311e
+function,public.enforce_patient_limit(),95f15d35c7ad3fe955dfd471ce21631b
+function,"public.erase_patient(p_patient_id uuid, p_request_id uuid)",9a4a9a36b7f18294322e2ab01631ce88
+function,"public.expire_one(p_facility uuid, p_now timestamp with time zo",b5f635602811fe90913d0e4aa3d0a7e3
+function,public.expire_plans(p_now timestamp with time zone),0d5e44638759527a2997eccad2644025
+function,"public.extend_billing(p_facility uuid, p_code text, p_auto bool",b0f33f72209e29d2ebe7ca11d3e1dd0c
+function,public.facility_pulse(),0857a76b4196bec9f32799d0521a5887
+function,public.get_billing(),aa19426c2a499bfe2765c42a0b1d47d1
+function,public.get_cancel_target(p_user uuid),4a8cd7a3a4e1d5e8810e3d96dd6ad7e0
+function,public.get_sync_key(),2e0ab80d31834bd8b11c16c6ca523dc7
+function,"public.grant_pilot(p_facility uuid, p_months integer, p_now tim",297e6718ff1fcd59a62adb6299a1ddc5
+function,public.guard_patient_changes(),f8fd4b209e73c5329a76840f78b8d107
+function,public.handle_new_user(),72c3c1cc5f16740f6c00fbbdf2825e98
+function,public.ignore_stale_write(),bdbd0092f4fe68f41b98cab8a6ca39d0
+function,public.ignore_stale_write_erasable(),8f0df5571c48aada4e689e25b89b4f3a
+function,public.is_admin_of(p_facility uuid),25d80c60f23a7604f911fad541ccc98a
+function,public.join_facility(p_code text),777beacd32c3bf50b32c2d07357fb466
+function,public.keep_sent_final(),49a94755f988e218a149dfabbec80867
+function,public.keepalive(),e47bd7312e277e6a5ff387cde55a38e7
+function,public.list_devices(),0a1a8546dc401a7b1ecac2b4d10cbfd7
+function,public.list_invites(),690109d7d7f56714ca8face44c2964bd
+function,public.list_members(),f15c4f180e140176473162a3484d0677
+function,"public.log_event(p_facility uuid, p_action text, p_entity_type ",12d3f73cff241989edf951cce0a85d9d
+function,"public.mark_cancelling(p_subscription_code text, p_now timestam",7b6da85b64783eea3006f582edf68629
+function,"public.mark_past_due(p_customer_code text, p_now timestamp with",03e324d85b5f1e5af0d0c8eeefb5a0dc
+function,public.max_staff(p_plan text),a6e7f66285da70cdd7bfcaacd2fb0048
+function,public.my_admin_facility(),75522ded0aeb18b7975ecc3ce4d8cca4
+function,public.my_facility_ids(),fa552b22fd52c02de3fd1c4c6aa454cb
+function,public.my_notices(),8893f007c220c64323b5658853170fdf
+function,public.new_sync_key(),256ff195d22d9c08485362c646e98004
+function,"public.note_subscription(p_customer_code text, p_subscription_c",d4ee3795645faf24691836d806abb618
+function,public.patient_limit(p_plan text),a3fab32bf82065853f18c5c6992074c8
+function,public.plan_rank(p text),717a66cf4f5d90d317c84a40c26b7b67
+function,public.plan_usage(),97607c15d55e025538a3393a92a77cf6
+function,public.remove_device(p_id uuid),c8a38f9186fb14f8e6e2ef7d1da8dd0f
+function,public.remove_member(p_user_id uuid),3c526d91e44a85710ff435669fc59845
+function,"public.rename_device(p_id uuid, p_label text)",3f9fa379de95357a6e88ec39d34af766
+function,"public.report_device(p_device uuid, p_name text, p_app_version ",ae12faff9e53288b82adfc8c2d6c3e43
+function,public.revoke_invite(p_code text),2b44d8fed85c2f571aa857c8d6d4513a
+function,public.rotate_key_on_member_removal(),51a2547420dce60edeef4d87121abf3b
+function,public.rotate_sync_key(),0c8374905edcbc36dce2dffe58c116f0
+function,public.server_time(),06b6ad8423793677919a5f92a1b1c6e6
+function,public.touch_synced_at(),faa1d96f9b7ece74eb6804e433e92f31
+function,"public.update_facility(p_name text, p_lga text, p_state text)",0492ed734402c4f18e2ce0349631cb41
+function,"public.user_in_facility(p_user uuid, p_facility uuid)",a4af6499536e4e5c9eeadefaf92b6c49
+function grants,"public.accept_notice(p_kind text, p_version text, p_language te",e24b146746f907fa2bb7d414f19f990e
+function grants,"public.apply_payment(p_reference text, p_amount_kobo integer, p",892b8ae782c1cda04df3378937694ec0
+function grants,"public.apply_renewal(p_customer_code text, p_plan_code text, p_",892b8ae782c1cda04df3378937694ec0
+function grants,public.audit_events(),892b8ae782c1cda04df3378937694ec0
+function grants,public.audit_stamp(),892b8ae782c1cda04df3378937694ec0
+function grants,"public.begin_payment(p_user uuid, p_code text, p_mode text, p_r",892b8ae782c1cda04df3378937694ec0
+function grants,public.billing_grace_days(),892b8ae782c1cda04df3378937694ec0
+function grants,"public.create_facility(p_name text, p_code text, p_lga text, p_",e24b146746f907fa2bb7d414f19f990e
+function grants,public.create_invite(p_role text),e24b146746f907fa2bb7d414f19f990e
+function grants,public.cycle_days(c text),892b8ae782c1cda04df3378937694ec0
+function grants,public.cycle_interval(c text),892b8ae782c1cda04df3378937694ec0
+function grants,public.enforce_patient_limit(),892b8ae782c1cda04df3378937694ec0
+function grants,"public.erase_patient(p_patient_id uuid, p_request_id uuid)",e24b146746f907fa2bb7d414f19f990e
+function grants,"public.expire_one(p_facility uuid, p_now timestamp with time zo",892b8ae782c1cda04df3378937694ec0
+function grants,public.expire_plans(p_now timestamp with time zone),892b8ae782c1cda04df3378937694ec0
+function grants,"public.extend_billing(p_facility uuid, p_code text, p_auto bool",892b8ae782c1cda04df3378937694ec0
+function grants,public.facility_pulse(),e24b146746f907fa2bb7d414f19f990e
+function grants,public.get_billing(),e24b146746f907fa2bb7d414f19f990e
+function grants,public.get_cancel_target(p_user uuid),892b8ae782c1cda04df3378937694ec0
+function grants,public.get_sync_key(),e24b146746f907fa2bb7d414f19f990e
+function grants,"public.grant_pilot(p_facility uuid, p_months integer, p_now tim",892b8ae782c1cda04df3378937694ec0
+function grants,public.guard_patient_changes(),892b8ae782c1cda04df3378937694ec0
+function grants,public.handle_new_user(),892b8ae782c1cda04df3378937694ec0
+function grants,public.ignore_stale_write(),892b8ae782c1cda04df3378937694ec0
+function grants,public.ignore_stale_write_erasable(),892b8ae782c1cda04df3378937694ec0
+function grants,public.is_admin_of(p_facility uuid),e24b146746f907fa2bb7d414f19f990e
+function grants,public.join_facility(p_code text),e24b146746f907fa2bb7d414f19f990e
+function grants,public.keep_sent_final(),b8c576d6a3e2b5619d887c7c82279bcf
+function grants,public.keepalive(),c85e4029bd990af9e88351a6e42ce150
+function grants,public.list_devices(),e24b146746f907fa2bb7d414f19f990e
+function grants,public.list_invites(),e24b146746f907fa2bb7d414f19f990e
+function grants,public.list_members(),e24b146746f907fa2bb7d414f19f990e
+function grants,"public.log_event(p_facility uuid, p_action text, p_entity_type ",892b8ae782c1cda04df3378937694ec0
+function grants,"public.mark_cancelling(p_subscription_code text, p_now timestam",892b8ae782c1cda04df3378937694ec0
+function grants,"public.mark_past_due(p_customer_code text, p_now timestamp with",892b8ae782c1cda04df3378937694ec0
+function grants,public.max_staff(p_plan text),e24b146746f907fa2bb7d414f19f990e
+function grants,public.my_admin_facility(),e24b146746f907fa2bb7d414f19f990e
+function grants,public.my_facility_ids(),e24b146746f907fa2bb7d414f19f990e
+function grants,public.my_notices(),e24b146746f907fa2bb7d414f19f990e
+function grants,public.new_sync_key(),892b8ae782c1cda04df3378937694ec0
+function grants,"public.note_subscription(p_customer_code text, p_subscription_c",892b8ae782c1cda04df3378937694ec0
+function grants,public.patient_limit(p_plan text),b8c576d6a3e2b5619d887c7c82279bcf
+function grants,public.plan_rank(p text),892b8ae782c1cda04df3378937694ec0
+function grants,public.plan_usage(),e24b146746f907fa2bb7d414f19f990e
+function grants,public.remove_device(p_id uuid),e24b146746f907fa2bb7d414f19f990e
+function grants,public.remove_member(p_user_id uuid),e24b146746f907fa2bb7d414f19f990e
+function grants,"public.rename_device(p_id uuid, p_label text)",e24b146746f907fa2bb7d414f19f990e
+function grants,"public.report_device(p_device uuid, p_name text, p_app_version ",e24b146746f907fa2bb7d414f19f990e
+function grants,public.revoke_invite(p_code text),e24b146746f907fa2bb7d414f19f990e
+function grants,public.rotate_key_on_member_removal(),892b8ae782c1cda04df3378937694ec0
+function grants,public.rotate_sync_key(),e24b146746f907fa2bb7d414f19f990e
+function grants,public.server_time(),e24b146746f907fa2bb7d414f19f990e
+function grants,public.touch_synced_at(),b8c576d6a3e2b5619d887c7c82279bcf
+function grants,"public.update_facility(p_name text, p_lga text, p_state text)",e24b146746f907fa2bb7d414f19f990e
+function grants,"public.user_in_facility(p_user uuid, p_facility uuid)",e24b146746f907fa2bb7d414f19f990e
+index,audit_facility_time_idx,8efff890f682f21983ac03d202b826de
+index,audit_log_pkey,699c2e83d7415b2bc46801f073cacbb8
+index,billing_customers_pkey,0367510ea763d1c9f5e9259865519c2d
+index,billing_plans_paystack_plan_code_key,9380d16977c985711533c4d0a8567e25
+index,billing_plans_pkey,161c21ce9b8e7958d6d0115c85a29c0d
+index,billing_plans_plan_cycle_key,ef8cf2a6f6a57efa6a8cb5458ed59414
+index,data_requests_facility_idx,6589b98df0b73a91bd2db390624330b7
+index,data_requests_pkey,71d2a827dddfb2b38acaff771337dd34
+index,device_status_facility_idx,a79edf3ce7ed3e865484ae5d57619dbe
+index,device_status_pkey,0b6ef91a89140d72516bf3e72f34e19d
+index,facilities_code_key,74fc6864b01029173714e1f7bf4d1570
+index,facilities_pkey,074666ca5ed5ea415814ee002944777b
+index,facility_billing_pkey,416f4913b8b6465432a21ade4f67e049
+index,facility_secrets_pkey,38fa2883062ec3aba13e33b0941faeb0
+index,guardians_fac_synced_idx,52a44f5a8c1137dfaa02e71e9e13f199
+index,guardians_facility_idx,da1ad633dc33d0eed680239bd485e1f5
+index,guardians_patient_idx,6c3850d329a55b5f568c8ae89ebdd7a9
+index,guardians_phone_idx,3116f4c653cb869baf3cea13726bde61
+index,guardians_pkey,e3d1c428ca7c5418288408761eb7a0f0
+index,guardians_synced_idx,755855d1700ca39605f8f78a9d26e473
+index,immunization_due_idx,c896ff4d5e0a321d465efea4ddd706ef
+index,immunization_patient_idx,d89f112aeca0b418266c132c44252d72
+index,immunization_records_pkey,ed7e6f5355e49472c451ba47c3670b32
+index,immunizations_fac_synced_idx,f859ee8ede31dc662f11d17d3362f558
+index,immunizations_facility_idx,ae5539739579d0ba20772d13758d1f60
+index,immunizations_synced_idx,d3618ae2be7705734f562c27032d681d
+index,invites_pkey,e17bba6a3a1d0e55cd382b03bdc42175
+index,memberships_facility_idx,1e98feec0726156e1416bb15822d3436
+index,memberships_pkey,dee391da83c66bb651b6a1ecad4104c2
+index,notice_acceptances_pkey,63844a3ca6c06557414137a5b20bb7b3
+index,patients_card_number_key,15b720c045c08d07eab74f12c2917d0f
+index,patients_dob_idx,0881017a446b485cbe82f3cc77d1e06e
+index,patients_fac_synced_idx,7f59d9826a22c743ef3a6d37dd9a79b1
+index,patients_facility_idx,964082a2f7487ee0a06d02c98eaad29f
+index,patients_guardian_idx,02e931303719abd9f9c5f3b9e087e5f5
+index,patients_nhis_number_key,1507a05b8256358eb2c8f75df7771ffa
+index,patients_pkey,9e58108f75cc6ca106b32a8b8498dca3
+index,patients_synced_idx,ed2c58eb884cf66ef392ecefba15f641
+index,payments_facility_idx,1da451842b6aa5edaba9f9e2f273f702
+index,payments_pkey,20860a170aa0e56c48e7b4d3c96c692b
+index,payments_reference_key,aff51ee96e8a853d2183548d764ecf75
+index,profiles_pkey,b7142bbffc23de763c1bd9f00489ec05
+index,reminders_fac_synced_idx,b371637bef3222d02f0f91b9eda7077c
+index,reminders_facility_idx,fdb233c8df4685c2d85d5ac0f5fcfcca
+index,reminders_patient_idx,5ab4f27653be552fd42ed33019f4fa24
+index,reminders_pkey,a82b45c529d31ab38e1988481922e2e9
+index,reminders_queue_idx,593854c1c0bc54ba2056355453fedb98
+index,reminders_synced_idx,668dbf80c628cc4cc8f70c37c8efa91f
+index,visits_date_idx,cf26b5e4a04551cd5ddc5b691e57fe04
+index,visits_due_idx,c25df43f49462d19841f11ca8f49d657
+index,visits_dx_idx,bf54aec1da490fe7470a53192e4371fc
+index,visits_fac_synced_idx,0c7f770f35f2334be5822b45e7b08436
+index,visits_patient_idx,4690050a3a66fc9294c70ffad96955c7
+index,visits_pkey,939fe61e0888f8fcdeccdf0443e7546e
+index,visits_synced_idx,dc94c02fff28301ab93f5724ef43efc7
+policy,audit_log / admins read audit,5747ad6b7f23c083918efaaf6259abfa
+policy,audit_log / members add audit,7964c338644511aa9794d3493dcbff66
+policy,billing_plans / anyone signed in reads prices,42d5551ef359b2979d7a677c76f0e1e0
+policy,data_requests / admins manage requests,3c8476a5694b466ee36f8a30db802452
+policy,facilities / members read facility,ea96f5a0682e2502258e4ce0c7b7566c
+policy,guardians / members insert,5eec4aadac58d5937dfb705a4d5bf4e4
+policy,guardians / members read,2188ba2d120cf5980c5f982df1e0330b
+policy,guardians / members update,9a0e9574966998d514a415e366954edf
+policy,immunization_records / members insert,5eec4aadac58d5937dfb705a4d5bf4e4
+policy,immunization_records / members read,2188ba2d120cf5980c5f982df1e0330b
+policy,immunization_records / members update,9a0e9574966998d514a415e366954edf
+policy,memberships / read own membership,02cdc5f83e2c736b578a4b4a8a24874a
+policy,notice_acceptances / read own or admin,d9c95878039ed92c3904b21d5371ad71
+policy,patients / members insert,5eec4aadac58d5937dfb705a4d5bf4e4
+policy,patients / members read,2188ba2d120cf5980c5f982df1e0330b
+policy,patients / members update,9a0e9574966998d514a415e366954edf
+policy,payments / admins read their payments,5747ad6b7f23c083918efaaf6259abfa
+policy,profiles / read own profile,941cbf5b7f3c72ed34d0209cfe123c66
+policy,profiles / update own profile,fae02bf3bd9fe84d6ae966ca55280cc8
+policy,reminders / members insert,5eec4aadac58d5937dfb705a4d5bf4e4
+policy,reminders / members read,2188ba2d120cf5980c5f982df1e0330b
+policy,reminders / members update,9a0e9574966998d514a415e366954edf
+policy,visits / members insert,5eec4aadac58d5937dfb705a4d5bf4e4
+policy,visits / members read,2188ba2d120cf5980c5f982df1e0330b
+policy,visits / members update,9a0e9574966998d514a415e366954edf
+table,audit_log,12b23fe0d97996de25fa505b39a2d336
+table,billing_customers,133209ab11bcae63a9165d9a422b1abe
+table,billing_plans,5106fc2a1f4e4d6e41e3ead77b3ec11f
+table,data_requests,26db5b765c93157d4a273ccaba74f516
+table,device_status,50c5777ba9ba8953c62e3a40c0d382eb
+table,facilities,f0541de53ba1681bc09e421f6631e82d
+table,facility_billing,4823845c4d16d18a8100e7b126d7bc43
+table,facility_secrets,8ddcadbe2b5e7b295e61bc2f199dc4e4
+table,guardians,db468032436c81b2be36cb49d28fc8e7
+table,immunization_records,a9b00a753a7193620285f0b8c5d32d9e
+table,invites,ede461f5c9f5218d85d0b9901c5709dc
+table,memberships,af35846bf2d36d742d77d05436dcba7a
+table,notice_acceptances,22f51a6218d71a266f90fe31fd7f0ee6
+table,patients,44352161379a10d2a3b3cd14231d4d57
+table,payments,4f06a21f8111e003107cc06b5be01cf8
+table,profiles,c1b45cf27bca71b4e19483e15eb5750a
+table,reminders,05e30e0685798bae6b08429d1cb437ad
+table,visits,fff4dbe0f1de1fa8f9482a2a6f6465f1
+table grants,audit_log,e34bc655d0f78765abd51a0387932091
+table grants,billing_customers,2ce15701065b503af418a20a1885e4de
+table grants,billing_plans,9292130410e5221334fa64fa11192579
+table grants,data_requests,938116b8c146d6d424bb0118b8c6ffb3
+table grants,device_status,2ce15701065b503af418a20a1885e4de
+table grants,facilities,4dd0de1f72d2495db1f0455471ebdc73
+table grants,facility_billing,2ce15701065b503af418a20a1885e4de
+table grants,facility_secrets,2ce15701065b503af418a20a1885e4de
+table grants,guardians,938116b8c146d6d424bb0118b8c6ffb3
+table grants,immunization_records,938116b8c146d6d424bb0118b8c6ffb3
+table grants,invites,938116b8c146d6d424bb0118b8c6ffb3
+table grants,memberships,938116b8c146d6d424bb0118b8c6ffb3
+table grants,notice_acceptances,9292130410e5221334fa64fa11192579
+table grants,patients,938116b8c146d6d424bb0118b8c6ffb3
+table grants,payments,9292130410e5221334fa64fa11192579
+table grants,profiles,938116b8c146d6d424bb0118b8c6ffb3
+table grants,reminders,938116b8c146d6d424bb0118b8c6ffb3
+table grants,visits,938116b8c146d6d424bb0118b8c6ffb3
+trigger,audit_log / audit_log_stamp,905772ccbae74100119007ed7e0520ea
+trigger,data_requests / data_requests_audit,dd71baa1a506ad8beab1854ed20cc86d
+trigger,facilities / facilities_audit,02dde6ecc643a1cbdcdbb65477856b9f
+trigger,guardians / guardians_00_stale,c6ba8bf5a3f0ee71e60a6e8990bb057a
+trigger,guardians / guardians_touch,43e67e6c586a2e4036d3dd226b698c2f
+trigger,immunization_records / immunization_records_00_stale,c33462bd4223086bc15e182cee92a6b5
+trigger,immunization_records / immunizations_touch,f9927f2401dc52a2400a0d148447c8bb
+trigger,invites / invites_audit,e48aac7f73c4653858cc346de6d84043
+trigger,memberships / memberships_audit,01ec58786eb488697c45b323e54bf29a
+trigger,memberships / memberships_rotate_key,565c0a5b0bd7215969137a89b03826e5
+trigger,patients / patients_00_stale,8d0145b0651d86c6ebaee7b26d33cd1f
+trigger,patients / patients_guard,6f84e96222701d781c0a4f737ab2e749
+trigger,patients / patients_limit,ca96ba17c8cc7d49f938532379e454ab
+trigger,patients / patients_touch,b81da7703d45f3c16de4c2f374361a9b
+trigger,reminders / reminders_00_stale,4a99c1489cff9750f43e52830d194859
+trigger,reminders / reminders_sent_final,7303eb09b26aa6188e6c8d86907e1f24
+trigger,reminders / reminders_touch,e64bb0c7c5b10dc23a9a12780c069a4b
+trigger,visits / visits_00_stale,9cff32951835859a42e017a8cbcc0599
+trigger,visits / visits_touch,c626f22ee7214d65c3d0267ccb58adff

@@ -18,7 +18,10 @@
     "i18n:export": "npx tsx scripts/i18n-export.ts",
     "i18n:import": "npx tsx scripts/i18n-import.ts",
     "i18n:scan": "npx tsx scripts/i18n-scan.ts",
-    "gate": "tsx scripts/gate-checks.ts"
+    "gate": "tsx scripts/gate-checks.ts",
+    "deploy:prod": "node scripts/deploy-prod.mjs",
+    "verify:prod": "node scripts/verify-prod.mjs",
+    "schema:diff": "node scripts/schema-diff.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
@@ -48,6 +51,7 @@
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.6",
     "globals": "^17.12.0",
+    "tsx": "^4.23.15",
     "typescript": "~6.0.2",
     "typescript-eslint": "^8.69.0",
     "vite": "^8.3.0",

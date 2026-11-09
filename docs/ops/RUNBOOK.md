@@ -98,3 +98,10 @@ Four things protect the data: every phone keeps its own copy; the cloud copy; th
 | A second person who can reach the accounts in an emergency |       |       |       |
 | Lawyer or data protection adviser                          |       |       |       |
 | Clinical reviewer                                          |       |       |       |
+
+## Sign-in emails
+
+- Sent through Resend over SMTP: host smtp.resend.com, port 465, username resend, sender hello@primahealth.com.ng.
+- The Resend API key lives only in the SMTP box in Supabase (one key per project). If it ever leaks, create a new key in Resend and paste it there.
+- Resend tracking (click and open) stays OFF. Do not add a tracking subdomain.
+- Templates are saved in docs/ops/email-templates/. Staging was set up on 9 Nov 2026. Production still to do.

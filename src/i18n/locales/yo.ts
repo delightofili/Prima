@@ -1083,4 +1083,48 @@ export const dict: Partial<Record<Key, string>> = {
   "clock.minutes_other": "ìṣẹ́jú {count}",
   "clock.hours_other": "wákàtí {count}",
   "clock.days_other": "ọjọ́ {count}",
+
+  // ----- confirming an email address and resetting a password
+  "authMail.checkTitle": "Ṣàyẹ̀wò ímeèlì rẹ",
+  "authMail.checkBody":
+    "A fi koodu àti ọ̀nà asopọ̀ ránṣẹ́ sí {email}. Kọ koodu náà sísàlẹ̀, tàbí ṣí ọ̀nà asopọ̀ inú ímeèlì náà.",
+  "authMail.codeLabel": "Koodu láti inú ímeèlì",
+  "authMail.codeHint": "Nọ́ńbà nìkan ni.",
+  "authMail.confirm": "Jẹ́rìí ímeèlì",
+  "authMail.confirming": "Ń ṣàyẹ̀wò…",
+  "authMail.resend": "Fi ímeèlì tuntun ránṣẹ́",
+  "authMail.resendWait": "Tún fi ránṣẹ́ láàrin ìṣẹ́jú àáyá {seconds}",
+  "authMail.resent": "Ímeèlì tuntun wà lọ́nà.",
+  "authMail.useOther": "Lo àdírẹ́sì ímeèlì mìíràn",
+  "authMail.spam": "Kò sí nǹkan níbẹ̀? Wò inú spam tàbí junk.",
+  "authMail.forgot": "Ṣé o gbàgbé ọ̀rọ̀ aṣínà rẹ?",
+  "authMail.forgotTitle": "Tún ọ̀rọ̀ aṣínà rẹ ṣe",
+  "authMail.forgotBody": "Kọ àdírẹ́sì ímeèlì rẹ. A ó fi koodu ránṣẹ́ sí ọ.",
+  "authMail.sendCode": "Fi koodu náà ránṣẹ́",
+  "authMail.sentGeneric":
+    "Tí àdírẹ́sì ímeèlì yẹn bá ní àkáǹtì, a ti fi koodu àti ọ̀nà asopọ̀ ránṣẹ́ sí i.",
+  "authMail.newTitle": "Yan ọ̀rọ̀ aṣínà tuntun",
+  "authMail.newPassword": "Ọ̀rọ̀ aṣínà tuntun",
+  "authMail.repeatPassword": "Tún kọ ọ́ lẹ́ẹ̀kan sí i",
+  "authMail.savePassword": "Fi ọ̀rọ̀ aṣínà tuntun pamọ́",
+  "authMail.backSignIn": "Padà sí wọlé",
+  "authMail.errCode":
+    "Koodu tàbí ọ̀nà asopọ̀ yẹn kò ṣiṣẹ́. Ó lè jẹ́ pé kò tọ́, a ti lò ó, tàbí ó ti pẹ́ jù. Béèrè fún tuntun.",
+  "authMail.errMismatch": "Àwọn ọ̀rọ̀ aṣínà méjèèjì kò jọra.",
+  "authMail.errWeak":
+    "Ọ̀rọ̀ aṣínà yẹn rọrùn jù láti mọ̀. Lo èyí tó gùn jù pẹ̀lú lẹ́tà àti nọ́ńbà.",
+  "authMail.errSame": "Yan ọ̀rọ̀ aṣínà tí o kò tíì lò rí.",
+  "authMail.errCodeShort": "Kọ gbogbo koodu inú ímeèlì náà.",
+  "authMail.linkTitle": "Jẹ́rìí ímeèlì rẹ",
+  "authMail.linkBody":
+    "Tẹ bọ́tìnì náà láti jẹ́rìí pé àdírẹ́sì ímeèlì yìí jẹ́ tìrẹ.",
+  "authMail.linkDone": "A ti jẹ́rìí ímeèlì rẹ.",
+  "authMail.passwordDone": "A ti yí ọ̀rọ̀ aṣínà rẹ padà.",
+  "authMail.continue": "Tẹ̀síwájú",
+  "authMail.linkBad":
+    "Ọ̀nà asopọ̀ yìí kò kún. Ṣí ímeèlì tuntun jù láti ọ̀dọ̀ Prima kí o tún tẹ ọ̀nà asopọ̀ náà, tàbí kọ koodu náà dípò rẹ̀.",
+  "authMail.otherUser":
+    "Fóònù yìí ti wọlé gẹ́gẹ́ bí ẹlòmíràn, nítorí náà a kò jẹ́ kí o wọlé níbí. A ti fi àyípadà rẹ pamọ́. Wọlé lórí fóònù tìrẹ, tàbí kọ́kọ́ jáde níbí.",
+  "authMail.offline": "O nílò ìsopọ̀ ayélujára fún ìgbésẹ̀ yìí.",
+  "authMail.errGeneric": "Nǹkan kan ṣẹlẹ̀. Jọ̀wọ́ tún gbìyànjú.",
 };

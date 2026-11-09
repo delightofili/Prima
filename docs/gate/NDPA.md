@@ -43,7 +43,7 @@ These points come from law firm summaries of the Act and of the NDPC's guidance 
 ## 3. What data Prima holds (record of processing)
 
 | Data                               | Examples                                                                          | Where                         | Who can see it                     | Sensitive                |
-| ---------------------------------- | --------------------------------------------------------------------------------- | ----------------------------- | ---------------------------------- | ------------------------ |
+| ---------------------------------- | --------------------------------------------------------------------------------- | ----------------------------- | ---------------------------------- | ------------------------ | ------ | ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | Patient identity                   | name, sex, age or date of birth, phone, community, card number                    | phone storage, Supabase       | staff of that clinic               | yes, in a health setting |
 | Visits                             | complaints, vitals, diagnosis (ICD-10), notes                                     | phone storage, Supabase       | staff of that clinic               | yes (health)             |
 | Vaccines                           | vaccine, date, dose                                                               | phone storage, Supabase       | staff of that clinic               | yes (health)             |
@@ -54,7 +54,7 @@ These points come from law firm summaries of the Act and of the NDPC's guidance 
 | Device reports                     | device label (includes staff name), counts, battery, app version. No patient data | Supabase                      | the clinic admin                   | no                       |
 | Backups, changes files, sync codes | patient data, locked with a passphrase or the clinic key                          | wherever the clinic puts them | whoever holds the file and the key | yes                      |
 | Billing                            | payment reference, amount, plan, Paystack customer code                           | Supabase, Paystack            | the clinic admin, Prima            | no                       |
-| Crash log                          | an error message with numbers, ids and emails removed                             | stays on the phone            | the person who copies it           | no                       |
+| Crash log                          | an error message with numbers, ids and emails removed                             | stays on the phone            | the person who copies it           | no                       | Resend | Sub-processor | Sends the sign-in emails (confirmation and password reset). Receives the person's email address and the code or link. **Contract and region to confirm** (Ireland, eu-west-1). |
 
 Update this table after every build day that adds data.
 

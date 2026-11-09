@@ -10,6 +10,7 @@ import type { User } from "@supabase/supabase-js";
 import {
   AuthContext,
   type AuthState,
+  type AwaitingEmail,
   type CreateFacilityInput,
 } from "../hooks/useAuth";
 import {
@@ -43,6 +44,12 @@ import { logAudit } from "../lib/audit";
 import { SecurityGate } from "./SecurityGate";
 import { retryFailed } from "../lib/syncService";
 import { isDemo } from "../lib/demo";
+import { LINK_PATH, isUnconfirmed, parseAuthLink } from "../lib/emailAuth";
+import {
+  AuthLinkScreen,
+  CheckEmailScreen,
+  ForgotPasswordScreen,
+} from "./AuthEmailScreens";
 
 const nameOf = (u: User) =>
   (u.user_metadata?.full_name as string | undefined) ??
@@ -58,6 +65,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [accessEnded, setAccessEnded] = useState(false);
   const [foreign, setForeign] = useState<{ unsynced: number } | null>(null);
   const [notice, setNotice] = useState<string | null>(readNotice);
+  // The page an email link opens (/auth/confirm). Read once, when the app starts. Never in practice mode.
+  const [link] = useState(() =>
+    isDemo() ? null : parseAuthLink(window.location),
+  );
+  // Signed up (or tried to sign in) but the email address is not confirmed yet
+  const [awaiting, setAwaiting] = useState<AwaitingEmail | null>(null);
+  const [showForgot, setShowForgot] = useState(false);
 
   // Make this phone ready for a facility, unless it holds another facility's records
   const adopt = useCallback(async (user: User, mine: Mine) => {
@@ -190,7 +204,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         email: email.trim(),
         password,
       });
-      if (error) throw error;
+      if (error) {
+        if (isUnconfirmed(error)) {
+          setAwaiting({ email: email.trim(), sentAt: null }); // nothing was just sent, so "send a new email" is allowed at once
+          return;
+        }
+        throw error;
+      }
       clearNotice();
       setNotice(null);
       await resolveCloud(data.user);
@@ -203,13 +223,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const { data, error } = await supabase.auth.signUp({
         email: email.trim(),
         password,
-        options: { data: { full_name: name.trim() } },
+        options: {
+          data: { full_name: name.trim() },
+          emailRedirectTo: `${window.location.origin}${LINK_PATH}`,
+        },
       });
       if (error) throw error;
       if (!data.session || !data.user) {
-        throw new Error(
-          "Email confirmation is switched on in Supabase. Turn it off under Authentication, then try again.",
-        );
+        // Email confirmation is on: nothing is wrong. The person types the code (or taps the link) from the email.
+        // The same happens when the address already has an account, so nobody can find out who has one.
+        setAwaiting({ email: email.trim(), sentAt: Date.now() });
+        return;
       }
       clearNotice();
       setNotice(null);
@@ -267,6 +291,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const signOut = useCallback(() => signOutThisPhone(), []);
   const eraseAndSignOut = useCallback(() => eraseThisPhone(), []);
 
+  const openForgot = useCallback(() => setShowForgot(true), []);
+  const backToSignIn = useCallback(() => {
+    setAwaiting(null);
+    setShowForgot(false);
+  }, []);
+
+  // The code (or link) worked: there is now a cloud session, so carry on exactly as after a normal sign in
+  const continueAfterEmail = useCallback(async () => {
+    const { data } = await supabase.auth.getSession();
+    if (!data.session) throw new Error("Please sign in again.");
+    clearNotice();
+    setNotice(null);
+    setAwaiting(null);
+    setShowForgot(false);
+    await resolveCloud(data.session.user);
+  }, [resolveCloud]);
+
   const value = useMemo<AuthState>(
     () => ({
       status,
@@ -276,6 +317,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       pendingEmail: cloudUser?.email ?? null,
       cloudOk,
       notice,
+      awaiting,
+      showForgot,
       signIn,
       signUp,
       createFacility,
@@ -283,6 +326,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       refreshFacility,
       signOut,
       eraseAndSignOut,
+      openForgot,
+      backToSignIn,
+      continueAfterEmail,
     }),
     [
       status,
@@ -291,6 +337,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       cloudUser,
       cloudOk,
       notice,
+      awaiting,
+      showForgot,
       signIn,
       signUp,
       createFacility,
@@ -298,23 +346,40 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       refreshFacility,
       signOut,
       eraseAndSignOut,
+      openForgot,
+      backToSignIn,
+      continueAfterEmail,
     ],
   );
 
   return (
     <AuthContext.Provider value={value}>
-      {status === "loading" && <Splash />}
-      {status === "signedOut" && <WelcomeScreen />}
-      {status === "needsFacility" && <FacilityChooser />}
-      {status === "ready" &&
-        (accessEnded ? (
-          <AccessEndedScreen />
-        ) : isDemo() ? (
-          <>{children}</>
-        ) : (
-          <SecurityGate>{children}</SecurityGate>
-        ))}
-      {foreign && <ForeignDataDialog unsynced={foreign.unsynced} />}
+      {link ? (
+        // Someone tapped the link in an email: that page comes first, whatever else is on this phone
+        <AuthLinkScreen link={link} />
+      ) : (
+        <>
+          {status === "loading" && <Splash />}
+          {status === "signedOut" &&
+            (awaiting ? (
+              <CheckEmailScreen />
+            ) : showForgot ? (
+              <ForgotPasswordScreen />
+            ) : (
+              <WelcomeScreen />
+            ))}
+          {status === "needsFacility" && <FacilityChooser />}
+          {status === "ready" &&
+            (accessEnded ? (
+              <AccessEndedScreen />
+            ) : isDemo() ? (
+              <>{children}</>
+            ) : (
+              <SecurityGate>{children}</SecurityGate>
+            ))}
+          {foreign && <ForeignDataDialog unsynced={foreign.unsynced} />}
+        </>
+      )}
     </AuthContext.Provider>
   );
 }

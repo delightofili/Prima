@@ -9,6 +9,13 @@ export interface CreateFacilityInput {
   state: string;
 }
 
+// Someone has signed up (or tried to sign in) but has not confirmed their email address yet.
+// sentAt is when the last email was sent, or null if none was just sent (so "send a new email" is allowed at once).
+export interface AwaitingEmail {
+  email: string;
+  sentAt: number | null;
+}
+
 export interface AuthState {
   status: "loading" | "signedOut" | "needsFacility" | "ready";
   account: LocalAccount | null;
@@ -17,6 +24,8 @@ export interface AuthState {
   pendingEmail: string | null;
   cloudOk: boolean;
   notice: string | null;
+  awaiting: AwaitingEmail | null;
+  showForgot: boolean;
   signIn: (email: string, password: string) => Promise<void>;
   signUp: (name: string, email: string, password: string) => Promise<void>;
   createFacility: (input: CreateFacilityInput) => Promise<void>;
@@ -24,6 +33,9 @@ export interface AuthState {
   refreshFacility: () => Promise<void>;
   signOut: () => Promise<void>;
   eraseAndSignOut: () => Promise<void>;
+  openForgot: () => void;
+  backToSignIn: () => void;
+  continueAfterEmail: () => Promise<void>;
 }
 
 export const AuthContext = createContext<AuthState | null>(null);

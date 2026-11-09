@@ -11,7 +11,7 @@ import { enterDemo } from "../lib/demo";
 // An example of what a facility name looks like, shown in the empty box
 const FACILITY_EXAMPLE = "Awka North PHC";
 
-function Shell({
+export function Shell({
   title,
   subtitle,
   children,
@@ -36,7 +36,7 @@ function Shell({
   );
 }
 
-function ErrorText({ text }: { text: string | null }) {
+export function ErrorText({ text }: { text: string | null }) {
   if (!text) return null;
   return (
     <p role="alert" className="font-medium text-danger">
@@ -45,7 +45,7 @@ function ErrorText({ text }: { text: string | null }) {
   );
 }
 
-function PasswordInput({
+export function PasswordInput({
   value,
   onChange,
   autoComplete,
@@ -113,7 +113,7 @@ export function Splash() {
 }
 
 export function WelcomeScreen() {
-  const { signIn, signUp, notice } = useAuth();
+  const { signIn, signUp, notice, openForgot } = useAuth();
   const { t, tv } = useI18n();
   const [mode, setMode] = useState<"in" | "up">("in");
   const [name, setName] = useState("");
@@ -186,6 +186,15 @@ export function WelcomeScreen() {
             autoComplete={mode === "in" ? "current-password" : "new-password"}
           />
         </Field>
+        {mode === "in" && (
+          <button
+            type="button"
+            className="py-3 text-left font-semibold underline"
+            onClick={openForgot}
+          >
+            {t("authMail.forgot")}
+          </button>
+        )}
         <ErrorText text={error} />
         <button type="submit" className="btn btn-primary" disabled={busy}>
           {busy

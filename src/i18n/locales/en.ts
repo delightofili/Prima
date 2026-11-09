@@ -1109,6 +1109,50 @@ export const en = {
   "clock.hours_other": "{count} hours",
   "clock.days_one": "{count} day",
   "clock.days_other": "{count} days",
+
+  // ----- confirming an email address and resetting a password
+  "authMail.checkTitle": "Check your email",
+  "authMail.checkBody":
+    "We sent a code and a link to {email}. Type the code below, or open the link in the email.",
+  "authMail.codeLabel": "Code from the email",
+  "authMail.codeHint": "It is made of numbers only.",
+  "authMail.confirm": "Confirm email",
+  "authMail.confirming": "Checking…",
+  "authMail.resend": "Send a new email",
+  "authMail.resendWait": "Send again in {seconds} seconds",
+  "authMail.resent": "A new email is on its way.",
+  "authMail.useOther": "Use a different email address",
+  "authMail.spam": "Nothing there? Look in your spam or junk folder.",
+  "authMail.forgot": "Forgot your password?",
+  "authMail.forgotTitle": "Reset your password",
+  "authMail.forgotBody": "Type your email address. We will send you a code.",
+  "authMail.sendCode": "Send the code",
+  "authMail.sentGeneric":
+    "If that email address has an account, we sent a code and a link to it.",
+  "authMail.newTitle": "Choose a new password",
+  "authMail.newPassword": "New password",
+  "authMail.repeatPassword": "Type it again",
+  "authMail.savePassword": "Save the new password",
+  "authMail.backSignIn": "Back to sign in",
+  "authMail.errCode":
+    "That code or link did not work. It may be wrong, already used, or too old. Ask for a new one.",
+  "authMail.errMismatch": "The two passwords are not the same.",
+  "authMail.errWeak":
+    "That password is too easy to guess. Use a longer one with letters and numbers.",
+  "authMail.errSame": "Choose a password you have not used before.",
+  "authMail.errCodeShort": "Type the whole code from the email.",
+  "authMail.linkTitle": "Confirm your email",
+  "authMail.linkBody":
+    "Tap the button to confirm that this email address is yours.",
+  "authMail.linkDone": "Your email is confirmed.",
+  "authMail.passwordDone": "Your password is changed.",
+  "authMail.continue": "Continue",
+  "authMail.linkBad":
+    "This link is not complete. Open the newest email from Prima and tap the link again, or type the code instead.",
+  "authMail.otherUser":
+    "This phone is signed in as someone else, so we did not sign you in here. Your change is saved. Sign in on your own phone, or sign out here first.",
+  "authMail.offline": "You need an internet connection for this step.",
+  "authMail.errGeneric": "Something went wrong. Please try again.",
 } as const;
 
 export type Key = keyof typeof en;

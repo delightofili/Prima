@@ -1139,4 +1139,49 @@ export const dict: Partial<Record<Key, string>> = {
   "clock.hours_other": "awanni {count}",
   "clock.days_one": "rana {count}",
   "clock.days_other": "kwanaki {count}",
+
+  // ----- confirming an email address and resetting a password
+  "authMail.checkTitle": "Duba imel ɗinka",
+  "authMail.checkBody":
+    "Mun aika da lamba da hanyar haɗi zuwa {email}. Rubuta lambar a ƙasa, ko ka buɗe hanyar haɗin da ke cikin imel ɗin.",
+  "authMail.codeLabel": "Lambar da ke cikin imel",
+  "authMail.codeHint": "Lambobi ne kawai.",
+  "authMail.confirm": "Tabbatar da imel",
+  "authMail.confirming": "Ana dubawa…",
+  "authMail.resend": "Sake aika sabon imel",
+  "authMail.resendWait": "Sake aikawa nan da daƙiƙa {seconds}",
+  "authMail.resent": "Sabon imel yana hanya.",
+  "authMail.useOther": "Yi amfani da wani adireshin imel",
+  "authMail.spam": "Babu komai? Duba cikin spam ko junk.",
+  "authMail.forgot": "Ka manta kalmar sirrinka?",
+  "authMail.forgotTitle": "Sake saita kalmar sirrinka",
+  "authMail.forgotBody":
+    "Rubuta adireshin imel ɗinka. Za mu aiko maka da lamba.",
+  "authMail.sendCode": "Aika lambar",
+  "authMail.sentGeneric":
+    "Idan wannan adireshin imel yana da asusu, mun aika masa da lamba da hanyar haɗi.",
+  "authMail.newTitle": "Zaɓi sabuwar kalmar sirri",
+  "authMail.newPassword": "Sabuwar kalmar sirri",
+  "authMail.repeatPassword": "Sake rubuta ta",
+  "authMail.savePassword": "Ajiye sabuwar kalmar sirri",
+  "authMail.backSignIn": "Koma shiga",
+  "authMail.errCode":
+    "Wannan lambar ko hanyar haɗin ba ta yi aiki ba. Wataƙila ba daidai ba ce, an riga an yi amfani da ita, ko ta tsufa. Nemi sabuwa.",
+  "authMail.errMismatch": "Kalmomin sirri biyu ba ɗaya ba ne.",
+  "authMail.errWeak":
+    "Wannan kalmar sirrin tana da sauƙin ganewa. Yi amfani da wadda ta fi tsayi mai haruffa da lambobi.",
+  "authMail.errSame": "Zaɓi kalmar sirrin da ba ka taɓa amfani da ita ba.",
+  "authMail.errCodeShort": "Rubuta cikakkiyar lambar da ke cikin imel.",
+  "authMail.linkTitle": "Tabbatar da imel ɗinka",
+  "authMail.linkBody":
+    "Danna maɓallin domin tabbatar da cewa wannan adireshin imel naka ne.",
+  "authMail.linkDone": "An tabbatar da imel ɗinka.",
+  "authMail.passwordDone": "An canja kalmar sirrinka.",
+  "authMail.continue": "Ci gaba",
+  "authMail.linkBad":
+    "Wannan hanyar haɗin ba cikakke ba ce. Buɗe sabon imel ɗin Prima ka sake danna hanyar haɗin, ko ka rubuta lambar maimakon haka.",
+  "authMail.otherUser":
+    "Wannan wayar tana shiga a matsayin wani, don haka ba mu shigar da kai nan ba. An ajiye canjinka. Shiga a wayarka, ko ka fita a nan tukuna.",
+  "authMail.offline": "Kana buƙatar intanet don wannan matakin.",
+  "authMail.errGeneric": "Wani abu ya faru. Da fatan a sake gwadawa.",
 };

@@ -1082,4 +1082,48 @@ export const dict: Partial<Record<Key, string>> = {
   "clock.minutes_other": "nkeji {count}",
   "clock.hours_other": "awa {count}",
   "clock.days_other": "ụbọchị {count}",
+
+  // ----- confirming an email address and resetting a password
+  "authMail.checkTitle": "Lelee email gị",
+  "authMail.checkBody":
+    "Anyị zitere koodu na njikọ na {email}. Pịnye koodu ahụ n'okpuru, ma ọ bụ meghee njikọ ahụ n'ime email ahụ.",
+  "authMail.codeLabel": "Koodu sitere n'email",
+  "authMail.codeHint": "Ọ bụ naanị ọnụọgụgụ.",
+  "authMail.confirm": "Kwenye email",
+  "authMail.confirming": "Na-elele…",
+  "authMail.resend": "Zighachi email ọhụrụ",
+  "authMail.resendWait": "Zighachi n'ime sekọndụ {seconds}",
+  "authMail.resent": "Email ọhụrụ na-abịa.",
+  "authMail.useOther": "Jiri adreesị email ọzọ",
+  "authMail.spam": "Ọ dịghị ihe ebe ahụ? Lelee ebe spam ma ọ bụ junk.",
+  "authMail.forgot": "Echefuru okwuntughe gị?",
+  "authMail.forgotTitle": "Tọgharịa okwuntughe gị",
+  "authMail.forgotBody": "Pịnye adreesị email gị. Anyị ga-eziga gị koodu.",
+  "authMail.sendCode": "Zipu koodu ahụ",
+  "authMail.sentGeneric":
+    "Ọ bụrụ na adreesị email ahụ nwere akaụntụ, anyị zigara ya koodu na njikọ.",
+  "authMail.newTitle": "Họrọ okwuntughe ọhụrụ",
+  "authMail.newPassword": "Okwuntughe ọhụrụ",
+  "authMail.repeatPassword": "Pịnye ya ọzọ",
+  "authMail.savePassword": "Chekwaa okwuntughe ọhụrụ",
+  "authMail.backSignIn": "Laghachi na nbanye",
+  "authMail.errCode":
+    "Koodu ma ọ bụ njikọ ahụ adịghị arụ ọrụ. Ọ nwere ike ịbụ na ọ ezighi ezi, ejirila ya, ma ọ bụ ọ dị ochie. Rịọ otu ọhụrụ.",
+  "authMail.errMismatch": "Okwuntughe abụọ ahụ adịghị otu.",
+  "authMail.errWeak":
+    "Okwuntughe ahụ dị mfe ịchọpụta. Jiri nke ka ogologo nwere mkpụrụedemede na ọnụọgụgụ.",
+  "authMail.errSame": "Họrọ okwuntughe ị na-agbabeghị.",
+  "authMail.errCodeShort": "Pịnye koodu niile sitere n'email.",
+  "authMail.linkTitle": "Kwenye email gị",
+  "authMail.linkBody":
+    "Pịa bọtịnụ ahụ ka ịkwenye na adreesị email a bụ nke gị.",
+  "authMail.linkDone": "E kwenyela email gị.",
+  "authMail.passwordDone": "E gbanwela okwuntughe gị.",
+  "authMail.continue": "Gaa n'ihu",
+  "authMail.linkBad":
+    "Njikọ a adịghị zuru ezu. Meghee email kachasị ọhụrụ sitere na Prima ma pịa njikọ ahụ ọzọ, ma ọ bụ pịnye koodu ahụ kama.",
+  "authMail.otherUser":
+    "Ekwentị a banyere dị ka onye ọzọ, ya mere anyị abanyeghị gị ebe a. E chekwala mgbanwe gị. Banye na ekwentị nke gị, ma ọ bụ pụọ ebe a mbụ.",
+  "authMail.offline": "Ị chọrọ njikọ ịntanetị maka nzọụkwụ a.",
+  "authMail.errGeneric": "Ihe ọ gbagwojuru. Biko nwaa ọzọ.",
 };

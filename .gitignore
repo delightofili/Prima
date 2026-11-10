@@ -37,3 +37,9 @@ landing/node_modules
 landing/dist
 landing/node_modules
 .wranglerreview/
+
+# secrets and local settings: never commit these
+.env
+.env.*
+!.env.example
+.dev.vars

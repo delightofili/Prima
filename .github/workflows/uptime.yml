@@ -1,0 +1,15 @@
+name: Is Prima up
+
+on:
+  schedule:
+    - cron: "11 * * * *" # every hour, at 11 minutes past
+  workflow_dispatch: # lets you run it by hand from the Actions tab
+
+jobs:
+  check:
+    runs-on: ubuntu-24.04 # pinned, like the keep-alive job
+    timeout-minutes: 5 # three tries of 20 seconds each, three addresses: well inside this
+    steps:
+      - uses: actions/checkout@v4
+      - name: Ask the app, its version file and the website
+        run: bash scripts/uptime.sh

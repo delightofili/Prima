@@ -3,14 +3,12 @@ import { createPortal } from "react-dom";
 import { useLiveQuery } from "dexie-react-hooks";
 import { GitMerge, X } from "lucide-react";
 import { useToast } from "../hooks/useToast";
+import { useI18n } from "../i18n";
 import { calculateAge } from "../lib/age";
 import type { DuplicateMatch } from "../lib/duplicates";
 import { executeMerge, planMerge, undoMerge } from "../lib/merge";
-import { formatDate, formatPhone } from "../lib/utils";
+import { formatPhone } from "../lib/utils";
 import type { Patient } from "../types";
-
-const plural = (n: number, one: string, many: string) =>
-  `${n} ${n === 1 ? one : many}`;
 
 function Choice({
   p,
@@ -21,6 +19,7 @@ function Choice({
   selected: boolean;
   onSelect: () => void;
 }) {
+  const { t, date, isoDate } = useI18n();
   const age = calculateAge(p.dob);
   return (
     <button
@@ -33,22 +32,21 @@ function Choice({
       }`}
     >
       <span className="text-sm font-semibold text-subtext">
-        {selected ? "Keeping this record" : "Tap to keep this one instead"}
+        {t(selected ? "merge.keeping" : "merge.keepOther")}
       </span>
       <span className="mt-1 block text-lg font-bold">{p.fullName}</span>
       <span className="block text-sm font-semibold text-prima-900">
         {p.cardNumber}
       </span>
       <span className="mt-1 block text-subtext">
-        {age.label} · born {formatDate(p.dob)}
+        {age.label} · {t("merge.born", { date: isoDate(p.dob) })}
       </span>
       <span className="block text-subtext">
         {p.village}
         {p.phone ? ` · ${formatPhone(p.phone)}` : ""}
       </span>
       <span className="block text-sm text-subtext">
-        Registered{" "}
-        {formatDate(new Date(p.createdAt).toLocaleDateString("en-CA"))}
+        {t("merge.registered", { date: date(new Date(p.createdAt)) })}
       </span>
     </button>
   );
@@ -61,6 +59,7 @@ export function MergeDialog({
   match: DuplicateMatch;
   onClose: () => void;
 }) {
+  const { t, tp } = useI18n();
   const toast = useToast();
   const older = match.a.createdAt <= match.b.createdAt ? match.a : match.b;
   const [keepId, setKeepId] = useState(older.id);
@@ -82,8 +81,8 @@ export function MergeDialog({
     if (!plan || busy) return;
     setBusy(true);
     await executeMerge(plan);
-    toast(`Merged into ${plan.keep.fullName}`, "ok", {
-      label: "Undo",
+    toast(t("merge.done", { name: plan.keep.fullName }), "ok", {
+      label: t("common.undo"),
       onClick: () => void undoMerge(plan),
     });
     onClose();
@@ -106,12 +105,11 @@ export function MergeDialog({
             id="merge-title"
             className="flex items-center gap-2 text-lg font-bold"
           >
-            <GitMerge size={22} className="text-prima-500" /> Merge duplicate
-            records
+            <GitMerge size={22} className="text-prima-500" /> {t("merge.title")}
           </h2>
           <button
             type="button"
-            aria-label="Close"
+            aria-label={t("common.close")}
             className="p-2"
             onClick={onClose}
           >
@@ -119,13 +117,11 @@ export function MergeDialog({
           </button>
         </div>
 
-        <p className="text-subtext">
-          Choose the record to keep. The other one is merged into it.
-        </p>
+        <p className="text-subtext">{t("merge.help")}</p>
 
         <div
           role="radiogroup"
-          aria-label="Record to keep"
+          aria-label={t("merge.groupLabel")}
           className="grid gap-3 md:grid-cols-2"
         >
           <Choice
@@ -142,53 +138,43 @@ export function MergeDialog({
 
         {plan && (
           <div className="space-y-3 rounded-xl bg-page p-4">
-            <p className="font-semibold">What will happen</p>
+            <p className="font-semibold">{t("merge.willHappen")}</p>
             <ul className="list-disc space-y-1 pl-5">
               <li>
-                {plural(plan.visitIds.length, "visit moves", "visits move")} to{" "}
-                {plan.keep.fullName}
+                {tp("merge.visits", plan.visitIds.length, {
+                  name: plan.keep.fullName,
+                })}
               </li>
               <li>
-                {plural(
-                  plan.moveShotIds.length,
-                  "vaccine record moves",
-                  "vaccine records move",
-                )}
-                {plan.skipShotIds.length > 0 &&
-                  `, ${plural(plan.skipShotIds.length, "dose is", "doses are")} already recorded and will not be doubled`}
+                {tp("merge.vaccines", plan.moveShotIds.length, {
+                  name: plan.keep.fullName,
+                })}
               </li>
-              {plan.filled.length > 0 && (
+              {plan.skipShotIds.length > 0 && (
+                <li>{tp("merge.dosesSkipped", plan.skipShotIds.length)}</li>
+              )}
+              {plan.guardianIds.length > 0 && (
                 <li>
-                  Filled in from the other record: {plan.filled.join(", ")}
+                  {tp("merge.guardians", plan.guardianIds.length, {
+                    name: plan.keep.fullName,
+                  })}
                 </li>
               )}
-              <li>
-                {plan.drop.cardNumber} is hidden from lists. You can undo for a
-                few seconds after merging.
-              </li>
+              {plan.filled.length > 0 && (
+                <li>{t("merge.filled", { fields: plan.filled.join(", ") })}</li>
+              )}
+              <li>{t("merge.hidden", { card: plan.drop.cardNumber })}</li>
             </ul>
 
             {plan.differences.length > 0 && (
               <div>
-                <p className="font-semibold">
-                  Different values (the kept record's value stays)
-                </p>
+                <p className="font-semibold">{t("merge.differences")}</p>
                 <ul className="list-disc space-y-1 pl-5 text-subtext">
                   {plan.differences.map((d) => (
                     <li key={d}>{d}</li>
                   ))}
                 </ul>
               </div>
-            )}
-            {plan.guardianIds.length > 0 && (
-              <li>
-                {plural(
-                  plan.guardianIds.length,
-                  "guardian link moves",
-                  "guardian links move",
-                )}{" "}
-                to {plan.keep.fullName}
-              </li>
             )}
           </div>
         )}
@@ -199,7 +185,7 @@ export function MergeDialog({
             className="btn btn-secondary md:w-40"
             onClick={onClose}
           >
-            Cancel
+            {t("common.cancel")}
           </button>
           <button
             type="button"
@@ -207,7 +193,7 @@ export function MergeDialog({
             disabled={!plan || busy}
             onClick={confirm}
           >
-            <GitMerge size={20} className="mr-2" /> Merge records
+            <GitMerge size={20} className="mr-2" /> {t("merge.confirm")}
           </button>
         </div>
       </div>

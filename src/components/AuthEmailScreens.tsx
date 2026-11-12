@@ -3,8 +3,10 @@ import { useAuth } from "../hooks/useAuth";
 import { useI18n } from "../i18n";
 import {
   cleanCode,
+  cleanEmail,
   codeComplete,
   dropCloudSession,
+  emailLooksValid,
   mailErrorKey,
   passwordProblem,
   requestReset,
@@ -161,6 +163,13 @@ export function CheckEmailScreen() {
         >
           {t("authMail.useOther")}
         </button>
+        <button
+          type="button"
+          className="py-3 text-left font-semibold underline"
+          onClick={backToSignIn}
+        >
+          {t("authMail.haveAccount")}
+        </button>
       </div>
     </Shell>
   );
@@ -189,10 +198,12 @@ export function ForgotPasswordScreen() {
     e?.preventDefault();
     setError(null);
     setNote(null);
-    if (!email.includes("@")) return setError(t("auth.errEmail"));
+    const address = cleanEmail(email);
+    setEmail(address);
+    if (!emailLooksValid(address)) return setError(t("auth.errEmail"));
     setBusy(true);
     try {
-      await requestReset(email);
+      await requestReset(address);
     } catch (err) {
       const k = mailErrorKey(err);
       if (k === "authErr.network" || k === "authErr.rate") {

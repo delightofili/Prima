@@ -27,8 +27,11 @@ function* walk(dir: string): Generator<string> {
       yield p;
   }
 }
-const GROUPS =
-  "lang|nav|common|age|register|err|complaint|saved|record|sync|syncErr|banner|power|update|account|facility|team|invite|patient|visit|form|rel|guardian|family|vaccine|diagnosis|badge|home|list|limit|card|scan|upgrade|vitals|stepper|glove|app|auth|authErr|lock|security|session|dash|fu|dev|near|peers|file|bill|crash";
+// Every group of words that exists in the English file ("nav", "bak", "authMail" ...), read from the file itself.
+// It used to be a list typed by hand, so each new group was invisible to this check until someone remembered to add it.
+const GROUPS = [
+  ...new Set(Object.keys(english).map((k) => k.split(".")[0])),
+].join("|");
 const KEY = new RegExp(`"((?:${GROUPS})\\.[\\w.]+)"`, "g");
 // Only a real call to the translator counts: t("nav.home") or tp("sync.attention", 3), with one of our word groups.
 // Your own data (a dashboard figure with key: "visits", a vaccine with key: "bcg", an audit action "team.invite") is not a translation line.

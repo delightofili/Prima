@@ -27,5 +27,4 @@ jobs:
         env:
           SUPABASE_URL: ${{ secrets.PROD_SUPABASE_URL }}
           SUPABASE_KEY: ${{ secrets.PROD_SUPABASE_ANON_KEY }}
-        # --optional: until the production secrets exist this warns instead of failing. Delete "--optional" once they do.
-        run: bash scripts/keepalive.sh production PROD_SUPABASE_URL PROD_SUPABASE_ANON_KEY --optional
+        run: bash scripts/keepalive.sh production PROD_SUPABASE_URL PROD_SUPABASE_ANON_KEY

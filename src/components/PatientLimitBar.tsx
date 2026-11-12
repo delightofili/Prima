@@ -21,6 +21,7 @@ export function PatientLimitBar({ used }: { used: number }) {
       <div
         className="h-2 overflow-hidden rounded-full bg-line"
         role="progressbar"
+        aria-label={t("limit.freePlan")}
         aria-valuenow={used}
         aria-valuemin={0}
         aria-valuemax={FREE_PATIENT_LIMIT}

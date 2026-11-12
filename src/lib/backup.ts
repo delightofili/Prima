@@ -4,6 +4,7 @@ import { logAudit } from "./audit";
 import { config } from "./config";
 import { pushPending } from "./syncService";
 import { todayISO } from "./utils";
+import { tNow } from "../i18n";
 import type {
   Guardian,
   ImmunizationRecord,
@@ -37,7 +38,7 @@ export interface BackupData {
 }
 
 export interface RestoreRow {
-  label: string;
+  key: "guardians" | "patients" | "visits" | "vaccines" | "reminders";
   add: number;
   update: number;
   keep: number;
@@ -83,8 +84,7 @@ async function keyFor(pass: string, salt: Uint8Array, iterations: number) {
 export async function createBackup(
   passphrase: string,
 ): Promise<{ file: File; summary: string }> {
-  if (passphrase.length < 8)
-    throw new BackupError("Use a password of at least 8 characters.");
+  if (passphrase.length < 8) throw new BackupError(tNow("auth.errPassword"));
 
   const [guardians, patients, visits, immunizations, reminders] =
     await Promise.all([
@@ -144,13 +144,10 @@ const isObj = (v: unknown): v is Record<string, unknown> =>
 
 function rows<T>(
   raw: unknown,
-  label: string,
   test: (r: Record<string, unknown>) => boolean,
 ): T[] {
-  if (!Array.isArray(raw))
-    throw new BackupError(`The backup is missing its ${label} list.`);
-  if (raw.length > MAX_ROWS)
-    throw new BackupError("This backup is larger than Prima accepts.");
+  if (!Array.isArray(raw)) throw new BackupError(tNow("bak.errMissing"));
+  if (raw.length > MAX_ROWS) throw new BackupError(tNow("bak.errTooBig"));
   for (const r of raw) {
     const ok =
       isObj(r) &&
@@ -158,10 +155,7 @@ function rows<T>(
       typeof r.updatedAt === "number" &&
       r.facilityId === config.facilityId && // every single record must belong to this facility
       test(r);
-    if (!ok)
-      throw new BackupError(
-        `The backup has a damaged ${label} record, so nothing was restored.`,
-      );
+    if (!ok) throw new BackupError(tNow("bak.errDamagedRecord"));
   }
   return raw as T[];
 }
@@ -178,7 +172,7 @@ export async function openBackup(
     if (!isObj(parsed)) throw new Error("not an object");
     env = parsed;
   } catch {
-    throw new BackupError("This is not a Prima backup file.");
+    throw new BackupError(tNow("bak.errNotBackup"));
   }
   if (
     env.format !== FORMAT ||
@@ -190,9 +184,7 @@ export async function openBackup(
     env.iterations < 100_000 ||
     env.iterations > 2_000_000
   ) {
-    throw new BackupError(
-      "This is not a Prima backup file, or it is from a newer version.",
-    );
+    throw new BackupError(tNow("bak.errNotBackupOrNewer"));
   }
 
   let plain: string;
@@ -209,14 +201,14 @@ export async function openBackup(
     );
     plain = dec.decode(buf);
   } catch {
-    throw new BackupError("Wrong password, or the file is damaged.");
+    throw new BackupError(tNow("bak.errWrongPass"));
   }
 
   let raw: unknown;
   try {
     raw = JSON.parse(plain);
   } catch {
-    throw new BackupError("The backup is damaged.");
+    throw new BackupError(tNow("bak.errDamaged"));
   }
   if (
     !isObj(raw) ||
@@ -224,13 +216,13 @@ export async function openBackup(
     raw.schema !== 1 ||
     !isObj(raw.tables)
   ) {
-    throw new BackupError("The backup is damaged or from a newer version.");
+    throw new BackupError(tNow("bak.errDamagedOrNewer"));
   }
   if (raw.facilityId !== config.facilityId) {
-    const name = str(raw.facilityName) ? raw.facilityName : "another facility";
-    throw new BackupError(
-      `This backup belongs to ${name}. It cannot be restored here.`,
-    );
+    const name = str(raw.facilityName)
+      ? raw.facilityName
+      : tNow("bak.anotherFacility");
+    throw new BackupError(tNow("bak.errOtherFacility", { name }));
   }
 
   const t = raw.tables;
@@ -241,27 +233,21 @@ export async function openBackup(
     facilityName: str(raw.facilityName) ? (raw.facilityName as string) : "",
     createdAt: str(raw.createdAt) ? (raw.createdAt as string) : "",
     tables: {
-      guardians: rows<Guardian>(t.guardians, "guardian", (r) =>
-        str(r.fullName),
-      ),
+      guardians: rows<Guardian>(t.guardians, (r) => str(r.fullName)),
       patients: rows<Patient>(
         t.patients,
-        "patient",
         (r) => str(r.cardNumber) && str(r.fullName) && str(r.dob),
       ),
       visits: rows<Visit>(
         t.visits,
-        "visit",
         (r) => str(r.patientId) && str(r.visitDate),
       ),
       immunizations: rows<ImmunizationRecord>(
         t.immunizations,
-        "vaccine",
         (r) => str(r.patientId) && str(r.vaccineName),
       ),
       reminders: rows<Reminder>(
         t.reminders,
-        "reminder",
         (r) => str(r.patientId) && str(r.status),
       ),
     },
@@ -278,7 +264,7 @@ async function run(data: BackupData, write: boolean): Promise<RestorePreview> {
   const out: RestoreRow[] = [];
 
   const step = async <T extends { id: string; updatedAt: number }>(
-    label: string,
+    key: RestoreRow["key"],
     table: Table<T, string>,
     incoming: T[],
     skip: (r: T) => boolean,
@@ -301,17 +287,17 @@ async function run(data: BackupData, write: boolean): Promise<RestorePreview> {
       if (add.length > 0) await table.bulkAdd(add);
       if (put.length > 0) await table.bulkPut(put);
     }
-    out.push({ label, add: add.length, update: put.length, keep });
+    out.push({ key, add: add.length, update: put.length, keep });
   };
 
   const body = async () => {
-    await step("Guardians", db.guardians, t.guardians, () => false);
-    await step("Patients", db.patients, t.patients, (p) => erased.has(p.id));
-    await step("Visits", db.visits, t.visits, (v) => erased.has(v.patientId));
-    await step("Vaccine records", db.immunizations, t.immunizations, (r) =>
+    await step("guardians", db.guardians, t.guardians, () => false);
+    await step("patients", db.patients, t.patients, (p) => erased.has(p.id));
+    await step("visits", db.visits, t.visits, (v) => erased.has(v.patientId));
+    await step("vaccines", db.immunizations, t.immunizations, (r) =>
       erased.has(r.patientId),
     );
-    await step("Reminders", db.reminders, t.reminders, (r) =>
+    await step("reminders", db.reminders, t.reminders, (r) =>
       erased.has(r.patientId),
     );
   };

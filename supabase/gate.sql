@@ -66,13 +66,10 @@ checks as (
   union all
   select 7, 'Nobody can give a facility a paid plan by editing the table',
     case
-      when to_regclass('public.facilities') is null
-        or not exists (select 1 from information_schema.columns where table_schema = 'public' and table_name = 'facilities' and column_name = 'plan') then 'REVIEW'
+      when to_regclass('public.facilities') is null then 'REVIEW'
       when has_column_privilege('authenticated', 'public.facilities', 'plan', 'update') or has_column_privilege('anon', 'public.facilities', 'plan', 'update') then 'FAIL'
       else 'PASS' end,
-    case when to_regclass('public.facilities') is null then 'there is no table called facilities'
-      when not exists (select 1 from information_schema.columns where table_schema = 'public' and table_name = 'facilities' and column_name = 'plan') then 'facilities has no plan column: find out where the plan is kept'
-      else 'checked the plan column for signed-in people and visitors' end,
+    case when to_regclass('public.facilities') is null then 'there is no table called facilities' else 'checked the plan column for signed-in people and visitors' end,
     'revoke update on public.facilities from authenticated, anon;'
 
   union all
@@ -111,6 +108,23 @@ checks as (
   select 12, 'Extensions installed (look for anything you do not recognise)',
     'REVIEW', coalesce(string_agg(extname, ', ' order by extname), 'none'), 'remove what you do not use: drop extension <name>;'
   from pg_extension
+
+  union all
+  select 13, 'Nobody signed in, and no visitor, may TRUNCATE a table, or add references or triggers to it (supabase/day30.sql takes these rights away)',
+    case when count(*) = 0 then 'PASS' else 'FAIL' end,
+    coalesce(string_agg(g.table_name || ' (' || g.grantee || ' ' || g.privilege_type || ')', ', ' order by g.table_name, g.grantee, g.privilege_type), 'none'),
+    'run supabase/day30.sql again, then find out why a table has the rights back (a new table, or a grant written by hand)'
+  from information_schema.role_table_grants g
+  where g.table_schema = 'public' and g.grantee in ('anon', 'authenticated') and g.privilege_type in ('TRUNCATE', 'REFERENCES', 'TRIGGER')
+
+  union all
+  select 14, 'Helper functions that only triggers and other functions call are closed to visitors and signed in people (supabase/day30.sql)',
+    case when count(*) = 0 then 'PASS' else 'FAIL' end,
+    coalesce(string_agg(p.proname, ', ' order by p.proname), 'none'),
+    'revoke execute on function public.<name> from public, anon, authenticated;'
+  from pg_proc p join pg_namespace n on n.oid = p.pronamespace
+  where n.nspname = 'public' and p.proname in ('keep_sent_final', 'touch_synced_at', 'patient_limit')
+    and (has_function_privilege('anon', p.oid, 'execute') or has_function_privilege('authenticated', p.oid, 'execute'))
 )
 select "check", status, detail, case when status = 'PASS' then '' else fix end as "how to fix"
 from checks
@@ -136,4 +150,4 @@ order by case status when 'FAIL' then 0 when 'REVIEW' then 1 else 2 end, n;
 -- Fix for check 2, and so that new tables never start open to visitors again:
 --   revoke all on all tables in schema public from anon;
 --   alter default privileges in schema public revoke all on tables from anon;
--- (A new FUNCTION is open to everyone by Postgres's own default. Every Prima SQL file closes its own functions with revoke ... from public, anon, and check 3 catches one that forgets.)
+--   alter default privileges in schema public revoke execute on functions from anon;

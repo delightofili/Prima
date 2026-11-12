@@ -124,3 +124,7 @@ export async function setLanguage(lang: LangCode): Promise<void> {
 
 export const useI18n = () => useSyncExternalStore(subscribe, () => state);
 export const getMissing = () => [...missing].sort();
+
+// For code that is not a screen (a rule, a file reader) and must speak at the moment it fails: the words in the language on screen now.
+// A screen should still use useI18n(), so that it redraws when the language changes.
+export const tNow = (key: Key, params?: Params): string => state.t(key, params);

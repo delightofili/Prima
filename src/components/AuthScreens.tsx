@@ -2,7 +2,9 @@ import { useState, type FormEvent, type ReactNode } from "react";
 import { Eye, EyeOff, LogOut, ShieldAlert } from "lucide-react";
 import { useAuth } from "../hooks/useAuth";
 import { eraseLocalDataOnly, friendlyErrorKey, suggestCode } from "../lib/auth";
+import { cleanEmail, emailLooksValid, mailErrorKey } from "../lib/emailAuth";
 import { Field } from "./FormBits";
+import { LanguagePicker } from "./LanguagePicker";
 import { Logo } from "./Logo";
 import { Modal } from "./Modal";
 import { useI18n } from "../i18n";
@@ -22,6 +24,9 @@ export function Shell({
 }) {
   return (
     <div className="mx-auto flex min-h-screen max-w-md flex-col justify-center gap-5 px-4 py-8">
+      <div className="flex justify-end">
+        <LanguagePicker />
+      </div>
       <div className="flex justify-center">
         <Logo size={44} />
       </div>
@@ -121,21 +126,23 @@ export function WelcomeScreen() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const address = cleanEmail(email);
 
   const submit = async (e: FormEvent) => {
     e.preventDefault();
     setError(null);
     if (mode === "up" && name.trim().length < 2)
       return setError(t("auth.errName"));
-    if (!email.includes("@")) return setError(t("auth.errEmail"));
+    setEmail(address); // the person sees the address exactly as it will be used
+    if (!emailLooksValid(address)) return setError(t("auth.errEmail"));
     if (password.length < 8) return setError(t("auth.errPassword"));
 
     setBusy(true);
     try {
-      if (mode === "in") await signIn(email, password);
-      else await signUp(name, email, password);
+      if (mode === "in") await signIn(address, password);
+      else await signUp(name, address, password);
     } catch (err) {
-      setError(tv(friendlyErrorKey(err)) ?? "");
+      setError(tv(mailErrorKey(err)) || t("authMail.errGeneric"));
     } finally {
       setBusy(false);
     }

@@ -1,4 +1,5 @@
 import { db } from "../db";
+import { tNow } from "../i18n";
 
 export interface PinRecord {
   userId: string;
@@ -67,9 +68,9 @@ export async function verifyPin(pin: string, rec: PinRecord): Promise<boolean> {
 }
 
 export function weakReason(pin: string): string | null {
-  if (/^(\d)\1+$/.test(pin)) return "Do not repeat the same digit.";
+  if (/^(\d)\1+$/.test(pin)) return tNow("lock.weakRepeat");
   if ("0123456789".includes(pin) || "9876543210".includes(pin))
-    return "Do not use numbers in order.";
+    return tNow("lock.weakOrder");
   return null;
 }
 

@@ -3,6 +3,7 @@ import { useLiveQuery } from "dexie-react-hooks";
 import { Archive, ArchiveRestore, HardDrive, Share2 } from "lucide-react";
 import { db } from "../db";
 import { useToast } from "../hooks/useToast";
+import { useI18n, type Key } from "../i18n";
 import {
   BackupError,
   createBackup,
@@ -11,18 +12,27 @@ import {
   restoreBackup,
   type BackupData,
   type RestorePreview,
+  type RestoreRow,
 } from "../lib/backup";
 import { downloadBlob } from "../lib/download";
 import { isPersistent, megabytes, storageEstimate } from "../lib/storage";
 import { Field, SectionTitle } from "./FormBits";
 import { Modal } from "./Modal";
 
-const ago = (ms: number) => {
-  const d = Math.floor((Date.now() - ms) / 86_400_000);
-  return d <= 0 ? "today" : d === 1 ? "yesterday" : `${d} days ago`;
-};
+// The words for each kind of record in the "what will be restored" table
+const ROW_LABEL = {
+  guardians: "bak.rowGuardians",
+  patients: "bak.rowPatients",
+  visits: "bak.rowVisits",
+  vaccines: "bak.rowVaccines",
+  reminders: "bak.rowReminders",
+} as const satisfies Record<RestoreRow["key"], Key>;
+
+// Whole days since a moment. Kept outside the screen, so the clock is not read while the screen is being drawn.
+const daysSince = (ms: number) => Math.floor((Date.now() - ms) / 86_400_000);
 
 function BackupDialog({ onClose }: { onClose: () => void }) {
+  const { t } = useI18n();
   const toast = useToast();
   const [pass, setPass] = useState("");
   const [again, setAgain] = useState("");
@@ -33,19 +43,16 @@ function BackupDialog({ onClose }: { onClose: () => void }) {
   const submit = async (e: FormEvent) => {
     e.preventDefault();
     setError(null);
-    if (pass !== again) return setError("The two passwords are different.");
+    if (pass !== again) return setError(t("authMail.errMismatch"));
     setBusy(true);
     try {
       const { file } = await createBackup(pass);
       downloadBlob(file.name, file);
       setMade(file);
-      toast("Backup saved to your downloads");
+      toast(t("bak.saved"));
     } catch (err) {
-      setError(
-        err instanceof BackupError
-          ? err.message
-          : "Could not create the backup. Please try again.",
-      );
+      // BackupError messages are already in the language on screen
+      setError(err instanceof BackupError ? err.message : t("bak.errCreate"));
     } finally {
       setBusy(false);
     }
@@ -65,35 +72,28 @@ function BackupDialog({ onClose }: { onClose: () => void }) {
   };
 
   return (
-    <Modal title="Back up this register" onClose={onClose}>
+    <Modal title={t("bak.dialogTitle")} onClose={onClose}>
       {made ? (
         <div className="space-y-4">
-          <p className="font-semibold">Done: {made.name}</p>
-          <p className="text-subtext">
-            Keep it somewhere safe, like your own email or Google Drive. It is
-            locked with your password. If you forget the password, nobody can
-            open it.
-          </p>
+          <p className="font-semibold">{t("bak.done", { name: made.name })}</p>
+          <p className="text-subtext">{t("bak.keepSafe")}</p>
           {canShare && (
             <button
               type="button"
               className="btn btn-secondary"
               onClick={() => void share()}
             >
-              <Share2 size={20} className="mr-2" /> Share the file
+              <Share2 size={20} className="mr-2" /> {t("bak.share")}
             </button>
           )}
           <button type="button" className="btn btn-primary" onClick={onClose}>
-            Close
+            {t("common.close")}
           </button>
         </div>
       ) : (
         <form onSubmit={submit} className="space-y-4" noValidate>
-          <p className="text-subtext">
-            This makes one file with every patient, visit and vaccine on this
-            phone, locked with a password you choose.
-          </p>
-          <Field label="Password (8 or more characters)">
+          <p className="text-subtext">{t("bak.intro")}</p>
+          <Field label={t("bak.password")}>
             <input
               className="input"
               type="password"
@@ -102,7 +102,7 @@ function BackupDialog({ onClose }: { onClose: () => void }) {
               onChange={(e) => setPass(e.target.value)}
             />
           </Field>
-          <Field label="Repeat the password">
+          <Field label={t("bak.repeat")}>
             <input
               className="input"
               type="password"
@@ -117,7 +117,7 @@ function BackupDialog({ onClose }: { onClose: () => void }) {
             </p>
           )}
           <button type="submit" className="btn btn-primary" disabled={busy}>
-            {busy ? "Locking the file…" : "Create backup"}
+            {busy ? t("bak.locking") : t("bak.create")}
           </button>
         </form>
       )}
@@ -126,6 +126,7 @@ function BackupDialog({ onClose }: { onClose: () => void }) {
 }
 
 function RestoreDialog({ onClose }: { onClose: () => void }) {
+  const { t, tp, date } = useI18n();
   const toast = useToast();
   const [file, setFile] = useState<File | null>(null);
   const [pass, setPass] = useState("");
@@ -137,16 +138,14 @@ function RestoreDialog({ onClose }: { onClose: () => void }) {
   const check = async (e: FormEvent) => {
     e.preventDefault();
     setError(null);
-    if (!file) return setError("Choose the backup file first.");
+    if (!file) return setError(t("bak.chooseFirst"));
     setBusy(true);
     try {
       const opened = await openBackup(file, pass);
       setData(opened);
       setPreview(await previewRestore(opened));
     } catch (err) {
-      setError(
-        err instanceof BackupError ? err.message : "Could not read the backup.",
-      );
+      setError(err instanceof BackupError ? err.message : t("bak.errRead"));
     } finally {
       setBusy(false);
     }
@@ -157,10 +156,10 @@ function RestoreDialog({ onClose }: { onClose: () => void }) {
     setBusy(true);
     try {
       await restoreBackup(data);
-      toast("Backup restored. Uploading in the background.");
+      toast(t("bak.restored"));
       onClose();
     } catch {
-      setError("Could not restore the backup. Nothing was changed.");
+      setError(t("bak.errRestore"));
       setBusy(false);
     }
   };
@@ -170,21 +169,18 @@ function RestoreDialog({ onClose }: { onClose: () => void }) {
     : false;
 
   return (
-    <Modal title="Restore from a backup" onClose={onClose}>
+    <Modal title={t("bak.restoreTitle")} onClose={onClose}>
       {!preview ? (
         <form onSubmit={check} className="space-y-4" noValidate>
-          <p className="text-subtext">
-            Restoring adds anything missing and keeps whichever copy is newer.
-            It never deletes anything on this phone.
-          </p>
-          <Field label="Backup file">
+          <p className="text-subtext">{t("bak.restoreHelp")}</p>
+          <Field label={t("bak.file")}>
             <input
               className="input h-auto py-3"
               type="file"
               onChange={(e) => setFile(e.target.files?.[0] ?? null)}
             />
           </Field>
-          <Field label="Backup password">
+          <Field label={t("bak.filePassword")}>
             <input
               className="input"
               type="password"
@@ -203,35 +199,44 @@ function RestoreDialog({ onClose }: { onClose: () => void }) {
             className="btn btn-primary"
             disabled={busy || !file}
           >
-            {busy ? "Checking…" : "Check the backup"}
+            {busy ? t("clock.checking") : t("bak.check")}
           </button>
         </form>
       ) : (
         <div className="space-y-4">
           <p className="font-semibold">
-            {preview.facilityName}
-            {preview.createdAt &&
-              `, made ${new Date(preview.createdAt).toLocaleDateString("en-NG")}`}
+            {preview.createdAt
+              ? t("bak.madeOn", {
+                  name: preview.facilityName,
+                  date: date(new Date(preview.createdAt)),
+                })
+              : preview.facilityName}
           </p>
           <div className="overflow-x-auto">
             <table className="w-full text-left">
               <thead>
                 <tr className="border-b-2 border-line text-sm text-subtext">
-                  <th className="py-2 pr-3 font-semibold">Records</th>
-                  <th className="py-2 pr-3 text-right font-semibold">Added</th>
-                  <th className="py-2 pr-3 text-right font-semibold">
-                    Updated
+                  <th className="py-2 pr-3 font-semibold">
+                    {t("bak.colRecords")}
                   </th>
-                  <th className="py-2 text-right font-semibold">Kept as is</th>
+                  <th className="py-2 pr-3 text-right font-semibold">
+                    {t("bak.colAdded")}
+                  </th>
+                  <th className="py-2 pr-3 text-right font-semibold">
+                    {t("bak.colUpdated")}
+                  </th>
+                  <th className="py-2 text-right font-semibold">
+                    {t("bak.colKept")}
+                  </th>
                 </tr>
               </thead>
               <tbody>
                 {preview.rows.map((r) => (
                   <tr
-                    key={r.label}
+                    key={r.key}
                     className="border-b border-line last:border-0"
                   >
-                    <td className="py-2 pr-3">{r.label}</td>
+                    <td className="py-2 pr-3">{t(ROW_LABEL[r.key])}</td>
                     <td className="py-2 pr-3 text-right tabular-nums">
                       {r.add}
                     </td>
@@ -246,9 +251,7 @@ function RestoreDialog({ onClose }: { onClose: () => void }) {
           </div>
           {preview.erasedSkipped > 0 && (
             <p className="text-sm text-subtext">
-              {preview.erasedSkipped} erased{" "}
-              {preview.erasedSkipped === 1 ? "patient is" : "patients are"} not
-              restored.
+              {tp("bak.erased", preview.erasedSkipped)}
             </p>
           )}
           {error && (
@@ -262,7 +265,7 @@ function RestoreDialog({ onClose }: { onClose: () => void }) {
               className="btn btn-secondary md:w-36"
               onClick={onClose}
             >
-              Cancel
+              {t("common.cancel")}
             </button>
             <button
               type="button"
@@ -271,10 +274,10 @@ function RestoreDialog({ onClose }: { onClose: () => void }) {
               onClick={() => void restore()}
             >
               {nothing
-                ? "Nothing to restore"
+                ? t("bak.nothing")
                 : busy
-                  ? "Restoring…"
-                  : "Restore now"}
+                  ? t("bak.restoring")
+                  : t("bak.restoreNow")}
             </button>
           </div>
         </div>
@@ -284,6 +287,7 @@ function RestoreDialog({ onClose }: { onClose: () => void }) {
 }
 
 function StorageLine() {
+  const { t } = useI18n();
   const [info, setInfo] = useState<{
     used: number;
     quota: number;
@@ -309,31 +313,38 @@ function StorageLine() {
     <p className="flex items-start gap-2 text-sm text-subtext">
       <HardDrive size={18} className="mt-0.5 shrink-0" />
       <span>
-        {megabytes(info.used)} used on this phone.{" "}
-        {info.kept
-          ? "The browser will not clear Prima's data automatically."
-          : "The browser could clear Prima's data if the phone runs very low on space, so back up regularly."}
+        {t("bak.storageUsed", { size: megabytes(info.used) })}{" "}
+        {t(info.kept ? "bak.storageKept" : "bak.storageRisk")}
       </span>
     </p>
   );
 }
 
 export function BackupCard() {
+  const { t, tp } = useI18n();
   const last = useLiveQuery(() => db.meta.get("lastBackup"), []);
   const [dialog, setDialog] = useState<"backup" | "restore" | null>(null);
   const lastAt = last ? Number(last.value) : null;
 
+  // "today", "yesterday", or "3 days ago", in the language on screen
+  const when = (ms: number) => {
+    const d = daysSince(ms);
+    return d <= 0
+      ? t("bak.today")
+      : d === 1
+        ? t("bak.yesterday")
+        : tp("bak.daysAgo", d);
+  };
+
   return (
     <section className="card space-y-3 md:col-span-2">
-      <SectionTitle icon={Archive} title="Backup and restore" />
+      <SectionTitle icon={Archive} title={t("bak.title")} />
       <p
         className={
           lastAt ? "text-subtext" : "rounded-xl bg-accent-50 p-3 font-medium"
         }
       >
-        {lastAt
-          ? `Last backup from this phone: ${ago(lastAt)}.`
-          : "No backup made from this phone yet."}
+        {lastAt ? t("bak.last", { when: when(lastAt) }) : t("bak.never")}
       </p>
       <div className="flex flex-col gap-3 sm:flex-row">
         <button
@@ -341,14 +352,14 @@ export function BackupCard() {
           className="btn btn-primary sm:w-52"
           onClick={() => setDialog("backup")}
         >
-          <Archive size={20} className="mr-2" /> Back up now
+          <Archive size={20} className="mr-2" /> {t("bak.backupNow")}
         </button>
         <button
           type="button"
           className="btn btn-secondary sm:w-52"
           onClick={() => setDialog("restore")}
         >
-          <ArchiveRestore size={20} className="mr-2" /> Restore
+          <ArchiveRestore size={20} className="mr-2" /> {t("bak.restore")}
         </button>
       </div>
       <StorageLine />

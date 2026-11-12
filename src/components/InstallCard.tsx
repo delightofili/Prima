@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Smartphone } from "lucide-react";
 import { useToast } from "../hooks/useToast";
+import { useI18n } from "../i18n";
 import {
   dismissInstallBanner,
   installBannerHidden,
@@ -11,51 +12,39 @@ import {
 import { SectionTitle } from "./FormBits";
 
 export function InstallCard() {
+  const { t } = useI18n();
   const { canPrompt, installed, ios } = useInstall();
   const toast = useToast();
 
   return (
     <section className="card space-y-3 md:col-span-2">
-      <SectionTitle icon={Smartphone} title="Install on this phone" />
+      <SectionTitle icon={Smartphone} title={t("inst.title")} />
       {installed ? (
-        <p>
-          Prima is installed. It opens from your home screen and works with no
-          signal.
-        </p>
+        <p>{t("inst.installed")}</p>
       ) : canPrompt ? (
         <>
-          <p>
-            Install Prima to open it from your home screen, full screen, and use
-            it with no signal.
-          </p>
+          <p>{t("inst.offer")}</p>
           <button
             type="button"
             className="btn btn-primary sm:w-56"
             onClick={async () => {
               if ((await promptInstall()) === "accepted")
-                toast("Prima is installing");
+                toast(t("inst.started"));
             }}
           >
-            Install Prima
+            {t("inst.button")}
           </button>
         </>
       ) : ios ? (
-        <p>
-          On iPhone or iPad: tap the Share button in Safari, then "Add to Home
-          Screen".
-        </p>
+        <p>{t("inst.ios")}</p>
       ) : (
-        <p>
-          In Chrome, tap the menu (three dots), then "Install app" or "Add to
-          Home screen". If you do not see it, open Prima in Chrome itself, not
-          inside another app.
-        </p>
+        <p>{t("inst.android")}</p>
       )}
       <Link
         to="/phone-check"
         className="inline-block font-semibold text-prima-500 underline"
       >
-        Check how well this phone suits Prima
+        {t("inst.check")}
       </Link>
     </section>
   );
@@ -63,6 +52,7 @@ export function InstallCard() {
 
 // A gentle one-line offer on the home screen, hidden for 14 days once dismissed
 export function InstallBanner() {
+  const { t } = useI18n();
   const { canPrompt, installed } = useInstall();
   const [hidden, setHidden] = useState(installBannerHidden);
   if (!canPrompt || installed || hidden) return null;
@@ -71,8 +61,7 @@ export function InstallBanner() {
     <div className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-2xl border-2 border-prima-500 bg-prima-50 p-4">
       <p className="flex items-center gap-2 font-semibold">
         <Smartphone size={20} className="shrink-0 text-prima-500" />
-        Put Prima on your home screen. It opens full screen and works with no
-        signal.
+        {t("inst.banner")}
       </p>
       <div className="flex gap-2">
         <button
@@ -80,7 +69,7 @@ export function InstallBanner() {
           className="btn btn-primary sm:w-32"
           onClick={() => void promptInstall()}
         >
-          Install
+          {t("inst.bannerButton")}
         </button>
         <button
           type="button"
@@ -90,7 +79,7 @@ export function InstallBanner() {
             setHidden(true);
           }}
         >
-          Not now
+          {t("upgrade.notNow")}
         </button>
       </div>
     </div>

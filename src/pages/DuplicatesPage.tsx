@@ -8,6 +8,7 @@ import { usePageTitle } from "../hooks/common";
 import { useDuplicateScan } from "../hooks/useDuplicateScan";
 import { usePlan } from "../hooks/usePlan";
 import { useToast } from "../hooks/useToast";
+import { useI18n } from "../i18n";
 import { calculateAge } from "../lib/age";
 import {
   dismissPair,
@@ -20,6 +21,7 @@ import type { Patient } from "../types";
 import { useCan } from "../hooks/useCan";
 
 function Person({ p }: { p: Patient }) {
+  const { isoDate } = useI18n();
   const age = calculateAge(p.dob);
   return (
     <Link
@@ -29,7 +31,7 @@ function Person({ p }: { p: Patient }) {
       <p className="font-semibold">{p.fullName}</p>
       <p className="text-sm font-semibold text-prima-900">{p.cardNumber}</p>
       <p className="text-subtext">
-        {age.label} · {p.dob}
+        {age.label} · {isoDate(p.dob)}
       </p>
       <p className="text-subtext">
         {p.village}
@@ -48,6 +50,7 @@ function PairCard({
   onReview: () => void;
   onDismiss: () => void;
 }) {
+  const { t } = useI18n();
   return (
     <li className="card space-y-3">
       <div className="flex flex-wrap items-center gap-2">
@@ -58,7 +61,7 @@ function PairCard({
               : "bg-prima-50 text-prima-900"
           }`}
         >
-          {m.level === "high" ? "High confidence" : "Possible"} · {m.score}%
+          {t(m.level === "high" ? "dup.high" : "dup.possible")} · {m.score}%
         </span>
         {m.reasons.map((r) => (
           <span
@@ -79,14 +82,14 @@ function PairCard({
           className="btn btn-secondary md:w-52"
           onClick={onDismiss}
         >
-          Not a duplicate
+          {t("dup.notDup")}
         </button>
         <button
           type="button"
           className="btn btn-primary md:w-56"
           onClick={onReview}
         >
-          <GitMerge size={20} className="mr-2" /> Review and merge
+          <GitMerge size={20} className="mr-2" /> {t("dup.review")}
         </button>
       </div>
     </li>
@@ -94,7 +97,8 @@ function PairCard({
 }
 
 export function DuplicatesPage() {
-  usePageTitle("Find duplicates");
+  const { t, tp } = useI18n();
+  usePageTitle(t("patients.findDuplicates"));
   const plan = usePlan();
   const toast = useToast();
   const { matches, scanning, total, rescan } = useDuplicateScan();
@@ -104,8 +108,8 @@ export function DuplicatesPage() {
   const dismiss = async (m: DuplicateMatch) => {
     await dismissPair(m.a.id, m.b.id);
     rescan();
-    toast("Marked as not a duplicate", "ok", {
-      label: "Undo",
+    toast(t("dup.marked"), "ok", {
+      label: t("common.undo"),
       onClick: () => {
         void restorePair(m.a.id, m.b.id).then(rescan);
       },
@@ -117,9 +121,7 @@ export function DuplicatesPage() {
   if (!can("mergeDuplicates")) {
     return (
       <div className="card mx-auto max-w-md text-center">
-        <p className="text-lg font-semibold">
-          Only a facility admin can find and merge duplicates.
-        </p>
+        <p className="text-lg font-semibold">{t("dup.adminOnly")}</p>
       </div>
     );
   }
@@ -127,26 +129,24 @@ export function DuplicatesPage() {
   return (
     <>
       <PageHeader
-        title="Find duplicates"
-        subtitle="Possible duplicate patients, found on this device. Nothing is merged until you confirm."
+        title={t("patients.findDuplicates")}
+        subtitle={t("dup.subtitle")}
       />
 
       {!matches ? (
         <div className="card flex items-center gap-3">
           <RefreshCw size={22} className="animate-spin text-prima-500" />
-          <p className="font-semibold">Scanning {total} patients…</p>
+          <p className="font-semibold">{t("dup.scanning", { total })}</p>
         </div>
       ) : (
         <div className="space-y-4">
           <section className="card flex flex-wrap items-center justify-between gap-3">
             <div>
               <p className="text-2xl font-bold">
-                {matches.length} possible{" "}
-                {matches.length === 1 ? "duplicate" : "duplicates"}
+                {tp("dup.found", matches.length)}
               </p>
               <p className="text-subtext">
-                {high} high confidence · {total} patients checked
-                {scanning && " · scanning again…"}
+                {t(scanning ? "dup.statsAgain" : "dup.stats", { high, total })}
               </p>
             </div>
             <button
@@ -154,7 +154,7 @@ export function DuplicatesPage() {
               className="btn btn-secondary sm:w-44"
               onClick={rescan}
             >
-              <RefreshCw size={20} className="mr-2" /> Scan again
+              <RefreshCw size={20} className="mr-2" /> {t("dup.scanAgain")}
             </button>
           </section>
 
@@ -163,8 +163,8 @@ export function DuplicatesPage() {
               <div className="flex justify-center text-ok">
                 <CircleCheck size={36} />
               </div>
-              <p className="text-lg font-semibold">No duplicates found</p>
-              <p className="text-subtext">Your register looks clean.</p>
+              <p className="text-lg font-semibold">{t("dup.noneTitle")}</p>
+              <p className="text-subtext">{t("dup.noneText")}</p>
             </div>
           ) : unlocked ? (
             <ul className="space-y-3">
@@ -179,9 +179,9 @@ export function DuplicatesPage() {
             </ul>
           ) : (
             <UpgradeCard
-              title="Merge duplicates with Pro"
-              text={`Pro (${money(PRICES.pro)} a month) shows each pair side by side, explains why they match, and merges visits, vaccines and allergies safely.`}
-              cta="See Pro plan"
+              title={t("dup.upgradeTitle")}
+              text={t("dup.upgradeText", { price: money(PRICES.pro) })}
+              cta={t("upgrade.seePro")}
             />
           )}
         </div>

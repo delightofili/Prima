@@ -43,6 +43,32 @@ export function parseAuthLink(loc: {
 export const cleanCode = (raw: string) => raw.replace(/\D/g, "");
 export const codeComplete = (code: string) => /^\d{6,10}$/.test(code);
 
+// An address as it arrives when pasted from a chat or a web page: no hidden characters, no quotes or brackets around it,
+// and no comma or full stop at the end (a sentence that ended with the address is a common cause of "invalid format").
+export function cleanEmail(raw: string): string {
+  return raw
+    .replace(/[\u200B-\u200D\u2060\uFEFF]/g, "")
+    .trim()
+    .replace(/^[<"'(\s]+/, "")
+    .replace(/[>"')\s,.;:]+$/, "");
+}
+
+// Is this the shape of an email address: name@place.ext, with no spaces, and letters at the end?
+// (Only the shape. Whether the mailbox exists is for the confirmation email to prove.)
+export function emailLooksValid(email: string): boolean {
+  if (email.length > 254) return false;
+  const at = email.indexOf("@");
+  if (at < 1 || at !== email.lastIndexOf("@")) return false;
+  const local = email.slice(0, at);
+  const domain = email.slice(at + 1);
+  if (local.length > 64 || !/^[A-Za-z0-9._%+-]+$/.test(local)) return false;
+  if (local.startsWith(".") || local.endsWith(".") || local.includes(".."))
+    return false;
+  return /^(?:[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?\.)+[A-Za-z]{2,}$/.test(
+    domain,
+  );
+}
+
 // How many seconds are left before "send again" is allowed
 // (never more than the total, even if the phone's clock was set back after the email was sent)
 export const secondsLeft = (
@@ -77,6 +103,13 @@ export function mailErrorKey(e: unknown): string {
     /rate limit|too many/i.test(msg)
   )
     return "authErr.rate";
+  // Supabase could not send the email (the mail provider refused, or is not set up): not the person's fault, so say what to do
+  if (/error sending/i.test(msg)) return "authMail.errSend";
+  if (
+    code === "email_address_invalid" ||
+    /unable to validate email address|invalid format/i.test(msg)
+  )
+    return "auth.errEmail";
   // "same password" is checked first: its message also contains the words "password should"
   if (code === "same_password" || /different from the old password/i.test(msg))
     return "authMail.errSame";
